@@ -6,8 +6,8 @@ use User;
 
 final class FeedItemFriendshipRequest extends FeedItemBuilder {
 
-    public function __construct(User $currentUser, $destinationUserId) {
-        parent::__construct($destinationUserId);
+    public function __construct(User $currentUser) {
+        parent::__construct();
         $this->currentUser = $currentUser;
     }
 

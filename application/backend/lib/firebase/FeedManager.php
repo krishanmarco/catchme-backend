@@ -17,6 +17,7 @@ class FeedManager {
     const _FIREBASE_PRIVATE_KEY = FIREBASE_ADMIN_PRIVATE_KEY;
 
     const _USER_FEEDS_PATH = 'usersFeed';
+    const _USER_FEED_PATH_TEMPLATE = 'users/{UID}/feed';
 
 
     public static function build(User $currentUser) {
@@ -50,39 +51,30 @@ class FeedManager {
 
 
 
-    public function postSingleFeed(FeedItemBuilder $feedItemBuilder) {
-        $this->firebase->getDatabase()->getReference()
-            ->update($this->buildUpdateItem($feedItemBuilder));
+    public function postSingleFeed(FeedItemBuilder $feedItemBuilder, $toUid) {
+        $this->postMultipleFeeds($feedItemBuilder, [$toUid]);
     }
 
 
-    /** @param FeedItemBuilder[] $feedItemBuilder */
-    public function postMultipleFeeds(array $feedItemBuilders) {
-        $updateArray = [];
+    /**
+     * @param FeedItemBuilder $feedItemBuilder
+     * @param int[] $toUids
+     */
+    public function postMultipleFeeds(FeedItemBuilder $feedItemBuilder, array $toUids) {
 
-        foreach ($feedItemBuilders as $feedItemBuilder)
-            $this->buildUpdateItem($feedItemBuilder, $updateArray);
+        $feedId = $this->firebase->getDatabase()
+            ->getReference(self::_USER_FEEDS_PATH)->push([])->getKey();
+
+        $updateArray = [];
+        $updateArray[self::_USER_FEEDS_PATH . '/' . $feedId] = $feedItemBuilder->build($feedId)->get();
+
+        foreach ($toUids as $uid) {
+            $userBaseFeedPath = strtr(self::_USER_FEED_PATH_TEMPLATE, ['{UID}' => $uid]);
+            $updateArray[$userBaseFeedPath . '/' . $feedId] = $feedId;
+        }
 
         $this->firebase->getDatabase()->getReference()
             ->update($updateArray);
     }
-
-
-    /** @return array */
-    private function buildUpdateItem(FeedItemBuilder $feedItemBuilder, array $toArray = []) {
-        $database = $this->firebase->getDatabase();
-
-        $feedPath = self::_USER_FEEDS_PATH . '/' . $feedItemBuilder->getDestinationId();
-
-        // Get the users feed databasem, add an empty item to the
-        // users feed ($ref) and get the automatically generated id
-        $itemKey = $database->getReference($feedPath)->push([])->getKey();
-
-        // Build and add the update item to the accumulator ($toArray) and return
-        $toArray[$feedPath . "/${itemKey}"] = $feedItemBuilder->build($itemKey)->get();
-        return $toArray;
-    }
-
-
 
 }

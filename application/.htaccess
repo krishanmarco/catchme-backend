@@ -1,0 +1,3 @@
+# No direct access is allowed to
+# files in the application folder
+Deny from all

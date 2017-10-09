@@ -1,0 +1,22 @@
+{
+  "name": "applications/catchme/backend",
+  "description": "Backend files for the catch-me slim application",
+  "require": {
+    "propel/propel": "~2.0@dev",
+    "slim/slim": "^3.0",
+    "fzaninotto/faker": "^1.7",
+    "respect/validation": "^1.1",
+    "firebase/php-jwt": "^5.0",
+    "kreait/firebase-php": "^3.2"
+  },
+  "autoload": {
+    "classmap": [
+      "controllers",
+      "models",
+      "lib",
+	  "config",
+	  "routes"
+    ]
+  }
+
+}

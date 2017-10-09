@@ -53,9 +53,7 @@ class FeedItem {
 
 abstract class FeedItemBuilder {
 
-
-    protected function __construct($destinationUserId) {
-        $this->userId = $destinationUserId;
+    protected function __construct() {
         $this->time = time();
     }
 
@@ -107,9 +105,11 @@ abstract class FeedItemBuilder {
 
 
 
+
     /** @return FeedItem */
-    public function build($id) {
-        $this->id = $id;
+    public function buildForUser($feedId, $userId) {
+        $this->id = $feedId;
+        $this->userId = $userId;
         $this->expiry = $this->setExpiry();
         $this->consumeOnView = $this->setConsumeOnView();
         $this->content = $this->setContent();

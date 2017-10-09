@@ -50,18 +50,21 @@ class FeedManager {
 
 
 
-    public function postSingleFeed(FeedItemBuilder $feedItemBuilder) {
+    public function postSingleFeed(FeedItemBuilder $feedItemBuilder, $toUid) {
         $this->firebase->getDatabase()->getReference()
-            ->update($this->buildUpdateItem($feedItemBuilder));
+            ->update($this->buildUpdateItem($feedItemBuilder, $toUid));
     }
 
 
-    /** @param FeedItemBuilder[] $feedItemBuilder */
-    public function postMultipleFeeds(array $feedItemBuilders) {
+    /**
+     * @param FeedItemBuilder $feedItemBuilder
+     * @param int[] $toUids
+     */
+    public function postMultipleFeeds(FeedItemBuilder $feedItemBuilder, array $toUids) {
         $updateArray = [];
 
-        foreach ($feedItemBuilders as $feedItemBuilder)
-            $this->buildUpdateItem($feedItemBuilder, $updateArray);
+        foreach ($toUids as $userId)
+            $this->buildUpdateItem($feedItemBuilder, $userId, $updateArray);
 
         $this->firebase->getDatabase()->getReference()
             ->update($updateArray);
@@ -69,7 +72,7 @@ class FeedManager {
 
 
     /** @return array */
-    private function buildUpdateItem(FeedItemBuilder $feedItemBuilder, array $toArray = []) {
+    private function buildUpdateItem(FeedItemBuilder $feedItemBuilder, $toUid, array $toArray = []) {
         $database = $this->firebase->getDatabase();
 
         $feedPath = self::_USER_FEEDS_PATH . '/' . $feedItemBuilder->getDestinationId();
@@ -79,7 +82,7 @@ class FeedManager {
         $itemKey = $database->getReference($feedPath)->push([])->getKey();
 
         // Build and add the update item to the accumulator ($toArray) and return
-        $toArray[$feedPath . "/${itemKey}"] = $feedItemBuilder->build($itemKey)->get();
+        $toArray[$feedPath . "/${itemKey}"] = $feedItemBuilder->buildForUser($itemKey, $toUid)->get();
         return $toArray;
     }
 

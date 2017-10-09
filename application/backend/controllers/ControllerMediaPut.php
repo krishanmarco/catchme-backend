@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Models\Calculators\UserModel;
+use Models\Feed\MultiFeedManager;
 use Models\Location\LocationImagesModel;
 use Models\User\Accounts\UserEditProfile;
 use Firebase\FeedManager;
@@ -60,16 +61,16 @@ class ControllerMediaPut {
             throw $apiException;
         }
 
-        /*
+        $mfm = new MultiFeedManager($this->authenticatedUser);
+
         // Add the notification item to firebase
         FeedManager::build($this->authenticatedUser)
-            ->addToUserFeed(new FeedItemFriendAddedImage(
+            ->postMultipleFeeds(new FeedItemFriendAddedImage(
                 $this->authenticatedUser,
                 $locationImagesModel->getLocation(),
-                $locationImage,
-                $uid
-            ));
-        */
+                $locationImage
+            ), $mfm->getNotifiableFriendIds());
+
         return $locationImage->getUrl();
     }
 

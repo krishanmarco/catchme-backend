@@ -7,8 +7,8 @@ use Location;
 
 final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
 
-    public function __construct(User $currentUser, Location $location, $destinationUserId) {
-        parent::__construct($destinationUserId);
+    public function __construct(User $currentUser, Location $location) {
+        parent::__construct();
         $this->currentUser = $currentUser;
         $this->location = $location;
     }

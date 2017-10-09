@@ -6,6 +6,7 @@ use Firebase\FeedManager;
 use Firebase\FeedItems\FeedItemFriendshipRequest;
 use Firebase\FeedItems\FeedItemUserAttendanceRequest;
 use Models\Calculators\UserModel;
+use Models\Feed\MultiFeedManager;
 use Models\Location\Accounts\LocationEditProfile;
 use Models\Location\Accounts\LocationRegistration;
 use Models\User\Accounts\UserManagerConnections;
@@ -122,7 +123,7 @@ class ControllerUser {
 
         // Add the notification item to firebase
         FeedManager::build($this->authenticatedUser)
-            ->postSingleFeed(new FeedItemFriendshipRequest($this->authenticatedUser, $uid));
+            ->postSingleFeed(new FeedItemFriendshipRequest($this->authenticatedUser), $uid);
     }
 
     public function connectionsAcceptUid($uid) {
@@ -148,15 +149,15 @@ class ControllerUser {
 
         $userLocationStatus = $manager->add($apiUserLocationStatus);
 
-        /*
+
+        $mfm = new MultiFeedManager($this->authenticatedUser);
+
         // Add the notification item to firebase
         FeedManager::build($this->authenticatedUser)
-            ->addToUserFeed(new FeedItemUserAttendanceRequest(
+            ->postMultipleFeeds(new FeedItemUserAttendanceRequest(
                 $this->authenticatedUser,
-                $locationImagesModel->getLocation(),
-                $uid
-            ));
-        */
+                $userLocationStatus->getLocation()
+            ), $mfm->getNotifiableFriendIds());
 
         return ModelToApiUserLocation::single($userLocationStatus);
     }

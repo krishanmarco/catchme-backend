@@ -2,15 +2,7 @@
 
 namespace Controllers;
 
-use Models\Calculators\UserModel;
-use Models\Location\LocationImagesModel;
-use Models\User\Accounts\UserEditProfile;
-use Firebase\FeedManager;
-use Firebase\FeedItems\FeedItemFriendAddedImage;
-use Firebase\FeedItems\FeedItemUserAttendanceRequest;
 use Slim\Exception\ApiException;
-use Symfony\Component\Config\Definition\Exception\Exception;
-use User as DbUser;
 use EMediaType;
 use R;
 

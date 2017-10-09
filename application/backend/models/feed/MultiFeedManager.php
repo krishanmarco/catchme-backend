@@ -25,7 +25,8 @@ class MultiFeedManager {
      * @return int[]
      */
     public function getNotifiableFriendIds() {
-        return [];
+        // todo: calculate a sub set of the user friend ids based on the connection strength
+        return $this->userModel->getUserConnectionsResult()->getFriendIds();
     }
 
 

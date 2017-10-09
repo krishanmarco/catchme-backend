@@ -61,10 +61,6 @@ abstract class FeedItemBuilder {
     /** @var String $id */
     private $id;
 
-    /** @var int $userId */
-    private $userId;
-    public function getDestinationId() { return $this->userId; }
-
     /** @var int $time */
     private $time;
     public function getTime() { return $this->time; }
@@ -107,9 +103,8 @@ abstract class FeedItemBuilder {
 
 
     /** @return FeedItem */
-    public function buildForUser($feedId, $userId) {
+    public function build($feedId) {
         $this->id = $feedId;
-        $this->userId = $userId;
         $this->expiry = $this->setExpiry();
         $this->consumeOnView = $this->setConsumeOnView();
         $this->content = $this->setContent();

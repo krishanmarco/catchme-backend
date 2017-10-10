@@ -174,13 +174,15 @@ class ControllerUser {
     /** @return int */
     public function locationsFavoritesAdd($lid) {
         $manager = new UserManagerLocations($this->authenticatedUser);
-        return $manager->add($lid);
+        $manager->add($lid);
+        return R::return_ok;
     }
 
     /** @return int */
     public function locationsFavoritesDel($lid) {
         $manager = new UserManagerLocations($this->authenticatedUser);
-        return $manager->del($lid);
+        $manager->del($lid);
+        return R::return_ok;
     }
 
 

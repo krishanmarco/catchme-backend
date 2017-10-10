@@ -10,11 +10,12 @@ use User;
 class FeedManager {
     const _FIREBASE_DATABASE_URI = FIREBASE_DATABASE_URI;
     const _FIREBASE_API_KEY = FIREBASE_API_KEY;
-
     const _FIREBASE_PROJECT_ID = FIREBASE_PROJECT_ID;
-    const _FIREBASE_CLIENT_ID = FIREBASE_CLIENT_ID;
-    const _FIREBASE_CLIENT_EMAIL = FIREBASE_CLIENT_EMAIL;
-    const _FIREBASE_PRIVATE_KEY = FIREBASE_ADMIN_PRIVATE_KEY;
+
+
+    const _FIREBASE_ADMIN_SERVICE_CLIENT_ID = FIREBASE_ADMIN_SERVICE_CLIENT_ID;
+    const _FIREBASE_ADMIN_SERVICE_CLIENT_EMAIL = FIREBASE_ADMIN_SERVICE_CLIENT_EMAIL;
+    const _FIREBASE_ADMIN_SERVICE_PRIVATE_KEY = FIREBASE_ADMIN_SERVICE_PRIVATE_KEY;
 
     const _USER_FEEDS_PATH = 'usersFeed';
     const _USER_FEED_PATH_TEMPLATE = 'users/{UID}/feed';
@@ -30,9 +31,9 @@ class FeedManager {
 
         $serviceAccount = ServiceAccount::fromArray([
             'project_id' => self::_FIREBASE_PROJECT_ID,
-            'client_id' => self::_FIREBASE_CLIENT_ID,
-            'client_email' => self::_FIREBASE_CLIENT_EMAIL,
-            'private_key' => self::_FIREBASE_PRIVATE_KEY
+            'client_id' => self::_FIREBASE_ADMIN_SERVICE_CLIENT_ID,
+            'client_email' => self::_FIREBASE_ADMIN_SERVICE_CLIENT_EMAIL,
+            'private_key' => self::_FIREBASE_ADMIN_SERVICE_PRIVATE_KEY
         ]);
 
         $this->firebase = (new Factory())

@@ -7,7 +7,7 @@ abstract class UserAuthJWT {
     const _FIREBASE_ADMIN_PRIVATE_KEY = FIREBASE_ADMIN_PRIVATE_KEY;
 
 
-    public static function build($userId, $claims = []) {
+    public static function build($userId) {
         return FirebaseJWT::encode([
             'iss' => self::_FIREBASE_ADMIN_SERVICE_EMAIL,
             'sub' => self::_FIREBASE_ADMIN_SERVICE_EMAIL,

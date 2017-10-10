@@ -5,7 +5,7 @@ namespace Models\Calculators\Users;
 use Models\Calculators\UserModel;
 use User as User;
 use UserConnectionQuery as UserConnectionQuery;
-use EConnectionState as UserFriendState;
+use EConnectionState;
 
 class UserConnections {
 
@@ -34,11 +34,11 @@ class UserConnections {
         foreach ($leftAssoc as $uf) {
             switch ($uf->getState()) {
 
-                case EUserFriendState::CONFIRMED:
+                case EConnectionState::CONFIRMED:
                     array_push($confirmedFriends, $uf->getConnectionTo());
                     break;
 
-                case EUserFriendState::BLOCKED:
+                case EConnectionState::BLOCKED:
                     array_push($blockedRequests, $uf->getConnectionTo());
                     break;
 
@@ -56,11 +56,11 @@ class UserConnections {
         foreach ($rightAssoc as $uf) {
             switch ($uf->getState()) {
 
-                case EUserFriendState::CONFIRMED:
+                case EConnectionState::CONFIRMED:
                     array_push($confirmedFriends, $uf->getUser());
                     break;
 
-                case EUserFriendState::PENDING:
+                case EConnectionState::PENDING:
                     array_push($pendingRequests, $uf->getUser());
                     break;
 

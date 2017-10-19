@@ -8,9 +8,9 @@ use \User as DbUser;
 class ConnectionPrivacyPolicy {
 
     const ConnectionRelationships = [
-        1 => 'SAME_PERSON',
-        2 => 'CONNECTED',
-        3 => 'NOT_CONNECTED'
+        0 => 'SAME_PERSON',
+        1 => 'CONNECTED',
+        2 => 'NOT_CONNECTED'
     ];
 
 

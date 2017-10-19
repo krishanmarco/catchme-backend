@@ -136,7 +136,7 @@ abstract class User implements ActiveRecordInterface
     /**
      * The value for the privacy field.
      *
-     * Note: this column has a database default value of: '333'
+     * Note: this column has a database default value of: '222'
      * @var        string
      */
     protected $privacy;
@@ -297,7 +297,7 @@ abstract class User implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->ban = true;
-        $this->privacy = '333';
+        $this->privacy = '222';
         $this->signup_ts = 1483228800;
         $this->gender = 0;
         $this->reputation = 0;
@@ -982,7 +982,7 @@ abstract class User implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->privacy !== '333') {
+            if ($this->privacy !== '222') {
                 return false;
             }
 

@@ -246,6 +246,22 @@
     },
 
 
+    "/search/users": {
+      "post": {
+        "tags": ["Search"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/SearchStrings"}}
+        ],
+        "responses": {
+          "401": {},
+          "500": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"type": "array", "items": {"$ref": "#/definitions/User"}}}
+        }
+      }
+    },
+
+
     "/suggest/{seed}/locations": {
       "get": {
         "tags": ["Search"],
@@ -578,6 +594,13 @@
         "phone":          {"type": "string"},
         "timings":        {"type": "string"},
         "address":        {"$ref": "#/definitions/LocationAddress"}
+      }
+    },
+
+    "SearchStrings": {
+      "type": "object",
+      "properties": {
+        "queries":      {"type": "array", "items": {"type": "string"}}
       }
     },
 

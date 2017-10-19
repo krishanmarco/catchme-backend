@@ -17,3 +17,10 @@ class EGender {
     const MALE = 1;
     const UNKNOWN = 2;
 }
+
+class EPrivacy {
+    const ONLY_ME = '0';
+    const MY_FRIENDS = '1';
+    const EVERYONE = '2';
+}
+

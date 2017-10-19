@@ -198,7 +198,7 @@ class UserTableMap extends TableMap
         $this->addColumn('pass_sha256', 'PassSha256', 'VARCHAR', true, 64, null);
         $this->addColumn('pass_salt', 'PassSalt', 'VARCHAR', true, 15, null);
         $this->addColumn('ban', 'Ban', 'BOOLEAN', true, 1, true);
-        $this->addColumn('privacy', 'Privacy', 'VARCHAR', true, 255, '333');
+        $this->addColumn('privacy', 'Privacy', 'VARCHAR', true, 255, '222');
         $this->addColumn('signup_ts', 'SignupTs', 'INTEGER', true, 10, 1483228800);
         $this->addColumn('gender', 'Gender', 'TINYINT', true, 1, 0);
         $this->addColumn('reputation', 'Reputation', 'INTEGER', true, null, 0);

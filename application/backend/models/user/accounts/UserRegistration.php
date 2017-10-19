@@ -88,7 +88,7 @@ class UserRegistration {
     private function userRegister($name, $email, $password) {
         $this->user->setName($name);
         $this->user->setEmail($email);
-        $this->user->setPrivacy('333');
+        $this->user->setPrivacy('222');
         $this->user->setApiKey(getRandomString(32, 32));
 
         $userPassSalt = getRandomString(7, 15);

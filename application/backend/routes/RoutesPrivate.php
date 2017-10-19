@@ -64,6 +64,17 @@ class RoutesPrivate {
 
 
 
+    const searchUsers = RoutesPrivate::class . ':searchUsers';
+
+    public function searchUsers(ServerRequestInterface $request, ResponseInterface $response, $args) {
+        $apiUsers = $this->controller->search()->usersSearchMultiple(
+            SlimAttrGet::getInputData($request)
+        );
+        return SlimOutput::buildAndWrite($response, $apiUsers);
+    }
+
+
+
     const suggestSeedLocations = RoutesPrivate::class . ':suggestSeedLocations';
 
     public function suggestSeedLocations(ServerRequestInterface $request, ResponseInterface $response, $args) {

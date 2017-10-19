@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
 
 namespace Models\Location\Search;
+
 use Propel\Extensions\QueryHelper;
 use Map\SearchUserTableMap;
 use SearchUserQuery;
@@ -11,29 +12,34 @@ use User;
 
 class UserSearch {
 
-    public function __construct($searchQuery) {
-        $this->searchQuery = strtoupper(trim($searchQuery));
+    public function __construct(array $searchQuerys) {
+        $this->searchQuerys = array_map('trim', $searchQuerys);
+        $this->searchQuerys = array_map('strtoupper', $this->searchQuerys);
     }
 
 
-    /** @var String $searchQuery */
-    private $searchQuery;
+    /** @var String[] $searchQuerys */
+    private $searchQuerys;
 
 
 
     /** @var array $userResults : [User-Id => User] */
     private $userResults = [];
 
-    public function getResults() { return array_values($this->userResults); }
-
-    private function addLocationToResult(User $user) {
-        $this->userResults[$user->getId()] = $user;
+    public function getResults() {
+        return array_values($this->userResults);
     }
 
 
-
-
     public function search() {
+        foreach ($this->searchQuerys as $searchQuery) {
+            $result = $this->searchOne($searchQuery);
+            $this->userResults = array_merge($this->userResults, $result);
+        }
+        return $this->userResults;
+    }
+
+    private function searchOne($searchString) {
 
         // Use a FullTextSearch to match the search query
         // to the query column on the SearchUser table
@@ -41,7 +47,7 @@ class UserSearch {
         $indexedUsers = QueryHelper::fullTextSearch(
             SearchUserQuery::create(),
             SearchUserTableMap::COL_QUERY,
-            $this->searchQuery
+            $searchString
         );
 
         // Get all user ids from the SearchUser
@@ -52,10 +58,9 @@ class UserSearch {
 
 
         // Select all found ids into the result holder
-        $this->userResults = UserQuery::create()
+        return UserQuery::create()
             ->findPks($userIds)
             ->getData();
-
     }
 
 

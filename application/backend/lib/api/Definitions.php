@@ -28,6 +28,10 @@ class FormLocationRegister {
     public $timings =           [Rule::ruleIsset => [],         ];
 }
 
+class SearchStrings {
+    public $queries =           [Rule::ruleIsset => []];
+}
+
 class Location {
     public $id =                [					            Rule::ruleId => []];
     public $adminId =           [            					Rule::ruleId => []];

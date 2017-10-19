@@ -9,6 +9,7 @@ use Api\Map\ModelToApiLocations;
 use Api\Map\ModelToApiUsers;
 use Api\Location as ApiLocation;
 use Api\User as ApiUser;
+use Api\SearchStrings as ApiSearchStrings;
 
 
 class ControllerSearch {
@@ -50,7 +51,20 @@ class ControllerSearch {
 
     /** @return ApiUser[] */
     public function usersSearch($query) {
-        $userSearch = new UserSearch($query);
+        $userSearch = new UserSearch([$query]);
+
+        $userSearch->search();
+
+        return ModelToApiUsers::multiple()
+            ->users($userSearch->getResults());
+    }
+
+
+
+
+    /** @return ApiUser[] */
+    public function usersSearchMultiple(ApiSearchStrings $apiSearchStrings) {
+        $userSearch = new UserSearch($apiSearchStrings->queries);
 
         $userSearch->search();
 

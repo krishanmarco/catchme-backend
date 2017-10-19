@@ -99,6 +99,8 @@ $app->group('', function () use ($app) {
     $app->get('/user/locations/favorites/add/{lid:[0-9]+}', RoutesPrivate::userLocationsFavoritesAddLid);
     $app->get('/user/locations/favorites/del/{lid:[0-9]+}', RoutesPrivate::userLocationsFavoritesDelLid);
 
+    $app->post('/search/users', RoutesPrivate::searchUsers)
+        ->add(new MiddlewareValidator(Api\SearchStrings::class));
 
     $app->post('/user/profile/edit', RoutesPrivate::userProfileEdit)
         ->add(new MiddlewareValidator(Api\User::class));

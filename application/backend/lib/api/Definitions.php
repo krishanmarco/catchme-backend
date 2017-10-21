@@ -25,7 +25,7 @@ class FormLocationRegister {
     public $capacity =          [Rule::ruleIsset => [],         Rule::ruleInt => []];
     public $phone =             [Rule::ruleIsset => [],         Rule::rulePhone => []];
     public $address =           [Rule::ruleIsset => [],         Rule::ruleArrayOf => [LocationAddress::class]];
-    public $timings =           [Rule::ruleIsset => [],         ];
+    public $timings =           [Rule::ruleIsset => [],         Rule::ruleLongString => [168, 168]];
 }
 
 class SearchStrings {
@@ -44,7 +44,7 @@ class Location {
     public $reputation =        [			            		Rule::ruleInt => []];
     public $email =             [            					Rule::ruleEmail => []];
     public $phone =             [			            		Rule::rulePhone => []];
-    public $timings =           [];
+    public $timings =           [                               Rule::ruleLongString => [168, 168]];
     public $imageUrls =         [            					Rule::ruleUrls => []];
     public $people =            [            					Rule::ruleOf => [LocationPeople::class]];
     public $address =           [			            		Rule::ruleArrayOf => [LocationAddress::class]];

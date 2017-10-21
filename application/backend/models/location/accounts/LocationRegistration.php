@@ -30,7 +30,7 @@ class LocationRegistration {
         $this->location->setEmail($formLocationRegister->email);
         $this->location->setCapacity($formLocationRegister->capacity);
         $this->location->setPhone($formLocationRegister->phone);
-        $this->location->setTimingsArray($formLocationRegister->timings);
+        $this->location->setTimingsJson($formLocationRegister->timings);
 
         /** @var ApiLocationAddress $apiLocationAddress */
         $dbLocationAddress = new DbLocationAddress();

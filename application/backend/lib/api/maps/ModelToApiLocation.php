@@ -59,7 +59,7 @@ class ModelToApiLocation {
         $this->apiLocation->reputation = $this->dbLocation->getReputation();
         $this->apiLocation->email = $this->dbLocation->getEmail();
         $this->apiLocation->phone = $this->dbLocation->getPhone();
-        $this->apiLocation->timings = $this->dbLocation->getTimingsArray();
+        $this->apiLocation->timings = $this->dbLocation->getTimings();
         return $this;
     }
 
@@ -82,7 +82,7 @@ class ModelToApiLocation {
 
     /** @return ModelToApiLocation */
     public function withTimings() {
-        $this->apiLocation->timings = $this->dbLocation->getTimingsArray();;
+        $this->apiLocation->timings = $this->dbLocation->getTimings();;
         return $this;
     }
 

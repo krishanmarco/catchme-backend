@@ -33,14 +33,7 @@ class Location extends BaseLocation {
             ->save($con);
     }
 
-
-
-    public function setTimingsArray(array $timings) {
-        $this->setTimingsJson(json_encode($timings));
+    public function getTimings() {
+        return $this->getTimingsJson();
     }
-
-    public function getTimingsArray() {
-        return json_decode($this->getTimingsJson());
-    }
-
 }

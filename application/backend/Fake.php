@@ -1,5 +1,5 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 09/09/2017 - Fithancer © */
- die("SCRIPT BLOCKED!");
+die("SCRIPT BLOCKED!");
 const gender = [0, 1, 2];
 const privacy = [
     111, 112, 113, 121, 122, 123, 131, 132, 133,
@@ -51,8 +51,8 @@ for ($i = 0; $i < NUMBER_OF_USERS; $i++) {
     $user->save();
 }*/
 
-/*// GENERATE FAKE LOCATIONS ********************************************************************
-
+// GENERATE FAKE LOCATIONS ********************************************************************
+/*
 for ($i = 0; $i < NUMBER_OF_LOCATIONS; $i++) {
     $location = new Location();
     $location->setAdminId($faker->unique()->randomElement(range(1, NUMBER_OF_USERS)));
@@ -79,26 +79,24 @@ for ($i = 0; $i < NUMBER_OF_LOCATIONS; $i++) {
 
 
 
+
     $timings = [];
 
-    for ($p = 0; $p < 8; $p++) {
+    for ($p = 0; $p < 7; $p++) {
         $day = [];
 
-
-        $timingsInDay = rand(0, 3);
-        $currentTime = 0;
-        for ($x = 0; $x < $timingsInDay; $x++) {
-            $currentTime += rand(0, 1.5);
-            $timing = [$currentTime];
-            $currentTime += rand(1, 6.5);
-            $timing[] = $currentTime;
-            $day[] = $timing;
+        for ($i = 0; $i < 24; $i++) {
+            $day[] = $faker->boolean() ? 1 : 0;
         }
-
         $timings[] = $day;
     }
 
-    $location->setTimingsArray($timings);
+    $timingsStr = '';
+    foreach ($timings as $tt)
+        foreach ($tt as $t)
+            $timingsStr .= $t;
+
+    $l->setTimingsJson($timingsStr);
 
     $location->save();
 }

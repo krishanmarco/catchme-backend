@@ -1,8 +1,8 @@
 <?php
 
 class FacebookUserDataToken {
-    const FACEBOOK_OAUTH_URL = "https://graph.facebook.com/me?access_token={0}" .
-        "&fields=id,birthday,email,first_name,gender,last_name,link,locale,name,timezone,updated_time,verified";
+    const FACEBOOK_OAUTH_URL = "https://graph.facebook.com/v2.11/me?access_token={0}" .
+        "&fields=id,email,first_name,gender,last_name,link,locale,name,timezone,updated_time,verified";
 
     // {
     //      "id": "559560534181085",

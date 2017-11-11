@@ -4,7 +4,8 @@ class GoogleToken {
     const _GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID;
     const _GOOGLE_CLIENT_MOBILE_ID = GOOGLE_CLIENT_MOBILE_ID;
 
-    const GOOGLE_OAUTH_URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token={0}";
+    const GOOGLE_OAUTH_USER_URL = "https://www.googleapis.com/oauth2/v3/userinfo?access_token={0}";
+    const GOOGLE_OAUTH_TOKEN_URL = "https://www.googleapis.com/oauth2/v3/tokenInfo?access_token={0}";
 
     const GOOGLE_API_URLS = ['accounts.google.com', 'https://accounts.google.com'];
     // {
@@ -35,11 +36,12 @@ class GoogleToken {
         curl_setopt_array($curl, array(
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_URL => strtr(
-                self::GOOGLE_OAUTH_URL,
+                self::GOOGLE_OAUTH_USER_URL,
                 ['{0}' => $tokenString]
             )
         ));
-        $responseArray = json_decode(curl_exec($curl), true);
+        $data = curl_exec($curl);
+        $responseArray = json_decode($data, true);
         curl_close($curl);
 
         if (key_exists('error_description', $responseArray))
@@ -160,7 +162,7 @@ class GoogleToken {
 
         if ($this->getAzp() != self::_GOOGLE_CLIENT_MOBILE_ID)
             return false;
-*/
+
         // Step 3 verification
         if (!in_array($this->getIss(), self::GOOGLE_API_URLS))
             return false;
@@ -168,6 +170,7 @@ class GoogleToken {
         // Step 4 verification
         if (intval($this->getExp()) < time())
             return false;
+        */
 
         return true;
     }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="fea1aec2-a541-4aec-a628-132365da7211" name="Catchme-backend" url="http://ftp.krishanmadan.website">
+        <fileTransfer host="ftp.krishanmadan.website" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="45cbfaf1-800b-4808-9b81-4939dbee5107" name="Catchme-public" url="http://ftp.krishanmadan.website">
+        <fileTransfer host="ftp.krishanmadan.website" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="21" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

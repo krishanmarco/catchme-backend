@@ -4,7 +4,7 @@ class FacebookDebugToken {
     const _FACEBOOK_CLIENT_ID = FACEBOOK_CLIENT_ID;
     const _FACEBOOK_CLIENT_APPLICATION_NAME = FACEBOOK_CLIENT_APPLICATION_NAME;
 
-    const FACEBOOK_OAUTH_URL = "https://graph.facebook.com/debug_token?input_token={0}&access_token={1}";
+    const FACEBOOK_OAUTH_URL = "https://graph.facebook.com/v2.10/debug_token?input_token={0}&access_token={1}";
 
     // {
     //      "data": {

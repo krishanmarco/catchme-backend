@@ -67,13 +67,13 @@ class Validator {
 
 
 
-    public function validateObject() {
+    public function validateObject($removeNulls = true) {
 
-        // Reset the whole object to its inital state
+        // Reset the whole object to its initial state
         $this->resetValidationErrors();
 
         // For each key (field) in $expectedApiDefinition,
-        // apply that key to the corrisponding item in $data
+        // apply that key to the corresponding item in $data
         foreach ($this->validationParams as $key => $validationArray) {
 
             // Validate the field
@@ -85,9 +85,16 @@ class Validator {
                 continue;
             }
 
-            // The result is valid, overwrite the
-            // $validationArray with the inputted data
-            $this->validationParams->{$key} = $this->inputData[$key];
+            // The result is valid, get the value
+            $itemValue = $this->inputData[$key];
+
+            if ($removeNulls && $itemValue == null) {
+                unset($this->validationParams->{$key});
+                continue;
+            }
+
+            // Overwrite the $validationArray with the inputted data
+            $this->validationParams->{$key} = $itemValue;
         }
 
         // Check for any error, if there was an error return

@@ -112,9 +112,9 @@ class LocationTableMap extends TableMap
     const COL_PICTURE_URL = 'location.picture_url';
 
     /**
-     * the column name for the timings_json field
+     * the column name for the timings field
      */
-    const COL_TIMINGS_JSON = 'location.timings_json';
+    const COL_TIMINGS = 'location.timings';
 
     /**
      * the column name for the reputation field
@@ -143,10 +143,10 @@ class LocationTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'AdminId', 'SignupTs', 'Verified', 'Name', 'Description', 'Capacity', 'PictureUrl', 'TimingsJson', 'Reputation', 'Email', 'Phone', ),
-        self::TYPE_CAMELNAME     => array('id', 'adminId', 'signupTs', 'verified', 'name', 'description', 'capacity', 'pictureUrl', 'timingsJson', 'reputation', 'email', 'phone', ),
-        self::TYPE_COLNAME       => array(LocationTableMap::COL_ID, LocationTableMap::COL_ADMIN_ID, LocationTableMap::COL_SIGNUP_TS, LocationTableMap::COL_VERIFIED, LocationTableMap::COL_NAME, LocationTableMap::COL_DESCRIPTION, LocationTableMap::COL_CAPACITY, LocationTableMap::COL_PICTURE_URL, LocationTableMap::COL_TIMINGS_JSON, LocationTableMap::COL_REPUTATION, LocationTableMap::COL_EMAIL, LocationTableMap::COL_PHONE, ),
-        self::TYPE_FIELDNAME     => array('id', 'admin_id', 'signup_ts', 'verified', 'name', 'description', 'capacity', 'picture_url', 'timings_json', 'reputation', 'email', 'phone', ),
+        self::TYPE_PHPNAME       => array('Id', 'AdminId', 'SignupTs', 'Verified', 'Name', 'Description', 'Capacity', 'PictureUrl', 'Timings', 'Reputation', 'Email', 'Phone', ),
+        self::TYPE_CAMELNAME     => array('id', 'adminId', 'signupTs', 'verified', 'name', 'description', 'capacity', 'pictureUrl', 'timings', 'reputation', 'email', 'phone', ),
+        self::TYPE_COLNAME       => array(LocationTableMap::COL_ID, LocationTableMap::COL_ADMIN_ID, LocationTableMap::COL_SIGNUP_TS, LocationTableMap::COL_VERIFIED, LocationTableMap::COL_NAME, LocationTableMap::COL_DESCRIPTION, LocationTableMap::COL_CAPACITY, LocationTableMap::COL_PICTURE_URL, LocationTableMap::COL_TIMINGS, LocationTableMap::COL_REPUTATION, LocationTableMap::COL_EMAIL, LocationTableMap::COL_PHONE, ),
+        self::TYPE_FIELDNAME     => array('id', 'admin_id', 'signup_ts', 'verified', 'name', 'description', 'capacity', 'picture_url', 'timings', 'reputation', 'email', 'phone', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
@@ -157,10 +157,10 @@ class LocationTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'AdminId' => 1, 'SignupTs' => 2, 'Verified' => 3, 'Name' => 4, 'Description' => 5, 'Capacity' => 6, 'PictureUrl' => 7, 'TimingsJson' => 8, 'Reputation' => 9, 'Email' => 10, 'Phone' => 11, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'adminId' => 1, 'signupTs' => 2, 'verified' => 3, 'name' => 4, 'description' => 5, 'capacity' => 6, 'pictureUrl' => 7, 'timingsJson' => 8, 'reputation' => 9, 'email' => 10, 'phone' => 11, ),
-        self::TYPE_COLNAME       => array(LocationTableMap::COL_ID => 0, LocationTableMap::COL_ADMIN_ID => 1, LocationTableMap::COL_SIGNUP_TS => 2, LocationTableMap::COL_VERIFIED => 3, LocationTableMap::COL_NAME => 4, LocationTableMap::COL_DESCRIPTION => 5, LocationTableMap::COL_CAPACITY => 6, LocationTableMap::COL_PICTURE_URL => 7, LocationTableMap::COL_TIMINGS_JSON => 8, LocationTableMap::COL_REPUTATION => 9, LocationTableMap::COL_EMAIL => 10, LocationTableMap::COL_PHONE => 11, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'admin_id' => 1, 'signup_ts' => 2, 'verified' => 3, 'name' => 4, 'description' => 5, 'capacity' => 6, 'picture_url' => 7, 'timings_json' => 8, 'reputation' => 9, 'email' => 10, 'phone' => 11, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'AdminId' => 1, 'SignupTs' => 2, 'Verified' => 3, 'Name' => 4, 'Description' => 5, 'Capacity' => 6, 'PictureUrl' => 7, 'Timings' => 8, 'Reputation' => 9, 'Email' => 10, 'Phone' => 11, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'adminId' => 1, 'signupTs' => 2, 'verified' => 3, 'name' => 4, 'description' => 5, 'capacity' => 6, 'pictureUrl' => 7, 'timings' => 8, 'reputation' => 9, 'email' => 10, 'phone' => 11, ),
+        self::TYPE_COLNAME       => array(LocationTableMap::COL_ID => 0, LocationTableMap::COL_ADMIN_ID => 1, LocationTableMap::COL_SIGNUP_TS => 2, LocationTableMap::COL_VERIFIED => 3, LocationTableMap::COL_NAME => 4, LocationTableMap::COL_DESCRIPTION => 5, LocationTableMap::COL_CAPACITY => 6, LocationTableMap::COL_PICTURE_URL => 7, LocationTableMap::COL_TIMINGS => 8, LocationTableMap::COL_REPUTATION => 9, LocationTableMap::COL_EMAIL => 10, LocationTableMap::COL_PHONE => 11, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'admin_id' => 1, 'signup_ts' => 2, 'verified' => 3, 'name' => 4, 'description' => 5, 'capacity' => 6, 'picture_url' => 7, 'timings' => 8, 'reputation' => 9, 'email' => 10, 'phone' => 11, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
@@ -189,7 +189,7 @@ class LocationTableMap extends TableMap
         $this->addColumn('description', 'Description', 'VARCHAR', true, 255, null);
         $this->addColumn('capacity', 'Capacity', 'INTEGER', true, null, 0);
         $this->addColumn('picture_url', 'PictureUrl', 'VARCHAR', true, 255, null);
-        $this->addColumn('timings_json', 'TimingsJson', 'VARCHAR', true, 8192, '[]');
+        $this->addColumn('timings', 'Timings', 'VARCHAR', true, 168, '');
         $this->addColumn('reputation', 'Reputation', 'INTEGER', true, null, 0);
         $this->addColumn('email', 'Email', 'VARCHAR', false, 255, null);
         $this->addColumn('phone', 'Phone', 'VARCHAR', false, 255, null);
@@ -409,7 +409,7 @@ class LocationTableMap extends TableMap
             $criteria->addSelectColumn(LocationTableMap::COL_DESCRIPTION);
             $criteria->addSelectColumn(LocationTableMap::COL_CAPACITY);
             $criteria->addSelectColumn(LocationTableMap::COL_PICTURE_URL);
-            $criteria->addSelectColumn(LocationTableMap::COL_TIMINGS_JSON);
+            $criteria->addSelectColumn(LocationTableMap::COL_TIMINGS);
             $criteria->addSelectColumn(LocationTableMap::COL_REPUTATION);
             $criteria->addSelectColumn(LocationTableMap::COL_EMAIL);
             $criteria->addSelectColumn(LocationTableMap::COL_PHONE);
@@ -422,7 +422,7 @@ class LocationTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.description');
             $criteria->addSelectColumn($alias . '.capacity');
             $criteria->addSelectColumn($alias . '.picture_url');
-            $criteria->addSelectColumn($alias . '.timings_json');
+            $criteria->addSelectColumn($alias . '.timings');
             $criteria->addSelectColumn($alias . '.reputation');
             $criteria->addSelectColumn($alias . '.email');
             $criteria->addSelectColumn($alias . '.phone');

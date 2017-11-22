@@ -111,7 +111,7 @@ class ConnectionPrivacyPolicy {
     }
 
     private function parsePrivacy() {
-        $privacy = strval($this->requestedDbUser->getPrivacy());
+        $privacy = strval($this->requestedDbUser->getSettingPrivacy());
         $privacy = str_split($privacy);
         $privacy = array_map('intval', $privacy);
         return $privacy;

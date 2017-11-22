@@ -139,12 +139,12 @@ abstract class Location implements ActiveRecordInterface
     protected $picture_url;
 
     /**
-     * The value for the timings_json field.
+     * The value for the timings field.
      *
-     * Note: this column has a database default value of: '[]'
+     * Note: this column has a database default value of: ''
      * @var        string
      */
-    protected $timings_json;
+    protected $timings;
 
     /**
      * The value for the reputation field.
@@ -250,7 +250,7 @@ abstract class Location implements ActiveRecordInterface
         $this->signup_ts = 1483228800;
         $this->verified = false;
         $this->capacity = 0;
-        $this->timings_json = '[]';
+        $this->timings = '';
         $this->reputation = 0;
     }
 
@@ -572,13 +572,13 @@ abstract class Location implements ActiveRecordInterface
     }
 
     /**
-     * Get the [timings_json] column value.
+     * Get the [timings] column value.
      *
      * @return string
      */
-    public function getTimingsJson()
+    public function getTimings()
     {
-        return $this->timings_json;
+        return $this->timings;
     }
 
     /**
@@ -784,24 +784,24 @@ abstract class Location implements ActiveRecordInterface
     } // setPictureUrl()
 
     /**
-     * Set the value of [timings_json] column.
+     * Set the value of [timings] column.
      *
      * @param string $v new value
      * @return $this|\Location The current object (for fluent API support)
      */
-    public function setTimingsJson($v)
+    public function setTimings($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->timings_json !== $v) {
-            $this->timings_json = $v;
-            $this->modifiedColumns[LocationTableMap::COL_TIMINGS_JSON] = true;
+        if ($this->timings !== $v) {
+            $this->timings = $v;
+            $this->modifiedColumns[LocationTableMap::COL_TIMINGS] = true;
         }
 
         return $this;
-    } // setTimingsJson()
+    } // setTimings()
 
     /**
      * Set the value of [reputation] column.
@@ -885,7 +885,7 @@ abstract class Location implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->timings_json !== '[]') {
+            if ($this->timings !== '') {
                 return false;
             }
 
@@ -943,8 +943,8 @@ abstract class Location implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : LocationTableMap::translateFieldName('PictureUrl', TableMap::TYPE_PHPNAME, $indexType)];
             $this->picture_url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : LocationTableMap::translateFieldName('TimingsJson', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->timings_json = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : LocationTableMap::translateFieldName('Timings', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->timings = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : LocationTableMap::translateFieldName('Reputation', TableMap::TYPE_PHPNAME, $indexType)];
             $this->reputation = (null !== $col) ? (int) $col : null;
@@ -1295,8 +1295,8 @@ abstract class Location implements ActiveRecordInterface
         if ($this->isColumnModified(LocationTableMap::COL_PICTURE_URL)) {
             $modifiedColumns[':p' . $index++]  = 'picture_url';
         }
-        if ($this->isColumnModified(LocationTableMap::COL_TIMINGS_JSON)) {
-            $modifiedColumns[':p' . $index++]  = 'timings_json';
+        if ($this->isColumnModified(LocationTableMap::COL_TIMINGS)) {
+            $modifiedColumns[':p' . $index++]  = 'timings';
         }
         if ($this->isColumnModified(LocationTableMap::COL_REPUTATION)) {
             $modifiedColumns[':p' . $index++]  = 'reputation';
@@ -1342,8 +1342,8 @@ abstract class Location implements ActiveRecordInterface
                     case 'picture_url':
                         $stmt->bindValue($identifier, $this->picture_url, PDO::PARAM_STR);
                         break;
-                    case 'timings_json':
-                        $stmt->bindValue($identifier, $this->timings_json, PDO::PARAM_STR);
+                    case 'timings':
+                        $stmt->bindValue($identifier, $this->timings, PDO::PARAM_STR);
                         break;
                     case 'reputation':
                         $stmt->bindValue($identifier, $this->reputation, PDO::PARAM_INT);
@@ -1441,7 +1441,7 @@ abstract class Location implements ActiveRecordInterface
                 return $this->getPictureUrl();
                 break;
             case 8:
-                return $this->getTimingsJson();
+                return $this->getTimings();
                 break;
             case 9:
                 return $this->getReputation();
@@ -1490,7 +1490,7 @@ abstract class Location implements ActiveRecordInterface
             $keys[5] => $this->getDescription(),
             $keys[6] => $this->getCapacity(),
             $keys[7] => $this->getPictureUrl(),
-            $keys[8] => $this->getTimingsJson(),
+            $keys[8] => $this->getTimings(),
             $keys[9] => $this->getReputation(),
             $keys[10] => $this->getEmail(),
             $keys[11] => $this->getPhone(),
@@ -1665,7 +1665,7 @@ abstract class Location implements ActiveRecordInterface
                 $this->setPictureUrl($value);
                 break;
             case 8:
-                $this->setTimingsJson($value);
+                $this->setTimings($value);
                 break;
             case 9:
                 $this->setReputation($value);
@@ -1727,7 +1727,7 @@ abstract class Location implements ActiveRecordInterface
             $this->setPictureUrl($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setTimingsJson($arr[$keys[8]]);
+            $this->setTimings($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
             $this->setReputation($arr[$keys[9]]);
@@ -1803,8 +1803,8 @@ abstract class Location implements ActiveRecordInterface
         if ($this->isColumnModified(LocationTableMap::COL_PICTURE_URL)) {
             $criteria->add(LocationTableMap::COL_PICTURE_URL, $this->picture_url);
         }
-        if ($this->isColumnModified(LocationTableMap::COL_TIMINGS_JSON)) {
-            $criteria->add(LocationTableMap::COL_TIMINGS_JSON, $this->timings_json);
+        if ($this->isColumnModified(LocationTableMap::COL_TIMINGS)) {
+            $criteria->add(LocationTableMap::COL_TIMINGS, $this->timings);
         }
         if ($this->isColumnModified(LocationTableMap::COL_REPUTATION)) {
             $criteria->add(LocationTableMap::COL_REPUTATION, $this->reputation);
@@ -1908,7 +1908,7 @@ abstract class Location implements ActiveRecordInterface
         $copyObj->setDescription($this->getDescription());
         $copyObj->setCapacity($this->getCapacity());
         $copyObj->setPictureUrl($this->getPictureUrl());
-        $copyObj->setTimingsJson($this->getTimingsJson());
+        $copyObj->setTimings($this->getTimings());
         $copyObj->setReputation($this->getReputation());
         $copyObj->setEmail($this->getEmail());
         $copyObj->setPhone($this->getPhone());
@@ -3155,7 +3155,7 @@ abstract class Location implements ActiveRecordInterface
         $this->description = null;
         $this->capacity = null;
         $this->picture_url = null;
-        $this->timings_json = null;
+        $this->timings = null;
         $this->reputation = null;
         $this->email = null;
         $this->phone = null;

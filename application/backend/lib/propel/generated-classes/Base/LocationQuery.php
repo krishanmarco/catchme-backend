@@ -28,7 +28,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildLocationQuery orderByCapacity($order = Criteria::ASC) Order by the capacity column
  * @method     ChildLocationQuery orderByPictureUrl($order = Criteria::ASC) Order by the picture_url column
- * @method     ChildLocationQuery orderByTimingsJson($order = Criteria::ASC) Order by the timings_json column
+ * @method     ChildLocationQuery orderByTimings($order = Criteria::ASC) Order by the timings column
  * @method     ChildLocationQuery orderByReputation($order = Criteria::ASC) Order by the reputation column
  * @method     ChildLocationQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     ChildLocationQuery orderByPhone($order = Criteria::ASC) Order by the phone column
@@ -41,7 +41,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationQuery groupByDescription() Group by the description column
  * @method     ChildLocationQuery groupByCapacity() Group by the capacity column
  * @method     ChildLocationQuery groupByPictureUrl() Group by the picture_url column
- * @method     ChildLocationQuery groupByTimingsJson() Group by the timings_json column
+ * @method     ChildLocationQuery groupByTimings() Group by the timings column
  * @method     ChildLocationQuery groupByReputation() Group by the reputation column
  * @method     ChildLocationQuery groupByEmail() Group by the email column
  * @method     ChildLocationQuery groupByPhone() Group by the phone column
@@ -137,7 +137,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocation findOneByDescription(string $description) Return the first ChildLocation filtered by the description column
  * @method     ChildLocation findOneByCapacity(int $capacity) Return the first ChildLocation filtered by the capacity column
  * @method     ChildLocation findOneByPictureUrl(string $picture_url) Return the first ChildLocation filtered by the picture_url column
- * @method     ChildLocation findOneByTimingsJson(string $timings_json) Return the first ChildLocation filtered by the timings_json column
+ * @method     ChildLocation findOneByTimings(string $timings) Return the first ChildLocation filtered by the timings column
  * @method     ChildLocation findOneByReputation(int $reputation) Return the first ChildLocation filtered by the reputation column
  * @method     ChildLocation findOneByEmail(string $email) Return the first ChildLocation filtered by the email column
  * @method     ChildLocation findOneByPhone(string $phone) Return the first ChildLocation filtered by the phone column *
@@ -153,7 +153,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocation requireOneByDescription(string $description) Return the first ChildLocation filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocation requireOneByCapacity(int $capacity) Return the first ChildLocation filtered by the capacity column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocation requireOneByPictureUrl(string $picture_url) Return the first ChildLocation filtered by the picture_url column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildLocation requireOneByTimingsJson(string $timings_json) Return the first ChildLocation filtered by the timings_json column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLocation requireOneByTimings(string $timings) Return the first ChildLocation filtered by the timings column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocation requireOneByReputation(int $reputation) Return the first ChildLocation filtered by the reputation column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocation requireOneByEmail(string $email) Return the first ChildLocation filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocation requireOneByPhone(string $phone) Return the first ChildLocation filtered by the phone column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -167,7 +167,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocation[]|ObjectCollection findByDescription(string $description) Return ChildLocation objects filtered by the description column
  * @method     ChildLocation[]|ObjectCollection findByCapacity(int $capacity) Return ChildLocation objects filtered by the capacity column
  * @method     ChildLocation[]|ObjectCollection findByPictureUrl(string $picture_url) Return ChildLocation objects filtered by the picture_url column
- * @method     ChildLocation[]|ObjectCollection findByTimingsJson(string $timings_json) Return ChildLocation objects filtered by the timings_json column
+ * @method     ChildLocation[]|ObjectCollection findByTimings(string $timings) Return ChildLocation objects filtered by the timings column
  * @method     ChildLocation[]|ObjectCollection findByReputation(int $reputation) Return ChildLocation objects filtered by the reputation column
  * @method     ChildLocation[]|ObjectCollection findByEmail(string $email) Return ChildLocation objects filtered by the email column
  * @method     ChildLocation[]|ObjectCollection findByPhone(string $phone) Return ChildLocation objects filtered by the phone column
@@ -269,7 +269,7 @@ abstract class LocationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, admin_id, signup_ts, verified, name, description, capacity, picture_url, timings_json, reputation, email, phone FROM location WHERE id = :p0';
+        $sql = 'SELECT id, admin_id, signup_ts, verified, name, description, capacity, picture_url, timings, reputation, email, phone FROM location WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -628,28 +628,28 @@ abstract class LocationQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the timings_json column
+     * Filter the query on the timings column
      *
      * Example usage:
      * <code>
-     * $query->filterByTimingsJson('fooValue');   // WHERE timings_json = 'fooValue'
-     * $query->filterByTimingsJson('%fooValue%', Criteria::LIKE); // WHERE timings_json LIKE '%fooValue%'
+     * $query->filterByTimings('fooValue');   // WHERE timings = 'fooValue'
+     * $query->filterByTimings('%fooValue%', Criteria::LIKE); // WHERE timings LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $timingsJson The value to use as filter.
+     * @param     string $timings The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildLocationQuery The current query, for fluid interface
      */
-    public function filterByTimingsJson($timingsJson = null, $comparison = null)
+    public function filterByTimings($timings = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($timingsJson)) {
+            if (is_array($timings)) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(LocationTableMap::COL_TIMINGS_JSON, $timingsJson, $comparison);
+        return $this->addUsingAlias(LocationTableMap::COL_TIMINGS, $timings, $comparison);
     }
 
     /**

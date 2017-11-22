@@ -49,9 +49,11 @@ class MiddlewareValidator {
             return SlimOutput::buildAndWrite($response, $errorResult);
         }
 
+        // Get the result from the validator
+        $result = $validator->getResult();
 
         // Input data is valid, add the data to the request
-        $request = SlimAttrGet::putInputData($request, $validator->getResult());
+        $request = SlimAttrGet::putInputData($request, $result);
 
 
         // Continue processing the request

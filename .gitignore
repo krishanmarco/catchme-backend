@@ -12,3 +12,4 @@ composer.phar
 application/backend\.zip
 
 \.idea/workspace\.xml
+/.idea

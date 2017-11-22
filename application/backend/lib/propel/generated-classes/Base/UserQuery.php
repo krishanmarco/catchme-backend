@@ -27,10 +27,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery orderByPassSha256($order = Criteria::ASC) Order by the pass_sha256 column
  * @method     ChildUserQuery orderByPassSalt($order = Criteria::ASC) Order by the pass_salt column
  * @method     ChildUserQuery orderByBan($order = Criteria::ASC) Order by the ban column
- * @method     ChildUserQuery orderByPrivacy($order = Criteria::ASC) Order by the privacy column
  * @method     ChildUserQuery orderBySignupTs($order = Criteria::ASC) Order by the signup_ts column
  * @method     ChildUserQuery orderByGender($order = Criteria::ASC) Order by the gender column
  * @method     ChildUserQuery orderByReputation($order = Criteria::ASC) Order by the reputation column
+ * @method     ChildUserQuery orderBySettingPrivacy($order = Criteria::ASC) Order by the setting_privacy column
+ * @method     ChildUserQuery orderBySettingNotifications($order = Criteria::ASC) Order by the setting_notifications column
  * @method     ChildUserQuery orderByPhone($order = Criteria::ASC) Order by the phone column
  * @method     ChildUserQuery orderByPublicMessage($order = Criteria::ASC) Order by the public_message column
  * @method     ChildUserQuery orderByPictureUrl($order = Criteria::ASC) Order by the picture_url column
@@ -42,10 +43,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery groupByPassSha256() Group by the pass_sha256 column
  * @method     ChildUserQuery groupByPassSalt() Group by the pass_salt column
  * @method     ChildUserQuery groupByBan() Group by the ban column
- * @method     ChildUserQuery groupByPrivacy() Group by the privacy column
  * @method     ChildUserQuery groupBySignupTs() Group by the signup_ts column
  * @method     ChildUserQuery groupByGender() Group by the gender column
  * @method     ChildUserQuery groupByReputation() Group by the reputation column
+ * @method     ChildUserQuery groupBySettingPrivacy() Group by the setting_privacy column
+ * @method     ChildUserQuery groupBySettingNotifications() Group by the setting_notifications column
  * @method     ChildUserQuery groupByPhone() Group by the phone column
  * @method     ChildUserQuery groupByPublicMessage() Group by the public_message column
  * @method     ChildUserQuery groupByPictureUrl() Group by the picture_url column
@@ -160,10 +162,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneByPassSha256(string $pass_sha256) Return the first ChildUser filtered by the pass_sha256 column
  * @method     ChildUser findOneByPassSalt(string $pass_salt) Return the first ChildUser filtered by the pass_salt column
  * @method     ChildUser findOneByBan(boolean $ban) Return the first ChildUser filtered by the ban column
- * @method     ChildUser findOneByPrivacy(string $privacy) Return the first ChildUser filtered by the privacy column
  * @method     ChildUser findOneBySignupTs(int $signup_ts) Return the first ChildUser filtered by the signup_ts column
  * @method     ChildUser findOneByGender(int $gender) Return the first ChildUser filtered by the gender column
  * @method     ChildUser findOneByReputation(int $reputation) Return the first ChildUser filtered by the reputation column
+ * @method     ChildUser findOneBySettingPrivacy(string $setting_privacy) Return the first ChildUser filtered by the setting_privacy column
+ * @method     ChildUser findOneBySettingNotifications(string $setting_notifications) Return the first ChildUser filtered by the setting_notifications column
  * @method     ChildUser findOneByPhone(string $phone) Return the first ChildUser filtered by the phone column
  * @method     ChildUser findOneByPublicMessage(string $public_message) Return the first ChildUser filtered by the public_message column
  * @method     ChildUser findOneByPictureUrl(string $picture_url) Return the first ChildUser filtered by the picture_url column *
@@ -178,10 +181,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser requireOneByPassSha256(string $pass_sha256) Return the first ChildUser filtered by the pass_sha256 column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPassSalt(string $pass_salt) Return the first ChildUser filtered by the pass_salt column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByBan(boolean $ban) Return the first ChildUser filtered by the ban column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByPrivacy(string $privacy) Return the first ChildUser filtered by the privacy column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneBySignupTs(int $signup_ts) Return the first ChildUser filtered by the signup_ts column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByGender(int $gender) Return the first ChildUser filtered by the gender column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByReputation(int $reputation) Return the first ChildUser filtered by the reputation column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneBySettingPrivacy(string $setting_privacy) Return the first ChildUser filtered by the setting_privacy column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneBySettingNotifications(string $setting_notifications) Return the first ChildUser filtered by the setting_notifications column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPhone(string $phone) Return the first ChildUser filtered by the phone column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPublicMessage(string $public_message) Return the first ChildUser filtered by the public_message column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPictureUrl(string $picture_url) Return the first ChildUser filtered by the picture_url column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -194,10 +198,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser[]|ObjectCollection findByPassSha256(string $pass_sha256) Return ChildUser objects filtered by the pass_sha256 column
  * @method     ChildUser[]|ObjectCollection findByPassSalt(string $pass_salt) Return ChildUser objects filtered by the pass_salt column
  * @method     ChildUser[]|ObjectCollection findByBan(boolean $ban) Return ChildUser objects filtered by the ban column
- * @method     ChildUser[]|ObjectCollection findByPrivacy(string $privacy) Return ChildUser objects filtered by the privacy column
  * @method     ChildUser[]|ObjectCollection findBySignupTs(int $signup_ts) Return ChildUser objects filtered by the signup_ts column
  * @method     ChildUser[]|ObjectCollection findByGender(int $gender) Return ChildUser objects filtered by the gender column
  * @method     ChildUser[]|ObjectCollection findByReputation(int $reputation) Return ChildUser objects filtered by the reputation column
+ * @method     ChildUser[]|ObjectCollection findBySettingPrivacy(string $setting_privacy) Return ChildUser objects filtered by the setting_privacy column
+ * @method     ChildUser[]|ObjectCollection findBySettingNotifications(string $setting_notifications) Return ChildUser objects filtered by the setting_notifications column
  * @method     ChildUser[]|ObjectCollection findByPhone(string $phone) Return ChildUser objects filtered by the phone column
  * @method     ChildUser[]|ObjectCollection findByPublicMessage(string $public_message) Return ChildUser objects filtered by the public_message column
  * @method     ChildUser[]|ObjectCollection findByPictureUrl(string $picture_url) Return ChildUser objects filtered by the picture_url column
@@ -299,7 +304,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, email, api_key, pass_sha256, pass_salt, ban, privacy, signup_ts, gender, reputation, phone, public_message, picture_url FROM user WHERE id = :p0';
+        $sql = 'SELECT id, name, email, api_key, pass_sha256, pass_salt, ban, signup_ts, gender, reputation, setting_privacy, setting_notifications, phone, public_message, picture_url FROM user WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -583,31 +588,6 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the privacy column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByPrivacy('fooValue');   // WHERE privacy = 'fooValue'
-     * $query->filterByPrivacy('%fooValue%', Criteria::LIKE); // WHERE privacy LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $privacy The value to use as filter.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByPrivacy($privacy = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($privacy)) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(UserTableMap::COL_PRIVACY, $privacy, $comparison);
-    }
-
-    /**
      * Filter the query on the signup_ts column
      *
      * Example usage:
@@ -728,6 +708,56 @@ abstract class UserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserTableMap::COL_REPUTATION, $reputation, $comparison);
+    }
+
+    /**
+     * Filter the query on the setting_privacy column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterBySettingPrivacy('fooValue');   // WHERE setting_privacy = 'fooValue'
+     * $query->filterBySettingPrivacy('%fooValue%', Criteria::LIKE); // WHERE setting_privacy LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $settingPrivacy The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterBySettingPrivacy($settingPrivacy = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($settingPrivacy)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_SETTING_PRIVACY, $settingPrivacy, $comparison);
+    }
+
+    /**
+     * Filter the query on the setting_notifications column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterBySettingNotifications('fooValue');   // WHERE setting_notifications = 'fooValue'
+     * $query->filterBySettingNotifications('%fooValue%', Criteria::LIKE); // WHERE setting_notifications LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $settingNotifications The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterBySettingNotifications($settingNotifications = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($settingNotifications)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_SETTING_NOTIFICATIONS, $settingNotifications, $comparison);
     }
 
     /**

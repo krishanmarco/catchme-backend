@@ -39,7 +39,8 @@ for ($i = 0; $i < NUMBER_OF_USERS; $i++) {
     $user->setPhone($faker->phoneNumber);
     $user->setEmail($faker->unique()->email);
     $user->setGender($faker->randomElement(gender));
-    $user->setPrivacy($faker->randomElement(privacy));
+    $user->setSettingPrivacy($faker->randomElement(privacy));
+    $user->setSettingNotifications($faker->randomElement(privacy));
     $user->setApiKey('15639419858cff22741882717879297');
     $user->setPassSha256('d701d919533ccae2c7bda1750a005802ef8f67a0464e092b8bbaf31e3a09c1a5');
     $user->setPassSalt('339426');

@@ -134,14 +134,6 @@ abstract class User implements ActiveRecordInterface
     protected $ban;
 
     /**
-     * The value for the privacy field.
-     *
-     * Note: this column has a database default value of: '222'
-     * @var        string
-     */
-    protected $privacy;
-
-    /**
      * The value for the signup_ts field.
      *
      * Note: this column has a database default value of: 1483228800
@@ -164,6 +156,22 @@ abstract class User implements ActiveRecordInterface
      * @var        int
      */
     protected $reputation;
+
+    /**
+     * The value for the setting_privacy field.
+     *
+     * Note: this column has a database default value of: '333'
+     * @var        string
+     */
+    protected $setting_privacy;
+
+    /**
+     * The value for the setting_notifications field.
+     *
+     * Note: this column has a database default value of: '333'
+     * @var        string
+     */
+    protected $setting_notifications;
 
     /**
      * The value for the phone field.
@@ -297,10 +305,11 @@ abstract class User implements ActiveRecordInterface
     public function applyDefaultValues()
     {
         $this->ban = true;
-        $this->privacy = '222';
         $this->signup_ts = 1483228800;
         $this->gender = 0;
         $this->reputation = 0;
+        $this->setting_privacy = '333';
+        $this->setting_notifications = '333';
     }
 
     /**
@@ -611,16 +620,6 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [privacy] column value.
-     *
-     * @return string
-     */
-    public function getPrivacy()
-    {
-        return $this->privacy;
-    }
-
-    /**
      * Get the [signup_ts] column value.
      *
      * @return int
@@ -648,6 +647,26 @@ abstract class User implements ActiveRecordInterface
     public function getReputation()
     {
         return $this->reputation;
+    }
+
+    /**
+     * Get the [setting_privacy] column value.
+     *
+     * @return string
+     */
+    public function getSettingPrivacy()
+    {
+        return $this->setting_privacy;
+    }
+
+    /**
+     * Get the [setting_notifications] column value.
+     *
+     * @return string
+     */
+    public function getSettingNotifications()
+    {
+        return $this->setting_notifications;
     }
 
     /**
@@ -829,26 +848,6 @@ abstract class User implements ActiveRecordInterface
     } // setBan()
 
     /**
-     * Set the value of [privacy] column.
-     *
-     * @param string $v new value
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function setPrivacy($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->privacy !== $v) {
-            $this->privacy = $v;
-            $this->modifiedColumns[UserTableMap::COL_PRIVACY] = true;
-        }
-
-        return $this;
-    } // setPrivacy()
-
-    /**
      * Set the value of [signup_ts] column.
      *
      * @param int $v new value
@@ -907,6 +906,46 @@ abstract class User implements ActiveRecordInterface
 
         return $this;
     } // setReputation()
+
+    /**
+     * Set the value of [setting_privacy] column.
+     *
+     * @param string $v new value
+     * @return $this|\User The current object (for fluent API support)
+     */
+    public function setSettingPrivacy($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->setting_privacy !== $v) {
+            $this->setting_privacy = $v;
+            $this->modifiedColumns[UserTableMap::COL_SETTING_PRIVACY] = true;
+        }
+
+        return $this;
+    } // setSettingPrivacy()
+
+    /**
+     * Set the value of [setting_notifications] column.
+     *
+     * @param string $v new value
+     * @return $this|\User The current object (for fluent API support)
+     */
+    public function setSettingNotifications($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->setting_notifications !== $v) {
+            $this->setting_notifications = $v;
+            $this->modifiedColumns[UserTableMap::COL_SETTING_NOTIFICATIONS] = true;
+        }
+
+        return $this;
+    } // setSettingNotifications()
 
     /**
      * Set the value of [phone] column.
@@ -982,10 +1021,6 @@ abstract class User implements ActiveRecordInterface
                 return false;
             }
 
-            if ($this->privacy !== '222') {
-                return false;
-            }
-
             if ($this->signup_ts !== 1483228800) {
                 return false;
             }
@@ -995,6 +1030,14 @@ abstract class User implements ActiveRecordInterface
             }
 
             if ($this->reputation !== 0) {
+                return false;
+            }
+
+            if ($this->setting_privacy !== '333') {
+                return false;
+            }
+
+            if ($this->setting_notifications !== '333') {
                 return false;
             }
 
@@ -1045,25 +1088,28 @@ abstract class User implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UserTableMap::translateFieldName('Ban', TableMap::TYPE_PHPNAME, $indexType)];
             $this->ban = (null !== $col) ? (boolean) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UserTableMap::translateFieldName('Privacy', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->privacy = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : UserTableMap::translateFieldName('SignupTs', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UserTableMap::translateFieldName('SignupTs', TableMap::TYPE_PHPNAME, $indexType)];
             $this->signup_ts = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : UserTableMap::translateFieldName('Gender', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : UserTableMap::translateFieldName('Gender', TableMap::TYPE_PHPNAME, $indexType)];
             $this->gender = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : UserTableMap::translateFieldName('Reputation', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : UserTableMap::translateFieldName('Reputation', TableMap::TYPE_PHPNAME, $indexType)];
             $this->reputation = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : UserTableMap::translateFieldName('Phone', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : UserTableMap::translateFieldName('SettingPrivacy', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->setting_privacy = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : UserTableMap::translateFieldName('SettingNotifications', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->setting_notifications = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : UserTableMap::translateFieldName('Phone', TableMap::TYPE_PHPNAME, $indexType)];
             $this->phone = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : UserTableMap::translateFieldName('PublicMessage', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : UserTableMap::translateFieldName('PublicMessage', TableMap::TYPE_PHPNAME, $indexType)];
             $this->public_message = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : UserTableMap::translateFieldName('PictureUrl', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : UserTableMap::translateFieldName('PictureUrl', TableMap::TYPE_PHPNAME, $indexType)];
             $this->picture_url = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -1073,7 +1119,7 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 14; // 14 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 15; // 15 = UserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\User'), 0, $e);
@@ -1444,9 +1490,6 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_BAN)) {
             $modifiedColumns[':p' . $index++]  = 'ban';
         }
-        if ($this->isColumnModified(UserTableMap::COL_PRIVACY)) {
-            $modifiedColumns[':p' . $index++]  = 'privacy';
-        }
         if ($this->isColumnModified(UserTableMap::COL_SIGNUP_TS)) {
             $modifiedColumns[':p' . $index++]  = 'signup_ts';
         }
@@ -1455,6 +1498,12 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_REPUTATION)) {
             $modifiedColumns[':p' . $index++]  = 'reputation';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_SETTING_PRIVACY)) {
+            $modifiedColumns[':p' . $index++]  = 'setting_privacy';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_SETTING_NOTIFICATIONS)) {
+            $modifiedColumns[':p' . $index++]  = 'setting_notifications';
         }
         if ($this->isColumnModified(UserTableMap::COL_PHONE)) {
             $modifiedColumns[':p' . $index++]  = 'phone';
@@ -1497,9 +1546,6 @@ abstract class User implements ActiveRecordInterface
                     case 'ban':
                         $stmt->bindValue($identifier, (int) $this->ban, PDO::PARAM_INT);
                         break;
-                    case 'privacy':
-                        $stmt->bindValue($identifier, $this->privacy, PDO::PARAM_STR);
-                        break;
                     case 'signup_ts':
                         $stmt->bindValue($identifier, $this->signup_ts, PDO::PARAM_INT);
                         break;
@@ -1508,6 +1554,12 @@ abstract class User implements ActiveRecordInterface
                         break;
                     case 'reputation':
                         $stmt->bindValue($identifier, $this->reputation, PDO::PARAM_INT);
+                        break;
+                    case 'setting_privacy':
+                        $stmt->bindValue($identifier, $this->setting_privacy, PDO::PARAM_STR);
+                        break;
+                    case 'setting_notifications':
+                        $stmt->bindValue($identifier, $this->setting_notifications, PDO::PARAM_STR);
                         break;
                     case 'phone':
                         $stmt->bindValue($identifier, $this->phone, PDO::PARAM_STR);
@@ -1602,24 +1654,27 @@ abstract class User implements ActiveRecordInterface
                 return $this->getBan();
                 break;
             case 7:
-                return $this->getPrivacy();
-                break;
-            case 8:
                 return $this->getSignupTs();
                 break;
-            case 9:
+            case 8:
                 return $this->getGender();
                 break;
-            case 10:
+            case 9:
                 return $this->getReputation();
                 break;
+            case 10:
+                return $this->getSettingPrivacy();
+                break;
             case 11:
-                return $this->getPhone();
+                return $this->getSettingNotifications();
                 break;
             case 12:
-                return $this->getPublicMessage();
+                return $this->getPhone();
                 break;
             case 13:
+                return $this->getPublicMessage();
+                break;
+            case 14:
                 return $this->getPictureUrl();
                 break;
             default:
@@ -1659,13 +1714,14 @@ abstract class User implements ActiveRecordInterface
             $keys[4] => $this->getPassSha256(),
             $keys[5] => $this->getPassSalt(),
             $keys[6] => $this->getBan(),
-            $keys[7] => $this->getPrivacy(),
-            $keys[8] => $this->getSignupTs(),
-            $keys[9] => $this->getGender(),
-            $keys[10] => $this->getReputation(),
-            $keys[11] => $this->getPhone(),
-            $keys[12] => $this->getPublicMessage(),
-            $keys[13] => $this->getPictureUrl(),
+            $keys[7] => $this->getSignupTs(),
+            $keys[8] => $this->getGender(),
+            $keys[9] => $this->getReputation(),
+            $keys[10] => $this->getSettingPrivacy(),
+            $keys[11] => $this->getSettingNotifications(),
+            $keys[12] => $this->getPhone(),
+            $keys[13] => $this->getPublicMessage(),
+            $keys[14] => $this->getPictureUrl(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1864,24 +1920,27 @@ abstract class User implements ActiveRecordInterface
                 $this->setBan($value);
                 break;
             case 7:
-                $this->setPrivacy($value);
-                break;
-            case 8:
                 $this->setSignupTs($value);
                 break;
-            case 9:
+            case 8:
                 $this->setGender($value);
                 break;
-            case 10:
+            case 9:
                 $this->setReputation($value);
                 break;
+            case 10:
+                $this->setSettingPrivacy($value);
+                break;
             case 11:
-                $this->setPhone($value);
+                $this->setSettingNotifications($value);
                 break;
             case 12:
-                $this->setPublicMessage($value);
+                $this->setPhone($value);
                 break;
             case 13:
+                $this->setPublicMessage($value);
+                break;
+            case 14:
                 $this->setPictureUrl($value);
                 break;
         } // switch()
@@ -1932,25 +1991,28 @@ abstract class User implements ActiveRecordInterface
             $this->setBan($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setPrivacy($arr[$keys[7]]);
+            $this->setSignupTs($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setSignupTs($arr[$keys[8]]);
+            $this->setGender($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setGender($arr[$keys[9]]);
+            $this->setReputation($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setReputation($arr[$keys[10]]);
+            $this->setSettingPrivacy($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setPhone($arr[$keys[11]]);
+            $this->setSettingNotifications($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setPublicMessage($arr[$keys[12]]);
+            $this->setPhone($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setPictureUrl($arr[$keys[13]]);
+            $this->setPublicMessage($arr[$keys[13]]);
+        }
+        if (array_key_exists($keys[14], $arr)) {
+            $this->setPictureUrl($arr[$keys[14]]);
         }
     }
 
@@ -2014,9 +2076,6 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_BAN)) {
             $criteria->add(UserTableMap::COL_BAN, $this->ban);
         }
-        if ($this->isColumnModified(UserTableMap::COL_PRIVACY)) {
-            $criteria->add(UserTableMap::COL_PRIVACY, $this->privacy);
-        }
         if ($this->isColumnModified(UserTableMap::COL_SIGNUP_TS)) {
             $criteria->add(UserTableMap::COL_SIGNUP_TS, $this->signup_ts);
         }
@@ -2025,6 +2084,12 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_REPUTATION)) {
             $criteria->add(UserTableMap::COL_REPUTATION, $this->reputation);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_SETTING_PRIVACY)) {
+            $criteria->add(UserTableMap::COL_SETTING_PRIVACY, $this->setting_privacy);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_SETTING_NOTIFICATIONS)) {
+            $criteria->add(UserTableMap::COL_SETTING_NOTIFICATIONS, $this->setting_notifications);
         }
         if ($this->isColumnModified(UserTableMap::COL_PHONE)) {
             $criteria->add(UserTableMap::COL_PHONE, $this->phone);
@@ -2127,10 +2192,11 @@ abstract class User implements ActiveRecordInterface
         $copyObj->setPassSha256($this->getPassSha256());
         $copyObj->setPassSalt($this->getPassSalt());
         $copyObj->setBan($this->getBan());
-        $copyObj->setPrivacy($this->getPrivacy());
         $copyObj->setSignupTs($this->getSignupTs());
         $copyObj->setGender($this->getGender());
         $copyObj->setReputation($this->getReputation());
+        $copyObj->setSettingPrivacy($this->getSettingPrivacy());
+        $copyObj->setSettingNotifications($this->getSettingNotifications());
         $copyObj->setPhone($this->getPhone());
         $copyObj->setPublicMessage($this->getPublicMessage());
         $copyObj->setPictureUrl($this->getPictureUrl());
@@ -4033,10 +4099,11 @@ abstract class User implements ActiveRecordInterface
         $this->pass_sha256 = null;
         $this->pass_salt = null;
         $this->ban = null;
-        $this->privacy = null;
         $this->signup_ts = null;
         $this->gender = null;
         $this->reputation = null;
+        $this->setting_privacy = null;
+        $this->setting_notifications = null;
         $this->phone = null;
         $this->public_message = null;
         $this->picture_url = null;

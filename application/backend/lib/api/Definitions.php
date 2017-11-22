@@ -75,21 +75,22 @@ class LocationConnections {
 }
 
 class User {
-    public $id =                [                               Rule::ruleId => []];
-    public $name =              [								Rule::ruleMediumString => []];
-    public $email =             [								Rule::ruleEmail => []];
-    public $apiKey =            [];
-    public $ban =               [								Rule::ruleBool => []];
-    public $privacy =           [								Rule::ruleInt => []];
-    public $signupTs =          [								Rule::ruleTimestamp => []];
-    public $gender =            [								Rule::ruleEGender => []];
-    public $reputation =        [								Rule::rulePercentage => []];
-    public $phone =             [								Rule::rulePhone => []];
-    public $publicMessage =     [								Rule::ruleLongString => []];
-    public $pictureUrl =        [								Rule::ruleUrl => []];
-    public $adminLocations =    [                               Rule::ruleArrayOf => [Location::class]];
-    public $locations =         [								Rule::ruleOf => [UserLocations::class]];
-    public $connections =       [								Rule::ruleOf => [UserConnections::class]];
+    public $id =                        [                               Rule::ruleId => []];
+    public $name =                      [								Rule::ruleMediumString => []];
+    public $email =                     [								Rule::ruleEmail => []];
+    public $apiKey =                    [];
+    public $ban =                       [								Rule::ruleBool => []];
+    public $settingPrivacy =            [								Rule::ruleMediumString => []];
+    public $settingNotifications =      [								Rule::ruleMediumString => []];
+    public $signupTs =                  [								Rule::ruleTimestamp => []];
+    public $gender =                    [								Rule::ruleEGender => []];
+    public $reputation =                [								Rule::rulePercentage => []];
+    public $phone =                     [								Rule::rulePhone => []];
+    public $publicMessage =             [								Rule::ruleLongString => []];
+    public $pictureUrl =                [								Rule::ruleUrl => []];
+    public $adminLocations =            [                               Rule::ruleArrayOf => [Location::class]];
+    public $locations =                 [								Rule::ruleOf => [UserLocations::class]];
+    public $connections =               [								Rule::ruleOf => [UserConnections::class]];
 }
 
 class UserLocations {

@@ -141,7 +141,7 @@ class RoutesPrivate {
     const userProfileEdit = RoutesPrivate::class . ':userProfileEdit';
 
     public function userProfileEdit(ServerRequestInterface $request, ResponseInterface $response, $args) {
-        $res = $this->controller->user()->editProfile(new ApiUser());
+        $res = $this->controller->user()->editProfile(SlimAttrGet::getInputData($request));
         return SlimOutput::buildAndWrite($response, $res);
     }
 

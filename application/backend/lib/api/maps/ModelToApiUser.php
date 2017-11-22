@@ -68,7 +68,8 @@ class ModelToApiUser {
     public function withSecureData() {
         $this->apiUser->apiKey = $this->requestedUser->getApiKey();
         $this->apiUser->ban = $this->requestedUser->getBan();
-        $this->apiUser->privacy = $this->requestedUser->getPrivacy();
+        $this->apiUser->settingPrivacy = $this->requestedUser->getSettingPrivacy();
+        $this->apiUser->settingNotifications = $this->requestedUser->getSettingNotifications();
         $this->apiUser->signupTs = $this->requestedUser->getSignupTs();
         return $this;
     }

@@ -36,8 +36,11 @@ class UserEditProfile {
     /** @return UserEditProfile */
     public function userEdit(ApiUser $apiUser) {
 
-        if (isset($apiUser->privacy))
-            $this->user->setPrivacy($apiUser->privacy);
+        if (isset($apiUser->settingPrivacy))
+            $this->user->setSettingPrivacy($apiUser->settingPrivacy);
+
+        if (isset($apiUser->settingNotifications))
+            $this->user->setSettingNotifications($apiUser->settingNotifications);
 
         if (isset($apiUser->phone))
             $this->user->setPhone($apiUser->phone);

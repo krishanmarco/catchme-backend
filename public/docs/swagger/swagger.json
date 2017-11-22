@@ -337,11 +337,16 @@
       "post": {
         "tags": ["User"],
         "consumes": ["multipart/form-data"],
+        "supportHeaderParams": true,
+        "headers": { "Content-Type": "multipart/form-data" },
         "parameters": [
           {"$ref": "#/parameters/token"},
-          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/User"}},
+          {"name": "phone", "in": "formData", "required": false, "type": "string"},
+          {"name": "publicMessage", "in": "formData", "required": false, "type": "string"},
+          {"name": "pictureUrl", "in": "formData", "required": false, "type": "string"},
+          {"name": "settingPrivacy", "in": "formData", "required": false, "type": "string"},
+          {"name": "settingNotifications", "in": "formData", "required": false, "type": "string"},
           {"name": "file", "in": "formData", "required": false, "type": "file"}
-
         ],
         "responses": {
           "401": {},
@@ -484,6 +489,8 @@
       "post": {
         "tags": ["User"],
         "consumes": ["multipart/form-data"],
+        "supportHeaderParams": true,
+        "headers": { "Content-Type": "multipart/form-data" },
         "parameters": [
           {"$ref": "#/parameters/token"},
           {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormLocationRegister"}},
@@ -502,6 +509,8 @@
       "post": {
         "tags": ["User"],
         "consumes": ["multipart/form-data"],
+        "supportHeaderParams": true,
+        "headers": { "Content-Type": "multipart/form-data" },
         "parameters": [
           {"$ref": "#/parameters/token"},
           {"$ref": "#/parameters/lid"},
@@ -677,22 +686,23 @@
     "User": {
       "type": "object",
       "properties": {
-        "id":             {"type": "integer"},
-        "name":           {"type": "string"},
-        "email":          {"type": "string"},
-        "apiKey":         {"type": "string"},
-        "ban":            {"type": "integer"},
-        "privacy":        {"type": "integer"},
-        "signupTs":       {"type": "integer"},
-        "gender":         {"type": "integer"},
-        "reputation":     {"type": "integer"},
-        "phone":          {"type": "string"},
-        "publicMessage":  {"type": "string"},
-        "pictureUrl":     {"type": "string"},
+        "id":                     {"type": "integer"},
+        "name":                   {"type": "string"},
+        "email":                  {"type": "string"},
+        "apiKey":                 {"type": "string"},
+        "ban":                    {"type": "integer"},
+        "signupTs":               {"type": "integer"},
+        "gender":                 {"type": "integer"},
+        "reputation":             {"type": "integer"},
+        "phone":                  {"type": "string"},
+        "publicMessage":          {"type": "string"},
+        "pictureUrl":             {"type": "string"},
+        "settingPrivacy":         {"type": "string"},
+        "settingNotifications":   {"type": "string"},
 
-        "adminLocations": {"type": "array", "items": {"$ref": "#/definitions/Location"}},
-        "locations":      {"$ref": "#/definitions/UserLocations"},
-        "connections":    {"$ref": "#/definitions/UserConnections"}
+        "adminLocations":         {"type": "array", "items": {"$ref": "#/definitions/Location"}},
+        "locations":              {"$ref": "#/definitions/UserLocations"},
+        "connections":            {"$ref": "#/definitions/UserConnections"}
       }
     },
 

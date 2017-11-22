@@ -6,23 +6,25 @@
     <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
 
 
-    <column       name="id"                 type="INTEGER"      required="true"                                     primaryKey="true"     autoIncrement="true" />
-    <column       name="name"               type="VARCHAR"      required="true"                                                                                />
-    <column       name="email"              type="VARCHAR"      required="true"                                                                                />
+    <column       name="id"                         type="INTEGER"      required="true"                                     primaryKey="true"     autoIncrement="true" />
+    <column       name="name"                       type="VARCHAR"      required="true"                                                                                />
+    <column       name="email"                      type="VARCHAR"      required="true"                                                                                />
 
-    <column       name="api_key"            type="VARCHAR"      required="true"       size="32"                                                                />
-    <column       name="pass_sha256"        type="VARCHAR"      required="true"       size="64"                                                                />
-    <column       name="pass_salt"          type="VARCHAR"      required="true"       size="15"                                                                />
-    <column       name="ban"                type="BOOLEAN"      required="true"                   defaultValue="true"                                          />
-    <column       name="privacy"            type="VARCHAR"      required="true"                   defaultValue="333"                                           />
-    <column       name="signup_ts"          type="INTEGER"      required="true"       size="10"   defaultValue="1483228800"                                    />
+    <column       name="api_key"                    type="VARCHAR"      required="true"       size="32"                                                                />
+    <column       name="pass_sha256"                type="VARCHAR"      required="true"       size="64"                                                                />
+    <column       name="pass_salt"                  type="VARCHAR"      required="true"       size="15"                                                                />
+    <column       name="ban"                        type="BOOLEAN"      required="true"                   defaultValue="true"                                          />
+    <column       name="signup_ts"                  type="INTEGER"      required="true"       size="10"   defaultValue="1483228800"                                    />
 
-    <column       name="gender"             type="TINYINT"      required="true"       size="1"    defaultValue="0"                                             />
-    <column       name="reputation"         type="INTEGER"      required="true"                   defaultValue="0"                                             />
+    <column       name="gender"                     type="TINYINT"      required="true"       size="1"    defaultValue="0"                                             />
+    <column       name="reputation"                 type="INTEGER"      required="true"                   defaultValue="0"                                             />
 
-    <column       name="phone"              type="VARCHAR"      required="false"                                                                               />
-    <column       name="public_message"     type="VARCHAR"      required="false"                                                                               />
-    <column       name="picture_url"        type="VARCHAR"      required="false"                                                                               />
+    <column       name="setting_privacy"            type="VARCHAR"      required="true"                   defaultValue="222"                                           />
+    <column       name="setting_notifications"      type="VARCHAR"      required="true"                   defaultValue="11111"                                         />
+
+    <column       name="phone"                      type="VARCHAR"      required="false"                                                                               />
+    <column       name="public_message"             type="VARCHAR"      required="false"                                                                               />
+    <column       name="picture_url"                type="VARCHAR"      required="false"                                                                               />
 
 
     <index>

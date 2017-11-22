@@ -33,7 +33,4 @@ class Location extends BaseLocation {
             ->save($con);
     }
 
-    public function getTimings() {
-        return $this->getTimingsJson();
-    }
 }

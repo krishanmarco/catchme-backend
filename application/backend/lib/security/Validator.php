@@ -75,9 +75,12 @@ class Validator {
         // For each key (field) in $expectedApiDefinition,
         // apply that key to the corresponding item in $data
         foreach ($this->validationParams as $key => $validationArray) {
+            $fieldValue = null;
+            if (array_key_exists($key, $this->inputData))
+                $fieldValue = $this->inputData[$key];
 
             // Validate the field
-            $fieldIsValid = $this->validateField($this->inputData[$key], $validationArray);
+            $fieldIsValid = $this->validateField($fieldValue, $validationArray);
 
             if ($fieldIsValid != self::NO_ERROR) {
                 $this->errors[$key] = $fieldIsValid;
@@ -86,15 +89,13 @@ class Validator {
             }
 
             // The result is valid, get the value
-            $itemValue = $this->inputData[$key];
-
-            if ($removeNulls && $itemValue == null) {
+            if ($removeNulls && $fieldValue == null) {
                 unset($this->validationParams->{$key});
                 continue;
             }
 
             // Overwrite the $validationArray with the inputted data
-            $this->validationParams->{$key} = $itemValue;
+            $this->validationParams->{$key} = $fieldValue;
         }
 
         // Check for any error, if there was an error return

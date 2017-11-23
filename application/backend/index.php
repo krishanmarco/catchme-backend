@@ -34,7 +34,7 @@ $app->getContainer()['errorHandler'] = function ($c) {
  * -----------------------------------------------------------------
  */
 $app->get('/fake', function () {
-    require_once __DIR__ . '/Fake.php';
+    require_once __DIR__ . '/scripts/Fake.php';
 });
 
 

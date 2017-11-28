@@ -1,14 +1,16 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 09/09/2017 - Fithancer © */
-die("FAIL");
+
+if (!array_key_exists('pw', $_GET) || $_GET['pw'] !== 'S()KD2dk290kdLksK()')
+    die("FAIL");
 // Script calls
-// * fake?function=generateFakeUsers
-// * fake?function=generateFakeLocations
-// * fake?function=generateFakeLocationImages
-// * fake?function=generateFakeUserConnections&p1=0&p2=50 ... &p1=4550&p2=5000
-// * fake?function=generateFakeUserFavorites&p1=0&p2=50 ... &p1=4550&p2=5000
-// * fake?function=generateFakeUserLocations&p1=0&p2=50 ... &p1=4550&p2=5000
-// * fake?function=generateFakeUserLocationExpired&p1=0&p2=50 ... &p1=4550&p2=5000
-// * fake?function=update
+// * fake?pw=S()KD2dk290kdLksK()&function=generateFakeUsers
+// * fake?pw=S()KD2dk290kdLksK()&function=generateFakeLocations
+// * fake?pw=S()KD2dk290kdLksK()&function=generateFakeLocationImages
+// * fake?pw=S()KD2dk290kdLksK()&function=generateFakeUserConnections&p1=0&p2=50 ... &p1=4550&p2=5000
+// * fake?pw=S()KD2dk290kdLksK()&function=generateFakeUserFavorites&p1=0&p2=50 ... &p1=4550&p2=5000
+// * fake?pw=S()KD2dk290kdLksK()&function=generateFakeUserLocations&p1=0&p2=50 ... &p1=4550&p2=5000
+// * fake?pw=S()KD2dk290kdLksK()&function=generateFakeUserLocationExpired&p1=0&p2=50 ... &p1=4550&p2=5000
+// * fake?pw=S()KD2dk290kdLksK()&function=update
 
 // Initialize the script
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +99,7 @@ function generateFakeLocations() {
         $location->setAddress($locationAddress);
 
         $timings = '';
-        for ($x = 0; $x < 24; $x++)
+        for ($x = 0; $x < 24 * 7; $x++)
             $timings .= $x % 2 == 0 ? '1' : '0';
         $location->setTimings($timings);
 

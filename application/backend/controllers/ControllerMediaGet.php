@@ -34,8 +34,11 @@ class ControllerMediaGet {
             '{IMAGE_ID}' => $imageId
         ]);
 
-        if (!file_exists($filePath))
-            throw new ApiException(R::return_error_file_not_found);
+        if (!file_exists($filePath)) {
+            // Development
+            return fopen('http://via.placeholder.com/350x150/000000?text=404', 'r');
+            //throw new ApiException(R::return_error_file_not_found);
+        }
 
         // LOCATION_IMAGE_PATH_TEMPLATE
         return fopen($filePath, 'rb');

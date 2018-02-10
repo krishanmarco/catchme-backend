@@ -2,6 +2,7 @@
 
 namespace Controllers;
 use Api\Map\ModelToApiUserLocation;
+use Api\Map\ModelToApiUserLocations;
 use Firebase\FeedManager;
 use Firebase\FeedItems\FeedItemFriendshipRequest;
 use Firebase\FeedItems\FeedItemUserAttendanceRequest;
@@ -139,6 +140,15 @@ class ControllerUser {
 
 
 
+    /** @return ApiUserLocationStatus[] */
+    public function status() {
+        $userLocationStatusList = $this->userModel
+            ->getUserLocationStatusResult()
+            ->getUserLocationStatusList();
+
+        return ModelToApiUserLocations::multiple($userLocationStatusList);
+    }
+
     /**
      * @param ApiUserLocationStatus $apiUserLocationStatus
      * @return ApiUserLocationStatus
@@ -159,7 +169,7 @@ class ControllerUser {
                 $userLocationStatus->getLocation()
             ), $mfm->getNotifiableFriendIds());
 
-        return ModelToApiUserLocation::single($userLocationStatus);
+        return ModelToApiUserLocations::single($userLocationStatus);
     }
 
     /** @return int */

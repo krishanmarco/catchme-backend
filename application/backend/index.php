@@ -29,7 +29,6 @@ $app->getContainer()['errorHandler'] = function ($c) {
 */
 
 
-
 /** Development
  * -----------------------------------------------------------------
  */
@@ -95,6 +94,7 @@ $app->group('', function () use ($app) {
     $app->get('/user/connections/add/{uid:[0-9]+}', RoutesPrivate::userConnectionsAddUid);
     $app->get('/user/connections/accept/{uid:[0-9]+}', RoutesPrivate::userConnectionsAcceptUid);
     $app->get('/user/connections/block/{uid:[0-9]+}', RoutesPrivate::userConnectionsBlockUid);
+    $app->get('/user/status', RoutesPrivate::userStatus);
     $app->get('/user/status/del/{tid:[0-9]+}', RoutesPrivate::userStatusDelTid);
     $app->get('/user/locations/favorites/add/{lid:[0-9]+}', RoutesPrivate::userLocationsFavoritesAddLid);
     $app->get('/user/locations/favorites/del/{lid:[0-9]+}', RoutesPrivate::userLocationsFavoritesDelLid);

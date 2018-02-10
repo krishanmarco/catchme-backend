@@ -183,6 +183,15 @@ class RoutesPrivate {
 
 
 
+    const userStatus = RoutesPrivate::class . ':userStatus';
+
+    public function userStatus(ServerRequestInterface $request, ResponseInterface $response, $args) {
+        $res = $this->controller->user()->status();
+        return SlimOutput::buildAndWrite($response, $res);
+    }
+
+
+
     const userStatusAdd = RoutesPrivate::class . ':userStatusAdd';
 
     public function userStatusAdd(ServerRequestInterface $request, ResponseInterface $response) {

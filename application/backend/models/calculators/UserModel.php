@@ -4,6 +4,8 @@
 namespace Models\Calculators;
 use Models\Calculators\Users\UserAdminLocations;
 use Models\Calculators\Users\UserAdminLocationsResult;
+use Models\Calculators\Users\UserLocationStatus;
+use Models\Calculators\Users\UserLocationStatusResult;
 use Models\Calculators\Users\UserSuggestedLocations;
 use Models\Calculators\Users\UserSuggestedLocationsResult;
 use Models\Calculators\Users\UserConnections;
@@ -121,6 +123,20 @@ class UserModel {
         }
 
         return $this->userSuggestedLocationsResult;
+    }
+
+
+
+    /** @var UserLocationStatusResult $userLocationStatusResult */
+    private $userLocationStatusResult;
+
+    public function getUserLocationStatusResult() {
+        if (is_null($this->userLocationStatusResult)) {
+            $locationStatus = new UserLocationStatus($this);
+            $this->userLocationStatusResult = $locationStatus->execute();
+        }
+
+        return $this->userLocationStatusResult;
     }
 
 

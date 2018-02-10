@@ -421,6 +421,21 @@
     },
 
 
+    "/user/status": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"}
+        ],
+        "responses": {
+          "401": {},
+          "500": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"type": "array", "items": {"$ref": "#/definitions/UserLocationStatus"}}}
+        }
+      }
+    },
+
+
     "/user/status/add": {
       "post": {
         "tags": ["User"],

@@ -94,11 +94,10 @@ class User {
 }
 
 class UserLocations {
-    public $favorites =         [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
-    public $top =               [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
-    public $past =              [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
-    public $now =               [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
-    public $future =            [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
+    public $favorites =             [Rule::ruleIsset => [], 		];
+    public $top =                   [Rule::ruleIsset => [], 		];
+    public $locations =             [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
+    public $userLocationStatuses =  [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [UserLocationStatus::class]];
 }
 
 class UserConnections {

@@ -25,19 +25,21 @@ class UserLocations {
     public function getUser() { return $this->UserModel->getUser(); }
 
 
+    /** @var array(LocationId => Location) $accumulatedLocations */
+    private $accumulatedLocations;
+
 
 
     public function execute() {
         $favoriteLocations = $this->calcFavoriteLocations();
         $topLocations = $this->calcTopLocations();
-        $pastNowFutureLocations = $this->calcPastNowFutureLocations();
+        $userLocationStatuses = $this->calcUserLocationStatuses();
 
         return new UserLocationsResult(
             $favoriteLocations,
             $topLocations,
-            $pastNowFutureLocations[0],
-            $pastNowFutureLocations[1],
-            $pastNowFutureLocations[2]
+            $userLocationStatuses,
+            array_values($this->accumulatedLocations)
         );
     }
 
@@ -51,8 +53,14 @@ class UserLocations {
 
 
         $favoriteLocations = [];
-        foreach ($userFavoriteLocations as $favoriteLocation)
-            array_push($favoriteLocations, $favoriteLocation->getLocation());
+        foreach ($userFavoriteLocations as $loc) {
+            $locationId = $loc->getLocationId();
+
+            if (!array_key_exists($locationId, $this->accumulatedLocations))
+                $this->accumulatedLocations[$locationId] = $loc->getLocation();
+
+            array_push($favoriteLocations, $locationId);
+        }
 
         return $favoriteLocations;
     }
@@ -75,18 +83,22 @@ class UserLocations {
             ->find();
 
         $topLocations = [];
-        foreach ($locations as $loc)
-            array_push($topLocations, $loc->getLocation());
+        foreach ($locations as $loc) {
+            $locationId = $loc->getLocationId();
+
+            if (!array_key_exists($locationId, $this->accumulatedLocations))
+                $this->accumulatedLocations[$locationId] = $loc->getLocation();
+
+            array_push($topLocations, $locationId);
+        }
+
 
         return $topLocations;
     }
 
-
-    private function calcPastNowFutureLocations() {
-        $pastLocation = [];
-        $nowLocation = [];
-        $futureLocation = [];
-
+    // todo: this is also duplicated in the UserLocationStatus calculator...
+    private function calcUserLocationStatuses() {
+        $userLocationStatuses = [];
 
         $userLocations = UserLocationQuery::create()
             ->orderByFromTs(Criteria::ASC)
@@ -94,23 +106,16 @@ class UserLocations {
             ->findByUserId($this->getUser()->getId());
 
 
+        foreach ($userLocations as $userLoc) {
+            $locationId = $userLoc->getLocationId();
 
-        foreach ($userLocations as $userLocation) {
+            if (!array_key_exists($locationId, $this->accumulatedLocations))
+                $this->accumulatedLocations[$locationId] = $userLoc->getLocation();
 
-            if (time() < $userLocation->getFromTs())
-                $futureLocation[] = $userLocation->getLocation();
-
-            else if (time() >= $userLocation->getFromTs() && time() <= $userLocation->getUntilTs())
-                $nowLocation[] = $userLocation->getLocation();
-
-            else if (time() > $userLocation->getUntilTs())
-                $pastLocation[] = $userLocation->getLocation();
-
+            array_push($userLocationStatuses, $userLoc);
         }
 
-
-        return [$pastLocation, $nowLocation, $futureLocation];
-
+        return $userLocationStatuses;
     }
 
 
@@ -121,37 +126,27 @@ class UserLocations {
 
 class UserLocationsResult {
 
-    public function __construct(array $favorites, array $top, array $past, array $now, array $future) {
+    public function __construct(array $favorites, array $top, array $userLocationStatuses, array $locations) {
         $this->favorites = $favorites;
         $this->top = $top;
-        $this->past = $past;
-        $this->now = $now;
-        $this->future = $future;
+        $this->userLocationStatuses = $userLocationStatuses;
+        $this->locations = $locations;
     }
 
-
-
-
-    /* @var Location[] $favorites */
+    /* @var integer[] $favorites */
     private $favorites;
     public function getFavorites() { return $this->favorites; }
 
-    /* @var Location[] $top */
+    /* @var integer[] $top */
     private $top;
     public function getTop() { return $this->top; }
 
-    /* @var Location[] $past */
-    private $past;
-    public function getPast() { return $this->past; }
+    /* @var UserLocationStatus[] $userLocationStatuses */
+    private $userLocationStatuses;
+    public function getUserLocationStatuses() { return $this->userLocationStatuses; }
 
-    /* @var Location[] $now */
-    private $now;
-    public function getNow() { return $this->now; }
-
-    /* @var Location[] $future */
-    private $future;
-    public function getFuture() { return $this->future; }
-
-
+    /** @var Location[] $locations */
+    private $locations;
+    public function getLocations() { return $this->locations; }
 
 }

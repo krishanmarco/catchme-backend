@@ -16,11 +16,6 @@ class ModelToApiLocations {
 
 
 
-    public function __construct() {
-        // No parameters needed
-    }
-
-
 
     public function locations(array $dbLocations) {
         return array_map([$this, 'location'], $dbLocations);

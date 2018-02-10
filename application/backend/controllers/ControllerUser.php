@@ -169,7 +169,8 @@ class ControllerUser {
                 $userLocationStatus->getLocation()
             ), $mfm->getNotifiableFriendIds());
 
-        return ModelToApiUserLocations::single($userLocationStatus);
+        return ModelToApiUserLocations::single($userLocationStatus)
+            ->get();
     }
 
     /** @return int */

@@ -7,37 +7,26 @@ use Api\UserLocationStatus as ApiUserLocationStatus;
 
 class ModelToApiUserLocations {
 
-    /** @return ApiUserLocationStatus */
+    /** @return ModelToApiUserLocation */
     public static function single(DbUserLocationStatus $dbUserLocationStatus) {
-        $mtaul = new ModelToApiUserLocation($dbUserLocationStatus);
-        return $mtaul->get();
+        return new ModelToApiUserLocation($dbUserLocationStatus);
     }
 
-    /** @return ApiUserLocationStatus[] */
-    public static function multiple(array $dbUserLocation) {
-        $mtaul = new ModelToApiUserLocations($dbUserLocation);
-        return $mtaul->get();
+    /** @return ModelToApiUserLocations */
+    public static function multiple() {
+        return new ModelToApiUserLocations();
     }
-
-
-    private function __construct(array $dbuserLocations) {
-        $this->dbUserLocations = $dbuserLocations;
-    }
-
-
-    /** @var DbUserLocationStatus[] $dbUserLocations */
-    private $dbUserLocations;
 
 
     /** @return ApiUserLocationStatus[] */
-    public function get() {
-        return array_map([$this, 'userLocationStatus'], $this->dbUserLocations);
+    public function userLocationStatuses(array $userLocationStatuses) {
+        return array_map([$this, 'userLocationStatus'], $userLocationStatuses);
     }
 
 
     /** @return ApiUserLocationStatus */
-    public function userLocationStatus(DbUserLocationStatus $dbUser) {
-        return ModelToApiUserLocations::single($dbUser);
+    private function userLocationStatus(DbUserLocationStatus $dbUser) {
+        return self::single($dbUser)->get();
     }
 
 }

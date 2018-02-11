@@ -46,11 +46,11 @@ class UserManagerStatus {
 
 
     /** @return int */
-    public function del($timingId) {
+    public function del($tid) {
 
         $userLocation = UserLocationQuery::create()
             ->filterByUserId($this->user->getId())
-            ->findPk($timingId);
+            ->findPk($tid);
 
 
         if (!is_null($userLocation))

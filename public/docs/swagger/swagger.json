@@ -631,6 +631,7 @@
     "UserLocationStatus": {
       "type": "object",
       "properties": {
+        "id":             {"type": "integer"},
         "locationId":     {"type": "integer"},
         "fromTs":         {"type": "integer"},
         "untilTs":        {"type": "integer"}

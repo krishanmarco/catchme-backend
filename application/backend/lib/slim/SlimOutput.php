@@ -67,8 +67,12 @@ class SlimOutput {
 
 
     public function writeToResponse($asJson = true) {
-        if ($asJson)
-            $this->backendResult = json_encode($this->backendResult, JSON_PRETTY_PRINT);
+        if ($asJson) {
+            $this->backendResult = DEVELOPMENT_MODE
+                ? json_encode($this->backendResult, JSON_PRETTY_PRINT)
+                : json_encode($this->backendResult);
+        }
+
 
         // Write the string response to the $response body
         $this->response->getBody()->write($this->backendResult);

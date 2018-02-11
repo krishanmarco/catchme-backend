@@ -107,7 +107,7 @@ class UserConnections {
 }
 
 class UserLocationStatus {
-    public $timingId =          [                               Rule::ruleId => []];
+    public $id =                [                               Rule::ruleId => []];
     public $locationId =        [Rule::ruleIsset => [], 		Rule::ruleId => []];
     public $fromTs =            [Rule::ruleIsset => [], 		Rule::ruleTimestamp => []];
     public $untilTs =           [Rule::ruleIsset => [], 		Rule::ruleTimestamp => []];

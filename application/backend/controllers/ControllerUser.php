@@ -174,9 +174,9 @@ class ControllerUser {
     }
 
     /** @return int */
-    public function statusDel($timingId) {
+    public function statusDel($tid) {
         $manager = new UserManagerStatus($this->authenticatedUser);
-        return $manager->del($timingId);
+        return $manager->del($tid);
     }
 
 

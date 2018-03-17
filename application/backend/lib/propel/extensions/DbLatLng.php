@@ -2,8 +2,8 @@
 
 class DbLatLng {
 
-    public static function fromJson($data) {
-        return new DbLatLng($data['lat'], $data['lng']);
+    public static function fromObject($data) {
+        return new DbLatLng($data->lat, $data->lng);
     }
 
 

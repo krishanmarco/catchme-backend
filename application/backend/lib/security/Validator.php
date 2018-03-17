@@ -95,7 +95,7 @@ class Validator {
             }
 
             // Overwrite the $validationArray with the inputted data
-            $this->validationParams->{$key} = $fieldValue;
+            $this->validationParams->{$key} = deepArrayToObject($fieldValue);
         }
 
         // Check for any error, if there was an error return

@@ -77,3 +77,7 @@ function array_unflatten($collection, $delimiter = '.') {
 
     return $output;
 }
+
+function deepArrayToObject($array) {
+    return json_decode(json_encode($array), false);
+}

@@ -8,6 +8,7 @@ use Slim\Exception\ApiException;
 use User as DbUser;
 use Api\FormLocationRegister as ApiFormLocationRegister;
 use Api\LocationAddress as ApiLocationAddress;
+use DbLatLng;
 use R;
 
 class LocationRegistration {
@@ -42,10 +43,9 @@ class LocationRegistration {
         $dbLocationAddress->setTown($apiLocationAddress->town);
         $dbLocationAddress->setPostcode($apiLocationAddress->postcode);
         $dbLocationAddress->setAddress($apiLocationAddress->address);
-        $dbLocationAddress->setLatLng(\DbLatLng::fromJson($apiLocationAddress->latLng));
+        $dbLocationAddress->setLatLng(DbLatLng::fromObject($apiLocationAddress->latLng));
         $dbLocationAddress->setGooglePlaceId($apiLocationAddress->googlePlaceId);
         $this->location->setAddress($dbLocationAddress);
-
 
         try {
             $this->location->save();

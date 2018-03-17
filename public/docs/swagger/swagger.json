@@ -500,7 +500,7 @@
     },
 
 
-    "/user/locations/administrating/register": {
+    "/user/locations/administrating/edit/-1": {
       "post": {
         "tags": ["User"],
         "consumes": ["multipart/form-data"],

@@ -34,7 +34,8 @@ class MiddlewareValidator {
     public function __invoke($request, $response, $next) {
 
         // Get the input data from the $request
-        $inputData = $request->getParsedBody();
+        // If the input data has been flattened we need to un flatten it
+        $inputData = array_unflatten($request->getParsedBody(), '_');
 
         $validator = new Validator($inputData, $this->apiDefInputClass);
 

@@ -108,7 +108,7 @@ $app->group('', function () use ($app) {
     $app->post('/user/status/add', RoutesPrivate::userStatusAdd)
         ->add(new MiddlewareValidator(Api\UserLocationStatus::class));
 
-    $app->post('/user/locations/administrating/register', RoutesPrivate::userLocationsAdministratingRegister)
+    $app->post('/user/locations/administrating/edit/-1', RoutesPrivate::userLocationsAdministratingRegister)
         ->add(new MiddlewareValidator(Api\FormLocationRegister::class));;
 
     $app->post('/user/locations/administrating/edit/{lid:[0-9]+}', RoutesPrivate::userLocationsAdministratingEditLid)
@@ -117,7 +117,6 @@ $app->group('', function () use ($app) {
     $app->post('/media/add/{typeId:[0-9]+}/{itemId:[0-9]+}', RoutesPrivate::mediaAddTypeIdItemId);
 
 })->add(new MiddlewareUserAuth($app->getContainer()));
-
 
 
 $app->run();

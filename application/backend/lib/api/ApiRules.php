@@ -38,7 +38,7 @@ abstract class ApiRules {
 
     public static function validateIds($fieldValue) {
 
-        if (v::arrayVal()->each(v::intVal()->min(0))->validate($fieldValue))
+        if (!v::arrayVal()->each(v::intVal()->min(0))->validate($fieldValue))
             return R::return_error_generic;
 
         return R::return_ok;
@@ -51,7 +51,7 @@ abstract class ApiRules {
 
     public static function validateBool($fieldValue) {
 
-        if (v::boolVal()->validate($fieldValue))
+        if (!v::boolVal()->validate($fieldValue))
             return R::return_error_generic;
 
         return R::return_ok;
@@ -62,9 +62,9 @@ abstract class ApiRules {
 
     const ruleInt = 'validateInt';
 
-    public static function validateInt($fieldValue, $min, $max) {
+    public static function validateInt($fieldValue, $min = null, $max = null) {
 
-        if (v::intVal()->between($min, $max)->validate($fieldValue))
+        if (!v::intVal()->between($min, $max)->validate($fieldValue))
             return R::return_error_generic;
 
         return R::return_ok;

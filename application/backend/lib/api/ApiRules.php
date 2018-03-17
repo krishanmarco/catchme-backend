@@ -3,6 +3,7 @@
 namespace Api;
 use Respect\Validation\Validator as v;
 use R;
+use Security\Validator;
 
 
 abstract class ApiRules {
@@ -274,7 +275,7 @@ abstract class ApiRules {
 
     public static function validateLatLng($fieldValue) {
 
-        if (!v::json()->validate($fieldValue))
+        if (!v::arrayVal()->validate($fieldValue))
             return R::return_error_generic;
 
         return R::return_ok;

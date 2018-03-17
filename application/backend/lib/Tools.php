@@ -68,9 +68,9 @@ function array_unflatten($collection, $delimiter = '.') {
 
     $output = [];
     foreach ($collection as $key => $value) {
-        array_set($output, $key, $value);
+        array_set($output, $key, $value, $delimiter);
         if (is_array($value) && !strpos($key, $delimiter)) {
-            $nested = array_unflatten($value);
+            $nested = array_unflatten($value, $delimiter);
             $output[$key] = $nested;
         }
     }

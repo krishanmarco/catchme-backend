@@ -55,9 +55,9 @@ class LocationAddress {
     public $country =           [Rule::ruleIsset => [],         Rule::ruleCountry => []];
     public $state =             [Rule::ruleIsset => [],         Rule::ruleCityTownState => []];
     public $city =              [Rule::ruleIsset => [],         Rule::ruleCityTownState => []];
-    public $town =              [Rule::ruleIsset => [],         Rule::ruleCityTownState => []];
     public $postcode =          [Rule::ruleIsset => [],         Rule::rulePostcode => []];
     public $address =           [Rule::ruleIsset => [],         Rule::ruleAddress => []];
+    public $town =              [                               Rule::ruleCityTownState => []];
     public $latLng =            [                               Rule::ruleLatLng => []];
     public $googlePlaceId =     [                               Rule::ruleGooglePlaceId => []];
 }

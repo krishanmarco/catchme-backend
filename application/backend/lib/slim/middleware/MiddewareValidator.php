@@ -35,6 +35,7 @@ class MiddlewareValidator {
 
         // Get the input data from the $request
         // If the input data has been flattened we need to un flatten it
+        // on the client the delimiter is '.' but PHP $_POST transforms it to a '_'
         $inputData = array_unflatten($request->getParsedBody(), '_');
 
         $validator = new Validator($inputData, $this->apiDefInputClass);

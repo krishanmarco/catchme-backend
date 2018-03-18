@@ -22,7 +22,10 @@ class LocationEditProfile {
 
     /** @var DbLocation $location */
     private $location;
-    public function getLocation() { return $this->location; }
+
+    public function getLocation() {
+        return $this->location;
+    }
 
 
     /** @return LocationEditProfile */

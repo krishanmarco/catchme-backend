@@ -109,7 +109,7 @@ class ControllerUser {
 
         $locationController = new ControllerLocations(
             $this->authenticatedUser,
-            $locationEditProfile->getLocation()
+            $locationEditProfile->getLocation()->getId()
         );
 
         return $locationController->get();

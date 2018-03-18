@@ -43,6 +43,9 @@ class LocationEditProfile {
         if (isset($apiLocation->phone))
             $this->location->setPhone($apiLocation->phone);
 
+        if (isset($apiLocation->timings))
+            $this->location->setTimings($apiLocation->timings);
+
         return $this;
     }
 

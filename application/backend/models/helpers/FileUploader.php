@@ -41,7 +41,7 @@ class FileUploader {
 
             $uploadedName = $this->uploadedFile->getClientFilename();
             if (!preg_match('/^.*\.('. $this->allowedExtRegex .')$/i', $uploadedName))
-                throw new ApiException(R::return_error_file_upload_invalid);
+                throw new ApiException(R::return_error_file_upload_failed);
 
         }
 

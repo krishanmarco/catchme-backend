@@ -260,7 +260,7 @@ class RoutesPrivate {
         $uploadedFile = $uploadedFiles['file'];
 
         if ($uploadedFile == null || $uploadedFile->getError() !== UPLOAD_ERR_OK)
-            throw new ApiException(R::return_error_file_upload_invalid);
+            throw new ApiException(R::return_error_file_upload_failed);
 
         $res = $this->controller->media()->addBasedOnType(
             $args['typeId'],

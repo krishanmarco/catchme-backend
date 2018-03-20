@@ -13,7 +13,7 @@ class PasswordManager {
 
         // check if user exists
         if (is_null($user))
-            return R::return_error_email_not_found;
+            return R::return_error_user_not_found;
 
         // User exists, send recovery email
 

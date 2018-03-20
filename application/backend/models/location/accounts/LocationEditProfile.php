@@ -15,7 +15,7 @@ class LocationEditProfile {
         $this->location = LocationQuery::create()->findPk($locationId);
 
         if ($user->getId() != $this->location->getAdminId())
-            throw new ApiException(R::return_error_location_edit_not_allowed);
+            throw new ApiException(R::return_error_not_allowed);
 
     }
 

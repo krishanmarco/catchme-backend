@@ -38,7 +38,7 @@ class UserLogin {
 
         } catch (ApiException $e) {
 
-            if ($e->getCode() == R::return_error_email_not_found) {
+            if ($e->getCode() == R::return_error_user_not_found) {
                 // This user doesn't exist, use the token to sign up
                 $this->user = UserRegistration::withGoogle($googleToken);
                 return;
@@ -67,7 +67,7 @@ class UserLogin {
 
         } catch (ApiException $e) {
 
-            if ($e->getCode() == R::return_error_email_not_found) {
+            if ($e->getCode() == R::return_error_user_not_found) {
                 // This user doesn't exist, use the token to sign up
                 $this->user = UserRegistration::withFacebook($facebookToken);
                 return;

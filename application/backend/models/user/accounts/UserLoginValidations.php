@@ -38,7 +38,7 @@ class UserLoginValidations {
 
     private function checkExists() {
         if (is_null($this->user))
-            throw new ApiException(R::return_error_email_not_found);
+            throw new ApiException(R::return_error_user_not_found);
     }
 
     private function checkBanned() {

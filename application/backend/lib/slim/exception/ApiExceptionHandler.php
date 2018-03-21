@@ -29,7 +29,7 @@ class ApiExceptionHandler {
         $response = $response->withStatus($exception->getHttpCode());
 
         // Write the exception as a json and return the response
-        $response->getBody()->write(json_encode($exception));
+        $response->getBody()->write(json_encode($apiExceptionResponse));
         return $response;
     }
 

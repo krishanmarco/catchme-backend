@@ -7,13 +7,13 @@ use R;
 
 class Api400 extends Exception implements IApiException {
 
-    public function __construct($code = R::return_error_generic, $apiResponse = null, $previous = null) {
+    public function __construct($code = R::return_error_generic, $errors = null, $previous = null) {
         parent::__construct(basename($this->getFile(), '.php') . " {$this->getLine()}", $code, $previous);
-        $this->apiResponse = $apiResponse;
+        $this->errors = $errors;
     }
 
-    /** @var Object $apiResponse */
-    private $apiResponse;
+    /** @var Object $errors */
+    private $errors;
 
 
     public function getHttpCode() {
@@ -24,7 +24,7 @@ class Api400 extends Exception implements IApiException {
         $localException = new ApiExceptionResponse();
         $localException->errorCode = $this->getCode();
         $localException->logMessage = $this->getMessage();
-        $localException->errors = $this->apiResponse;
+        $localException->errors = $this->errors;
         return $localException;
     }
 

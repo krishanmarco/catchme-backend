@@ -125,7 +125,7 @@ abstract class ApiRules {
 
     const ruleMediumString = 'validateMediumString';
 
-    public static function validateMediumString($fieldValue, $min = 3, $max = 70) {
+    public static function validateMediumString($fieldValue, $min = 3, $max = 100) {
 
         if (!v::stringType()->validate($fieldValue))
             return R::return_error_field_invalid;

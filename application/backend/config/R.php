@@ -16,10 +16,12 @@ class R {
     const return_error_field_invalid = -10;
     const return_error_field_not_set = -11;
     const return_error_field_length = -12;
-    const return_error_field_phone = -13;
-    const return_error_field_email = -14;
-    const return_error_field_url = -15;
-    const return_error_field_country = -16;
+    const return_error_field_length_short = -13;
+    const return_error_field_length_long = -14;
+    const return_error_field_phone = -15;
+    const return_error_field_email = -16;
+    const return_error_field_url = -17;
+    const return_error_field_country = -18;
 
 
 }

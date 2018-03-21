@@ -24,7 +24,7 @@ class Api400 extends Exception implements IApiException {
         $localException = new ApiExceptionResponse();
         $localException->errorCode = $this->getCode();
         $localException->logMessage = $this->getMessage();
-        $localException->apiResponse = $this->apiResponse;
+        $localException->errors = $this->apiResponse;
         return $localException;
     }
 

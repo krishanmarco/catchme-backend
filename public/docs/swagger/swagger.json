@@ -750,7 +750,7 @@
       "properties": {
         "errorCode":      {"type": "integer"},
         "logMessage":     {"type": "string"},
-        "apiResponse":    {"type": "string"}
+        "errors":         {"type": "string"}
       }
     }
 

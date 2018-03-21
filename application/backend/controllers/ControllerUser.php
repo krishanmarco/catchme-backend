@@ -14,7 +14,7 @@ use Models\User\Accounts\UserManagerConnections;
 use Models\User\Accounts\UserEditProfile;
 use Models\User\Accounts\UserManagerLocations;
 use Models\User\Accounts\UserManagerStatus;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api500;
 use User as DbUser;
 use UserAuthJWT;
 use Api\Map\ModelToApiUsers;
@@ -152,7 +152,7 @@ class ControllerUser {
     /**
      * @param ApiUserLocationStatus $apiUserLocationStatus
      * @return ApiUserLocationStatus
-     * @throws ApiException
+     * @throws Api500
      */
     public function statusAdd(ApiUserLocationStatus $apiUserLocationStatus) {
         $manager = new UserManagerStatus($this->authenticatedUser);

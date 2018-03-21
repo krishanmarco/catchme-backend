@@ -1,6 +1,6 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Catch Me 1.0 © */
 
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 
 class FacebookTokenValidator {
 
@@ -23,10 +23,10 @@ class FacebookTokenValidator {
 
         // Error and authenticity checking
         if($this->debugToken->hasError() || $this->userDataToken->hasError())
-            throw new ApiException(R::return_error_invalid_social_token);
+            throw new Api400(R::return_error_invalid_social_token);
 
         if (!$this->debugToken->isTokenAuthentic() || !$this->userDataToken->isTokenAuthentic())
-            throw new ApiException(R::return_error_invalid_social_token);
+            throw new Api400(R::return_error_invalid_social_token);
     }
 
 

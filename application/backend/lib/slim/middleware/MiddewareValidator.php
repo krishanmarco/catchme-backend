@@ -2,8 +2,10 @@
 
 namespace Slim\Middleware;
 use Security\Validator;
+use Slim\Exception\Api400;
 use Slim\SlimAttrGet;
 use Slim\SlimOutput;
+use R;
 
 
 class MiddlewareValidator {
@@ -48,7 +50,7 @@ class MiddlewareValidator {
             if (!is_null($this->apiDefOutputClass))
                 $errorResult = array_merge((array) new $this->apiDefOutputClass, $errorResult);
 
-            return SlimOutput::buildAndWrite($response, $errorResult);
+            throw new Api400(R::return_error_form, $errorResult);
         }
 
         // Get the result from the validator

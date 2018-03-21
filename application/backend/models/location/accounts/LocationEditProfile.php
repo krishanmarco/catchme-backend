@@ -3,7 +3,7 @@
 namespace Models\Location\Accounts;
 use LocationQuery;
 use Location as DbLocation;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use User as DbUser;
 use Api\Location as ApiLocation;
 use R;
@@ -15,7 +15,7 @@ class LocationEditProfile {
         $this->location = LocationQuery::create()->findPk($locationId);
 
         if ($user->getId() != $this->location->getAdminId())
-            throw new ApiException(R::return_error_not_allowed);
+            throw new Api400(R::return_error_not_allowed);
 
     }
 

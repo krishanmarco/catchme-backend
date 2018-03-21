@@ -4,7 +4,8 @@ namespace Models\Location\Accounts;
 use Propel\Runtime\Exception\PropelException as PropelException;
 use Location as DbLocation;
 use LocationAddress as DbLocationAddress;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
+use Slim\Exception\Api500;
 use User as DbUser;
 use Api\FormLocationRegister as ApiFormLocationRegister;
 use Api\LocationAddress as ApiLocationAddress;
@@ -53,7 +54,7 @@ class LocationRegistration {
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
                 // duplicate entry, email already exists
-                default: throw new ApiException(R::return_error_email_taken);
+                default: throw new Api400(R::return_error_email_taken);
             }
         }
     }

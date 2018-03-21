@@ -5,7 +5,7 @@ use Location;
 use LocationImage;
 use LocationQuery as LocationQuery;
 use Propel\Runtime\Exception\PropelException;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use R;
 
 class LocationImagesModel {
@@ -49,7 +49,7 @@ class LocationImagesModel {
 
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
-                default: throw new ApiException(R::return_error_generic);
+                default: throw new Api400(R::return_error_generic);
             }
         }
 

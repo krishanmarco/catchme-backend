@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use EMediaType;
 use R;
 
@@ -15,7 +15,7 @@ class ControllerMediaGet {
                 return $this->getLocationImage($itemId, $imageId);
         }
 
-        throw new ApiException(R::return_error_generic);
+        throw new Api400(R::return_error_generic);
     }
 
 
@@ -24,7 +24,7 @@ class ControllerMediaGet {
      * @param $locationId
      * @param $imageId
      * @return resource
-     * @throws ApiException
+     * @throws Api400
      */
     private function getLocationImage($locationId, $imageId) {
 
@@ -37,7 +37,7 @@ class ControllerMediaGet {
         if (!file_exists($filePath)) {
             // Development
             return fopen('http://via.placeholder.com/350x150/000000?text=404', 'r');
-            //throw new ApiException(R::return_error_file_not_found);
+            //throw new Api400(R::return_error_file_not_found);
         }
 
         // LOCATION_IMAGE_PATH_TEMPLATE

@@ -3,7 +3,7 @@
 namespace Models\User\Accounts;
 use Api\UserLocationStatus;
 use Propel\Runtime\Exception\PropelException;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use User;
 use UserLocation;
 use UserLocationQuery;
@@ -36,7 +36,7 @@ class UserManagerStatus {
 
         } catch (PropelException $e) {
             switch ($e->getCode()) {
-                default: throw new ApiException(R::return_error_generic, $e);
+                default: throw new Api400(R::return_error_generic, $e);
             }
         }
 

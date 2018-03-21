@@ -1,7 +1,7 @@
 <?php
 
 namespace Models\User\Accounts;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api500;
 use User as DbUser;
 use GoogleTokenValidator;
 use FacebookTokenValidator;
@@ -36,7 +36,7 @@ class UserLogin {
         try {
             $uv->checkExistsAndBanned();
 
-        } catch (ApiException $e) {
+        } catch (Api500 $e) {
 
             if ($e->getCode() == R::return_error_user_not_found) {
                 // This user doesn't exist, use the token to sign up
@@ -65,7 +65,7 @@ class UserLogin {
         try {
             $uv->checkExistsAndBanned();
 
-        } catch (ApiException $e) {
+        } catch (Api500 $e) {
 
             if ($e->getCode() == R::return_error_user_not_found) {
                 // This user doesn't exist, use the token to sign up

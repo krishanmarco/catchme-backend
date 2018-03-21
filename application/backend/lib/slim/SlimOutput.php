@@ -48,7 +48,7 @@ class SlimOutput {
 
     private function handleError() {
 
-        // Check for an ApiException, if there is no error, do nothing
+        // Check for an Api500, if there is no error, do nothing
         if (!is_object($this->backendResult) || get_class($this->backendResult) != ExceptionResponse::class)
             return $this;
 

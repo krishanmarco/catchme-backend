@@ -22,11 +22,11 @@ require_once __DIR__ . '/lib/propel/generated-conf/config.php';
 $app = new \Slim\App([
     'settings' => ['displayErrorDetails' => true]
 ]);
-/*
+
 $app->getContainer()['errorHandler'] = function ($c) {
     return new ApiExceptionHandler();
 };
-*/
+
 
 
 /** Development

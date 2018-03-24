@@ -88,10 +88,10 @@ class ControllerUser {
 
 
     /** @return ApiLocation */
-    public function locationsAdministratingRegister(ApiFormLocationRegister $form) {
+    public function locationsAdministratingRegister(ApiFormLocationRegister $form, $uploadedFile = null) {
         $locationRegistration = new LocationRegistration($this->authenticatedUser);
 
-        $locationRegistration->register($form);
+        $locationRegistration->register($form, $uploadedFile);
 
         $locationController = new ControllerLocations(
             $this->authenticatedUser,
@@ -103,9 +103,9 @@ class ControllerUser {
 
 
     /** @return ApiLocation */
-    public function locationsAdministratingEditLid(ApiLocation $apiLocation, $locationId) {
+    public function locationsAdministratingEditLid(ApiLocation $apiLocation, $locationId, $uploadedFile = null) {
         $locationEditProfile = new LocationEditProfile($this->authenticatedUser, $locationId);
-        $locationEditProfile->userEdit($apiLocation)->save();
+        $locationEditProfile->userEdit($apiLocation, $uploadedFile)->save();
 
         $locationController = new ControllerLocations(
             $this->authenticatedUser,

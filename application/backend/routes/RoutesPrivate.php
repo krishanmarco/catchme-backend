@@ -231,8 +231,17 @@ class RoutesPrivate {
     const userLocationsAdministratingRegister = RoutesPrivate::class . ':userLocationsAdministratingRegister';
 
     public function userLocationsAdministratingRegister(ServerRequestInterface $request, ResponseInterface $response) {
+        $uploadedFiles = $request->getUploadedFiles();
+
+        /** @var UploadedFile $uploadedFile */
+        $uploadedFile = $uploadedFiles['pictureUrl'];
+
+        if ($uploadedFile != null && $uploadedFile->getError() !== UPLOAD_ERR_OK)
+            $uploadedFiles = null;
+
         $opCode = $this->controller->user()->locationsAdministratingRegister(
-            SlimAttrGet::getInputData($request)
+            SlimAttrGet::getInputData($request),
+            $uploadedFile
         );
         return SlimOutput::buildAndWrite($response, $opCode);
     }
@@ -242,9 +251,18 @@ class RoutesPrivate {
     const userLocationsAdministratingEditLid = RoutesPrivate::class . ':userLocationsAdministratingEditLid';
 
     public function userLocationsAdministratingEditLid(ServerRequestInterface $request, ResponseInterface $response, $args) {
+        $uploadedFiles = $request->getUploadedFiles();
+
+        /** @var UploadedFile $uploadedFile */
+        $uploadedFile = $uploadedFiles['pictureUrl'];
+
+        if ($uploadedFile != null && $uploadedFile->getError() !== UPLOAD_ERR_OK)
+            $uploadedFiles = null;
+
         $res = $this->controller->user()->locationsAdministratingEditLid(
             SlimAttrGet::getInputData($request),
-            $args['lid']
+            $args['lid'],
+            $uploadedFile
         );
         return SlimOutput::buildAndWrite($response, $res);
     }

@@ -6,6 +6,7 @@ use Location as DbLocation;
 use LocationAddress as DbLocationAddress;
 use Slim\Exception\Api400;
 use Slim\Exception\Api500;
+use Slim\Http\UploadedFile;
 use User as DbUser;
 use Api\FormLocationRegister as ApiFormLocationRegister;
 use Api\LocationAddress as ApiLocationAddress;
@@ -24,9 +25,9 @@ class LocationRegistration {
     public function getLocation() { return $this->location; }
 
 
+s
 
-
-    public function register(ApiFormLocationRegister $formLocationRegister) {
+    public function register(ApiFormLocationRegister $formLocationRegister, $uploadedFile = null) {
         $this->location->setName($formLocationRegister->name);
         $this->location->setDescription($formLocationRegister->description);
         $this->location->setEmail($formLocationRegister->email);
@@ -34,6 +35,10 @@ class LocationRegistration {
         $this->location->setPhone($formLocationRegister->phone);
         $this->location->setTimings($formLocationRegister->timings);
         $this->location->setSignupTs(time());
+
+        if ($uploadedFile instanceof  UploadedFile) {
+            $this->location->trySetAvatarFromFile($uploadedFile);
+        }
 
         /** @var ApiLocationAddress $apiLocationAddress */
         $dbLocationAddress = new DbLocationAddress();

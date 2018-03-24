@@ -7,7 +7,6 @@ use Location;
 use LocationImage;
 
 final class FeedItemFriendAddedImage extends FeedItemBuilder {
-    const _LOCATION_IMAGE_TTL = LOCATION_IMAGE_TTL;
 
     public function __construct(User $currentUser,
                                 Location $location,
@@ -27,7 +26,7 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
 
 
     public function setExpiry() {
-        return $this->getTime() + self::_LOCATION_IMAGE_TTL;
+        return $this->getTime() + LOCATION_MEDIA_TTL;
     }
 
     public function setConsumeOnView() {

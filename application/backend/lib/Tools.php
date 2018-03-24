@@ -8,7 +8,8 @@ function prettyVarDumpReturn($o) { return highlight_string("<?php.php\n\$data =\
 
 function getRandomString($inMin, $inMax) { return str_replace('.', '', substr(uniqid(mt_rand(), true), -rand($inMin, $inMax))); }
 function setOnlyIfNotSet($value, $setTo) { return isset($value) ? $value : $setTo; }
-
+function uniqueName() { return bin2hex(random_bytes(12)); }
+function filehash($filepath) { return hash_file('crc32b', $filepath); }
 
 function ifKeyExists($key, $array, $default = null) {
     if (array_key_exists($key, $array))

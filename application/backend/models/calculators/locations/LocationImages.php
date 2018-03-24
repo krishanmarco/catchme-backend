@@ -9,9 +9,6 @@ use LocationImageQuery as LocationImageQuery;
 
 
 class LocationImages {
-    const _LOCATION_IMAGE_TTL = LOCATION_IMAGE_TTL;
-
-
 
     public function __construct(LocationModel $LocationModel) {
         $this->LocationModel = $LocationModel;
@@ -32,7 +29,7 @@ class LocationImages {
 
 
 
-    private $imageTTLSeconds = self::_LOCATION_IMAGE_TTL;
+    private $imageTTLSeconds = LOCATION_MEDIA_TTL;
     public function overrideValiditySeconds($seconds) {
         $this->imageTTLSeconds = $seconds;
         return $this;

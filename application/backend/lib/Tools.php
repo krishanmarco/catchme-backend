@@ -45,3 +45,39 @@ function clearObject($object) {
     }
     return $object;
 }
+
+function array_set(&$array, $key, $value, $delimiter = '.') {
+    if (is_null($key))
+        return $array = $value;
+
+    $keys = explode($delimiter, $key);
+    while (count($keys) > 1) {
+        $key = array_shift($keys);
+        if (!isset($array[$key]) || !is_array($array[$key]))
+            $array[$key] = array();
+
+        $array =& $array[$key];
+    }
+
+    $array[array_shift($keys)] = $value;
+    return $array;
+}
+
+function array_unflatten($collection, $delimiter = '.') {
+    $collection = (array) $collection;
+
+    $output = [];
+    foreach ($collection as $key => $value) {
+        array_set($output, $key, $value, $delimiter);
+        if (is_array($value) && !strpos($key, $delimiter)) {
+            $nested = array_unflatten($value, $delimiter);
+            $output[$key] = $nested;
+        }
+    }
+
+    return $output;
+}
+
+function deepArrayToObject($array) {
+    return json_decode(json_encode($array), false);
+}

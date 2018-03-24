@@ -1,7 +1,7 @@
 <?php
 
 namespace Models\User\Accounts;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use UserQuery;
 use User as DbUser;
 use R;
@@ -38,12 +38,12 @@ class UserLoginValidations {
 
     private function checkExists() {
         if (is_null($this->user))
-            throw new ApiException(R::return_error_email_not_found);
+            throw new Api400(R::return_error_user_not_found);
     }
 
     private function checkBanned() {
         if ($this->user->isBan())
-            throw new ApiException(R::return_error_user_banned);
+            throw new Api400(R::return_error_user_banned);
     }
 
     private function checkPassword($password) {
@@ -51,7 +51,7 @@ class UserLoginValidations {
         $databasePassword = $this->user->getPassSha256();
 
         if ($inputPassword != $databasePassword)
-            throw new ApiException(R::return_error_incorrect_password);
+            throw new Api400(R::return_error_incorrect_password);
     }
 
 }

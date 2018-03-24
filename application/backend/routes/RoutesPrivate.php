@@ -6,7 +6,7 @@ use \Psr\Container\ContainerInterface;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use Routes\Accessors\ControllerAccessorAuth;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use Slim\Http\UploadedFile;
 use Slim\SlimAttrGet;
 use Slim\SlimOutput;
@@ -183,6 +183,15 @@ class RoutesPrivate {
 
 
 
+    const userStatus = RoutesPrivate::class . ':userStatus';
+
+    public function userStatus(ServerRequestInterface $request, ResponseInterface $response, $args) {
+        $res = $this->controller->user()->status();
+        return SlimOutput::buildAndWrite($response, $res);
+    }
+
+
+
     const userStatusAdd = RoutesPrivate::class . ':userStatusAdd';
 
     public function userStatusAdd(ServerRequestInterface $request, ResponseInterface $response) {
@@ -251,7 +260,7 @@ class RoutesPrivate {
         $uploadedFile = $uploadedFiles['file'];
 
         if ($uploadedFile == null || $uploadedFile->getError() !== UPLOAD_ERR_OK)
-            throw new ApiException(R::return_error_file_upload_invalid);
+            throw new Api400(R::return_error_file_upload_failed);
 
         $res = $this->controller->media()->addBasedOnType(
             $args['typeId'],

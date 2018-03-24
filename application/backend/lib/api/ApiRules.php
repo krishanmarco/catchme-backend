@@ -3,6 +3,8 @@
 namespace Api;
 use Respect\Validation\Validator as v;
 use R;
+use EGender;
+use Security\Validator;
 
 
 abstract class ApiRules {
@@ -13,7 +15,7 @@ abstract class ApiRules {
     public static function validateIsset($fieldValue) {
 
         if (!v::notOptional()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_not_set;
 
         return R::return_ok;
     }
@@ -26,7 +28,7 @@ abstract class ApiRules {
     public static function validateId($fieldValue) {
 
         if (!(v::intVal()->min(0)->validate($fieldValue)))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -38,8 +40,8 @@ abstract class ApiRules {
 
     public static function validateIds($fieldValue) {
 
-        if (v::arrayVal()->each(v::intVal()->min(0))->validate($fieldValue))
-            return R::return_error_generic;
+        if (!v::arrayVal()->each(v::intVal()->min(0))->validate($fieldValue))
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -51,8 +53,8 @@ abstract class ApiRules {
 
     public static function validateBool($fieldValue) {
 
-        if (v::boolVal()->validate($fieldValue))
-            return R::return_error_generic;
+        if (!v::boolVal()->validate($fieldValue))
+            return R::return_error_field_invalid;
 
         return R::return_ok;
     }
@@ -62,10 +64,10 @@ abstract class ApiRules {
 
     const ruleInt = 'validateInt';
 
-    public static function validateInt($fieldValue, $min, $max) {
+    public static function validateInt($fieldValue, $min = null, $max = null) {
 
-        if (v::intVal()->between($min, $max)->validate($fieldValue))
-            return R::return_error_generic;
+        if (!v::intVal()->between($min, $max)->validate($fieldValue))
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -87,7 +89,7 @@ abstract class ApiRules {
     public static function validatePhone($fieldValue) {
 
         if (!v::phone()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_phone;
 
         return R::return_ok;
     }
@@ -100,7 +102,7 @@ abstract class ApiRules {
     public static function validateEmail($fieldValue) {
 
         if (!v::email()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_email;
 
         return R::return_ok;
     }
@@ -113,7 +115,7 @@ abstract class ApiRules {
     public static function validateEmails($fieldValue) {
 
         if (!v::arrayVal()->each(v::email())->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_email;
 
         return R::return_ok;
     }
@@ -123,13 +125,13 @@ abstract class ApiRules {
 
     const ruleMediumString = 'validateMediumString';
 
-    public static function validateMediumString($fieldValue, $min = 3, $max = 70) {
+    public static function validateMediumString($fieldValue, $min = 3, $max = 100) {
 
         if (!v::stringType()->validate($fieldValue))
-            return false;
+            return R::return_error_field_invalid;
 
         if (!v::length($min, $max)->validate($fieldValue)) {
-            return false;
+            return R::return_error_field_length;
         }
 
         return R::return_ok;
@@ -143,10 +145,10 @@ abstract class ApiRules {
     public static function validateLongString($fieldValue, $min = 3, $max = 1000) {
 
         if (!v::stringType()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_invalid;
 
         if (!v::length($min, $max)->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -154,12 +156,12 @@ abstract class ApiRules {
 
 
 
-    const rulePassword = 'validatePasword';
+    const rulePassword = 'validatePassword';
 
-    public static function validatePasword($fieldValue, $min = 6, $max = 30) {
+    public static function validatePassword($fieldValue, $min = 6, $max = 30) {
 
         if (!v::length($min, $max)->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -172,10 +174,10 @@ abstract class ApiRules {
     public static function validateTimestamp($fieldValue) {
 
         if (!v::intVal()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_invalid;
 
         if (!v::length(10, 10)->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -188,7 +190,7 @@ abstract class ApiRules {
     public static function validateUrl($fieldValue) {
 
         if (!v::url()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_url;
 
         return R::return_ok;
     }
@@ -201,7 +203,7 @@ abstract class ApiRules {
     public static function validateUrls($fieldValue) {
 
         if (!v::arrayVal()->each(v::url())->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_url;
 
         return R::return_ok;
     }
@@ -214,7 +216,7 @@ abstract class ApiRules {
     public static function validateCountry($fieldValue) {
 
         if (!v::countryCode()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_country;
 
         return R::return_ok;
     }
@@ -227,10 +229,10 @@ abstract class ApiRules {
     public static function validateCityTownState($fieldValue, $min = 3, $max = 255) {
 
         if (!v::stringType()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_invalid;
 
         if (!v::length($min, $max)->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -243,10 +245,10 @@ abstract class ApiRules {
     public static function validatePostcode($fieldValue, $min = 0, $max = 255) {
 
         if (!v::stringType()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_invalid;
 
         if (!v::length($min, $max)->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -259,10 +261,10 @@ abstract class ApiRules {
     public static function validateAddress($fieldValue, $min = 3, $max = 255) {
 
         if (!v::stringType()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_invalid;
 
         if (!v::length($min, $max)->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -274,8 +276,8 @@ abstract class ApiRules {
 
     public static function validateLatLng($fieldValue) {
 
-        if (!v::json()->validate($fieldValue))
-            return R::return_error_generic;
+        if (!v::arrayVal()->validate($fieldValue))
+            return R::return_error_field_invalid;
 
         return R::return_ok;
     }
@@ -288,10 +290,10 @@ abstract class ApiRules {
     public static function validateGooglePlaceId($fieldValue) {
 
         if (!v::alnum()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_invalid;
 
         if (!v::length(3, 255)->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -304,10 +306,10 @@ abstract class ApiRules {
     public static function validateSocialUserId($fieldValue) {
 
         if (!v::alnum()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_invalid;
 
         if (!v::length(3, 255)->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -320,10 +322,10 @@ abstract class ApiRules {
     public static function validateTokenPasswordReset($fieldValue) {
 
         if (!v::alnum()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_invalid;
 
         if (!v::length(32, 32)->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_length;
 
         return R::return_ok;
     }
@@ -336,7 +338,7 @@ abstract class ApiRules {
     public static function validateArrayOf($fieldValue, $type) {
 
         if (!v::arrayVal()->validate($fieldValue))
-            return R::return_error_generic;
+            return R::return_error_field_invalid;
 
         // All items must pass validation
         $anyFailed = false;
@@ -380,8 +382,8 @@ abstract class ApiRules {
     const ruleEGender = 'validateEGender';
 
     public static function validateEGender($fieldValue,
-                                            $first = EGender::female,
-                                            $last = EGender::unknown) {
+                                           $first = EGender::FEMALE,
+                                           $last = EGender::UNKNOWN) {
         return self::validateInt($fieldValue, $first, $last);
     }
 
@@ -391,8 +393,8 @@ abstract class ApiRules {
     const ruleESystemTempVar = 'validateESystemTempVar';
 
     public static function validateESystemTempVar($fieldValue,
-                                                   $first = ESystemTempVar::passwordRecovery,
-                                                   $last = ESystemTempVar::passwordRecovery) {
+                                                  $first = ESystemTempVar::passwordRecovery,
+                                                  $last = ESystemTempVar::passwordRecovery) {
         return self::validateInt($fieldValue, $first, $last);
     }
 

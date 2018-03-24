@@ -2,8 +2,10 @@
 
 namespace Slim\Middleware;
 use Security\Validator;
+use Slim\Exception\Api400;
 use Slim\SlimAttrGet;
 use Slim\SlimOutput;
+use R;
 
 
 class MiddlewareValidator {
@@ -34,7 +36,9 @@ class MiddlewareValidator {
     public function __invoke($request, $response, $next) {
 
         // Get the input data from the $request
-        $inputData = $request->getParsedBody();
+        // If the input data has been flattened we need to un flatten it
+        // on the client the delimiter is '.' but PHP $_POST transforms it to a '_'
+        $inputData = array_unflatten($request->getParsedBody(), '_');
 
         $validator = new Validator($inputData, $this->apiDefInputClass);
 
@@ -46,7 +50,7 @@ class MiddlewareValidator {
             if (!is_null($this->apiDefOutputClass))
                 $errorResult = array_merge((array) new $this->apiDefOutputClass, $errorResult);
 
-            return SlimOutput::buildAndWrite($response, $errorResult);
+            throw new Api400(R::return_error_form, $errorResult);
         }
 
         // Get the result from the validator

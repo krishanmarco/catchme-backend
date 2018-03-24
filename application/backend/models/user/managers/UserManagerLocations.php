@@ -2,7 +2,7 @@
 
 namespace Models\User\Accounts;
 use Propel\Runtime\Exception\PropelException;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use UserLocationFavoriteQuery;
 use UserLocationFavorite;
 use User;
@@ -32,7 +32,7 @@ class UserManagerLocations {
 
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
-                default: throw new ApiException(R::return_error_generic);
+                default: throw new Api400(R::return_error_generic);
             }
         }
     }

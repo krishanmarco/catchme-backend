@@ -1,7 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer 1.0 © */
 
 use Slim\Http\UploadedFile;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 
 // Helper for uploading files
 // --------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ class FileUploader {
 
             $uploadedName = $this->uploadedFile->getClientFilename();
             if (!preg_match('/^.*\.('. $this->allowedExtRegex .')$/i', $uploadedName))
-                throw new ApiException(R::return_error_file_upload_invalid);
+                throw new Api400(R::return_error_file_upload_failed);
 
         }
 
@@ -53,7 +53,7 @@ class FileUploader {
         $fullpath = "{$destinationPath}/{$destinationName}";
 
         try { $this->uploadedFile->moveTo($fullpath); }
-        catch (Exception $e) { throw new ApiException(R::return_error_file_upload_failed, $e); }
+        catch (Exception $e) { throw new Api400(R::return_error_file_upload_failed, $e); }
 
 
         // The upload is success, chmod to
@@ -63,7 +63,7 @@ class FileUploader {
             // If chmod fails, delete the
             // file and return an error
             unlink($fullpath);
-            throw new ApiException(R::return_error_file_upload_failed);
+            throw new Api400(R::return_error_file_upload_failed);
         }
     }
 

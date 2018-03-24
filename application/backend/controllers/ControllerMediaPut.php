@@ -10,7 +10,7 @@ use Firebase\FeedManager;
 use Firebase\FeedItems\FeedItemFriendAddedImage;
 use Firebase\FeedItems\FeedItemUserAttendanceRequest;
 use FileUploader;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use Slim\Http\UploadedFile;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use User as DbUser;
@@ -34,7 +34,7 @@ class ControllerMediaPut {
                 return $this->putLocationImage($itemId, $uploadedFile);
         }
 
-        throw new ApiException(R::return_error_generic);
+        throw new Api400(R::return_error_generic);
     }
 
 
@@ -55,7 +55,7 @@ class ControllerMediaPut {
                 ->allowImages()
                 ->saveUpload($savePath, $locationImage->getId());
 
-        } catch (ApiException $apiException) {
+        } catch (Api400 $apiException) {
             // Delete the database entry because the file upload failed
             $locationImage->delete();
             throw $apiException;

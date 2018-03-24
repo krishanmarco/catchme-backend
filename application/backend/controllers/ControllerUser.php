@@ -2,6 +2,7 @@
 
 namespace Controllers;
 use Api\Map\ModelToApiUserLocation;
+use Api\Map\ModelToApiUserLocations;
 use Firebase\FeedManager;
 use Firebase\FeedItems\FeedItemFriendshipRequest;
 use Firebase\FeedItems\FeedItemUserAttendanceRequest;
@@ -13,7 +14,7 @@ use Models\User\Accounts\UserManagerConnections;
 use Models\User\Accounts\UserEditProfile;
 use Models\User\Accounts\UserManagerLocations;
 use Models\User\Accounts\UserManagerStatus;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api500;
 use User as DbUser;
 use UserAuthJWT;
 use Api\Map\ModelToApiUsers;
@@ -108,7 +109,7 @@ class ControllerUser {
 
         $locationController = new ControllerLocations(
             $this->authenticatedUser,
-            $locationEditProfile->getLocation()
+            $locationEditProfile->getLocation()->getId()
         );
 
         return $locationController->get();
@@ -139,10 +140,19 @@ class ControllerUser {
 
 
 
+    /** @return ApiUserLocationStatus[] */
+    public function status() {
+        $userLocationStatusList = $this->userModel
+            ->getUserLocationStatusResult()
+            ->getUserLocationStatusList();
+
+        return ModelToApiUserLocations::multiple($userLocationStatusList);
+    }
+
     /**
      * @param ApiUserLocationStatus $apiUserLocationStatus
      * @return ApiUserLocationStatus
-     * @throws ApiException
+     * @throws Api500
      */
     public function statusAdd(ApiUserLocationStatus $apiUserLocationStatus) {
         $manager = new UserManagerStatus($this->authenticatedUser);
@@ -159,13 +169,14 @@ class ControllerUser {
                 $userLocationStatus->getLocation()
             ), $mfm->getNotifiableFriendIds());
 
-        return ModelToApiUserLocation::single($userLocationStatus);
+        return ModelToApiUserLocations::single($userLocationStatus)
+            ->get();
     }
 
     /** @return int */
-    public function statusDel($timingId) {
+    public function statusDel($tid) {
         $manager = new UserManagerStatus($this->authenticatedUser);
-        return $manager->del($timingId);
+        return $manager->del($tid);
     }
 
 

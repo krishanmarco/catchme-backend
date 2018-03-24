@@ -4,7 +4,7 @@ namespace Models\User\Accounts;
 
 use Models\Queries\User\UserQueriesWrapper;
 use Propel\Runtime\Exception\PropelException;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use UserConnection;
 use UserConnectionQuery;
 use User;
@@ -36,7 +36,7 @@ class UserManagerConnections {
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
                 default:
-                    throw new ApiException(R::return_error_generic, $exception);
+                    throw new Api400(R::return_error_generic, $exception);
             }
         }
     }

@@ -22,11 +22,10 @@ require_once __DIR__ . '/lib/propel/generated-conf/config.php';
 $app = new \Slim\App([
     'settings' => ['displayErrorDetails' => true]
 ]);
-/*
+
 $app->getContainer()['errorHandler'] = function ($c) {
     return new ApiExceptionHandler();
 };
-*/
 
 
 
@@ -95,6 +94,7 @@ $app->group('', function () use ($app) {
     $app->get('/user/connections/add/{uid:[0-9]+}', RoutesPrivate::userConnectionsAddUid);
     $app->get('/user/connections/accept/{uid:[0-9]+}', RoutesPrivate::userConnectionsAcceptUid);
     $app->get('/user/connections/block/{uid:[0-9]+}', RoutesPrivate::userConnectionsBlockUid);
+    $app->get('/user/status', RoutesPrivate::userStatus);
     $app->get('/user/status/del/{tid:[0-9]+}', RoutesPrivate::userStatusDelTid);
     $app->get('/user/locations/favorites/add/{lid:[0-9]+}', RoutesPrivate::userLocationsFavoritesAddLid);
     $app->get('/user/locations/favorites/del/{lid:[0-9]+}', RoutesPrivate::userLocationsFavoritesDelLid);
@@ -108,7 +108,7 @@ $app->group('', function () use ($app) {
     $app->post('/user/status/add', RoutesPrivate::userStatusAdd)
         ->add(new MiddlewareValidator(Api\UserLocationStatus::class));
 
-    $app->post('/user/locations/administrating/register', RoutesPrivate::userLocationsAdministratingRegister)
+    $app->post('/user/locations/administrating/edit/-1', RoutesPrivate::userLocationsAdministratingRegister)
         ->add(new MiddlewareValidator(Api\FormLocationRegister::class));;
 
     $app->post('/user/locations/administrating/edit/{lid:[0-9]+}', RoutesPrivate::userLocationsAdministratingEditLid)
@@ -117,7 +117,6 @@ $app->group('', function () use ($app) {
     $app->post('/media/add/{typeId:[0-9]+}/{itemId:[0-9]+}', RoutesPrivate::mediaAddTypeIdItemId);
 
 })->add(new MiddlewareUserAuth($app->getContainer()));
-
 
 
 $app->run();

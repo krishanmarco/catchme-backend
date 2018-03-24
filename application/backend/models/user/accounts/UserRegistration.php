@@ -2,7 +2,7 @@
 
 namespace Models\User\Accounts;
 use \Propel\Runtime\Exception\PropelException;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
 use User as DbUser;
 use R;
 use FacebookToken;
@@ -104,7 +104,7 @@ class UserRegistration {
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
                 // duplicate entry, email already exists
-                default: throw new ApiException(R::return_error_email_taken);
+                default: throw new Api400(R::return_error_email_taken);
             }
         }
     }

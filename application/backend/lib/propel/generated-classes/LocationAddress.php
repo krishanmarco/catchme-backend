@@ -21,7 +21,7 @@ class LocationAddress extends BaseLocationAddress {
 
     /** @return DbLatLng */
     public function getLatLng() {
-        return DbLatLng::fromJson(json_decode($this->getLatLngJson(), true));
+        return DbLatLng::fromObject(json_decode($this->getLatLngJson()));
     }
 
 }

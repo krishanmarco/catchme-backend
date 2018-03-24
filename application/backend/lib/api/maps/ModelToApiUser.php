@@ -8,6 +8,7 @@ use Models\Calculators\Users\UserAdminLocationsResult;
 use Models\Calculators\Users\UserConnectionsResult;
 use Models\Calculators\Users\UserLocationsResult;
 use Location as DbLocation;
+use Models\Calculators\Users\UserLocationStatusResult;
 use User as DbUser;
 use Api\User as ApiUser;
 
@@ -20,6 +21,7 @@ class ModelToApiUser {
         $this->apiUser = clearObject(new ApiUser());
         $this->modelToApiLocations = ModelToApiLocations::multiple();
         $this->modelToApiUsers = ModelToApiUsers::multiple();
+        $this->modelToApiUserLocationStatuses = ModelToApiUserLocations::multiple();
         $this->withBasicParameters();
     }
 
@@ -33,6 +35,8 @@ class ModelToApiUser {
     /** @var ModelToApiUsers $modelToApiUsers */
     private $modelToApiUsers;
 
+    /** @var ModelToApiUserLocations $modelToApiUserLocationStatuses */
+    private $modelToApiUserLocationStatuses;
 
 
     /** @var ApiUser */
@@ -130,22 +134,17 @@ class ModelToApiUser {
     public function withLocations(UserLocationsResult $userLocations) {
         $apiUserLocations = new UserLocations();
 
-        $apiUserLocations->favorites = $this->modelToApiLocations
-            ->locations($userLocations->getFavorites());
+        $apiUserLocations->favorites = $userLocations->getFavorites();
+        $apiUserLocations->top = $userLocations->getTop();
 
-        $apiUserLocations->top = $this->modelToApiLocations
-            ->locations($userLocations->getTop());
+        $apiUserLocations->userLocationStatuses = $this->modelToApiUserLocationStatuses
+            ->userLocationStatuses($userLocations->getUserLocationStatuses());
 
-        $apiUserLocations->past = $this->modelToApiLocations
-            ->locations($userLocations->getPast());
-
-        $apiUserLocations->now = $this->modelToApiLocations
-            ->locations($userLocations->getNow());
-
-        $apiUserLocations->future = $this->modelToApiLocations
-            ->locations($userLocations->getFuture());
+        $apiUserLocations->locations = $this->modelToApiLocations
+            ->locations($userLocations->getLocations());
 
         $this->apiUser->locations = $apiUserLocations;
+
         return $this;
     }
 

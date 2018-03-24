@@ -20,11 +20,11 @@ class FormUserRegister {
 
 class FormLocationRegister {
     public $name =              [Rule::ruleIsset => [],         Rule::ruleMediumString => []];
-    public $description =       [Rule::ruleIsset => [],         Rule::ruleLongString => []];
+    public $description =       [];
     public $email =             [Rule::ruleIsset => [],         Rule::ruleEmail => []];
     public $capacity =          [Rule::ruleIsset => [],         Rule::ruleInt => []];
     public $phone =             [Rule::ruleIsset => [],         Rule::rulePhone => []];
-    public $address =           [Rule::ruleIsset => [],         Rule::ruleArrayOf => [LocationAddress::class]];
+    public $address =           [Rule::ruleIsset => [],         Rule::ruleOf => [LocationAddress::class]];
     public $timings =           [Rule::ruleIsset => [],         Rule::ruleLongString => [168, 168]];
 }
 
@@ -47,18 +47,18 @@ class Location {
     public $timings =           [                               Rule::ruleLongString => [168, 168]];
     public $imageUrls =         [            					Rule::ruleUrls => []];
     public $people =            [            					Rule::ruleOf => [LocationPeople::class]];
-    public $address =           [			            		Rule::ruleArrayOf => [LocationAddress::class]];
-    public $connections =       [            					Rule::ruleArrayOf => [LocationConnections::class]];
+    public $address =           [			            		Rule::ruleOf => [LocationAddress::class]];
+    public $connections =       [            					Rule::ruleOf => [LocationConnections::class]];
 }
 
 class LocationAddress {
     public $country =           [Rule::ruleIsset => [],         Rule::ruleCountry => []];
     public $state =             [Rule::ruleIsset => [],         Rule::ruleCityTownState => []];
     public $city =              [Rule::ruleIsset => [],         Rule::ruleCityTownState => []];
-    public $town =              [Rule::ruleIsset => [],         Rule::ruleCityTownState => []];
     public $postcode =          [Rule::ruleIsset => [],         Rule::rulePostcode => []];
     public $address =           [Rule::ruleIsset => [],         Rule::ruleAddress => []];
-    public $latLng =            [Rule::ruleIsset => [],         Rule::ruleLatLng => []];
+    public $town =              [                               Rule::ruleCityTownState => []];
+    public $latLng =            [                               Rule::ruleLatLng => []];
     public $googlePlaceId =     [                               Rule::ruleGooglePlaceId => []];
 }
 
@@ -94,11 +94,10 @@ class User {
 }
 
 class UserLocations {
-    public $favorites =         [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
-    public $top =               [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
-    public $past =              [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
-    public $now =               [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
-    public $future =            [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
+    public $favorites =             [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
+    public $top =                   [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
+    public $locations =             [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [Location::class]];
+    public $userLocationStatuses =  [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [UserLocationStatus::class]];
 }
 
 class UserConnections {
@@ -108,7 +107,7 @@ class UserConnections {
 }
 
 class UserLocationStatus {
-    public $timingId =          [                               Rule::ruleId => []];
+    public $id =                [                               Rule::ruleId => []];
     public $locationId =        [Rule::ruleIsset => [], 		Rule::ruleId => []];
     public $fromTs =            [Rule::ruleIsset => [], 		Rule::ruleTimestamp => []];
     public $untilTs =           [Rule::ruleIsset => [], 		Rule::ruleTimestamp => []];
@@ -117,6 +116,7 @@ class UserLocationStatus {
 class ExceptionResponse {
     public $errorCode =         [Rule::ruleIsset => [], 		Rule::ruleInt => []];
     public $logMessage =        [Rule::ruleIsset => [], 		Rule::ruleLongString => []];
+    public $errors =            [];
 }
 
 

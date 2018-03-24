@@ -14,12 +14,6 @@ use Models\Calculators\Locations\LocationImagesResult;
 
 class ModelToApiUserLocation {
 
-    public static function single(DbUserLocation $dbUserLocation) {
-        $mtaul = new ModelToApiUserLocation($dbUserLocation);
-        return $mtaul->get();
-    }
-
-
     public function __construct(DbUserLocation $dbUserLocation) {
         $this->dbUserLocation = $dbUserLocation;
         $this->apiUserLocationStatus = clearObject(new ApiUserLocationStatus());
@@ -39,7 +33,7 @@ class ModelToApiUserLocation {
 
     /** @return ModelToApiUserLocation */
     private function withBasicParameters() {
-        $this->apiUserLocationStatus->timingId = $this->dbUserLocation->getId();
+        $this->apiUserLocationStatus->id = $this->dbUserLocation->getId();
         $this->apiUserLocationStatus->locationId = $this->dbUserLocation->getLocationId();
         $this->apiUserLocationStatus->fromTs = $this->dbUserLocation->getFromTs();
         $this->apiUserLocationStatus->untilTs = $this->dbUserLocation->getUntilTs();

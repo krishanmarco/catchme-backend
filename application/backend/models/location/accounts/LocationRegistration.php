@@ -4,10 +4,12 @@ namespace Models\Location\Accounts;
 use Propel\Runtime\Exception\PropelException as PropelException;
 use Location as DbLocation;
 use LocationAddress as DbLocationAddress;
-use Slim\Exception\ApiException;
+use Slim\Exception\Api400;
+use Slim\Exception\Api500;
 use User as DbUser;
 use Api\FormLocationRegister as ApiFormLocationRegister;
 use Api\LocationAddress as ApiLocationAddress;
+use DbLatLng;
 use R;
 
 class LocationRegistration {
@@ -30,7 +32,8 @@ class LocationRegistration {
         $this->location->setEmail($formLocationRegister->email);
         $this->location->setCapacity($formLocationRegister->capacity);
         $this->location->setPhone($formLocationRegister->phone);
-        $this->location->setTimingsJson($formLocationRegister->timings);
+        $this->location->setTimings($formLocationRegister->timings);
+        $this->location->setSignupTs(time());
 
         /** @var ApiLocationAddress $apiLocationAddress */
         $dbLocationAddress = new DbLocationAddress();
@@ -41,10 +44,9 @@ class LocationRegistration {
         $dbLocationAddress->setTown($apiLocationAddress->town);
         $dbLocationAddress->setPostcode($apiLocationAddress->postcode);
         $dbLocationAddress->setAddress($apiLocationAddress->address);
-        $dbLocationAddress->setLatLng(\DbLatLng::fromJson($apiLocationAddress->latLng));
+        $dbLocationAddress->setLatLng(DbLatLng::fromObject($apiLocationAddress->latLng));
         $dbLocationAddress->setGooglePlaceId($apiLocationAddress->googlePlaceId);
         $this->location->setAddress($dbLocationAddress);
-
 
         try {
             $this->location->save();
@@ -52,7 +54,7 @@ class LocationRegistration {
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
                 // duplicate entry, email already exists
-                default: throw new ApiException(R::return_error_email_taken);
+                default: throw new Api400(R::return_error_email_taken);
             }
         }
     }

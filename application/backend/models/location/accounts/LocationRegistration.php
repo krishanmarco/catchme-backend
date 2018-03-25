@@ -25,7 +25,7 @@ class LocationRegistration {
     public function getLocation() { return $this->location; }
 
 
-s
+
 
     public function register(ApiFormLocationRegister $formLocationRegister, $uploadedFile = null) {
         $this->location->setName($formLocationRegister->name);

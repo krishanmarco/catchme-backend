@@ -4,8 +4,10 @@ namespace Models\Location\Accounts;
 use LocationQuery;
 use Location as DbLocation;
 use Slim\Exception\Api400;
+use Slim\Http\UploadedFile;
 use User as DbUser;
 use Api\Location as ApiLocation;
+use FileUploader;
 use R;
 
 
@@ -29,7 +31,7 @@ class LocationEditProfile {
 
 
     /** @return LocationEditProfile */
-    public function userEdit(ApiLocation $apiLocation) {
+    public function userEdit(ApiLocation $apiLocation, $uploadedFile = null) {
 
         if (isset($apiLocation->description))
             $this->location->setDescription($apiLocation->description);
@@ -48,6 +50,10 @@ class LocationEditProfile {
 
         if (isset($apiLocation->timings))
             $this->location->setTimings($apiLocation->timings);
+
+        if ($uploadedFile instanceof UploadedFile) {
+            $this->location->trySetAvatarFromFile($uploadedFile);
+        }
 
         return $this;
     }

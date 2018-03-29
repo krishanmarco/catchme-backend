@@ -7,7 +7,6 @@ use EMediaType;
 use R;
 
 class ControllerMediaGet {
-    const _LOCATION_IMAGE_PATH_TEMPLATE = LOCATION_IMAGE_PATH_TEMPLATE;
 
     public function getBasedOnType($typeId, $itemId, $imageId) {
         switch ($typeId) {
@@ -29,7 +28,7 @@ class ControllerMediaGet {
     private function getLocationImage($locationId, $imageId) {
 
         // There is no need to query the database
-        $filePath = strtr(self::_LOCATION_IMAGE_PATH_TEMPLATE, [
+        $filePath = strtr(LOCATION_MEDIA_TPL, [
             '{LID}' => $locationId,
             '{IMAGE_ID}' => $imageId
         ]);

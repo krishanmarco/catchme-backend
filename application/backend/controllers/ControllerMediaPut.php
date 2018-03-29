@@ -18,7 +18,6 @@ use EMediaType;
 use R;
 
 class ControllerMediaPut {
-    const _LOCATION_IMAGE_DIR_PATH_TEMPLATE = LOCATION_IMAGE_DIR_PATH_TEMPLATE;
 
     public function __construct(DbUser $authenticatedUser) {
         $this->authenticatedUser = $authenticatedUser;
@@ -47,12 +46,11 @@ class ControllerMediaPut {
 
         try {
 
-            $savePath = strtr(self::_LOCATION_IMAGE_DIR_PATH_TEMPLATE, [
+            $savePath = strtr(LOCATION_MEDIA_DIR_TPL, [
                 '{LID}' => $locationImage->getLocationId()
             ]);
 
-            FileUploader::build($uploadedFile)
-                ->allowImages()
+            FileUploader::build($uploadedFile)  // todo add hash column to database images and use saveUploadUnique
                 ->saveUpload($savePath, $locationImage->getId());
 
         } catch (Api400 $apiException) {

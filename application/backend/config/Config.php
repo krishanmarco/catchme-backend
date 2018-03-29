@@ -90,12 +90,18 @@ define("FACEBOOK_CLIENT_APPLICATION_NAME", 'Catchme');
 
 
 define("__APPLICATION__", __DIR__ . '/../../../../applications/catchme');
-define("__MEDIA__", __DIR__ . '/../../data/images');
+define("__PRIVATE_DATA_", __DIR__ . '/../../data');
+define("__PUBLIC_DATA__", __DIR__ . '/../../../../public_html/catchme.top/data');
 
 
 
 // Location constants
-define('LOCATION_IMAGE_DIR_PATH_TEMPLATE', __MEDIA__ . '/locations/{LID}');
-define('LOCATION_IMAGE_PATH_TEMPLATE', LOCATION_IMAGE_DIR_PATH_TEMPLATE . '/{IMAGE_ID}');
-define('LOCATION_IMAGE_TTL', 2 * 60 * 60);
+define('LOCATION_MEDIA_DIR_TPL', __PRIVATE_DATA_ . '/locations/{LID}/media');
+define('LOCATION_MEDIA_TPL', LOCATION_MEDIA_DIR_TPL . '/{IMAGE_ID}');
+define('LOCATION_MEDIA_TTL', 2 * 60 * 60);
+
+
+define('LOCATION_AVATAR_DIR_TPL', __PUBLIC_DATA__ . '/locations/{LID}/avatar');
+define('LOCATION_AVATAR_TPL', LOCATION_AVATAR_DIR_TPL . '/{UNIQUE_NAME}');
+define('LOCATION_AVATAR_URL_TPL', SERVER_URL . '/data/locations/{LID}/avatar/{UNIQUE_NAME}');
 

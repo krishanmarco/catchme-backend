@@ -1,6 +1,7 @@
 <?php
 
 use Base\Location as BaseLocation;
+use \Slim\Exception\Api400;
 
 /**
  * Skeleton subclass for representing a row from the 'location' table.
@@ -31,6 +32,30 @@ class Location extends BaseLocation {
         parent::postUpdate($con);
         SearchLocation::prepareForLocation($this, SearchLocationQuery::create()->findPk($this->getId()))
             ->save($con);
+    }
+
+
+    public function trySetAvatarFromFile(\Slim\Http\UploadedFile $uploadedFile) {
+        try {
+            // Create the file path
+            $savePath = strtr(LOCATION_AVATAR_DIR_TPL, [
+                '{LID}' => $this->getId()
+            ]);
+
+            // Try save the file with its hash as name (no duplicates)
+            $uniqueName = FileUploader::build($uploadedFile)
+                ->saveUploadByHash($savePath);
+
+            // Save success, write to $location object
+            $this->setPictureUrl(strtr(LOCATION_AVATAR_URL_TPL, [
+                '{LID}' => $this->getId(),
+                '{UNIQUE_NAME}' => $uniqueName
+            ]));
+
+        } catch (Api400 $exception) {
+            // Not a critical error, continue
+            // the profile avatar will not be updated
+        }
     }
 
 }

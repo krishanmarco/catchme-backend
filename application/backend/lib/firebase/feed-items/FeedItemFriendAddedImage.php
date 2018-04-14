@@ -14,6 +14,7 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
         parent::__construct();
         $this->currentUser = $currentUser;
         $this->location = $location;
+        $this->locationImage = $locationImage;
     }
 
 

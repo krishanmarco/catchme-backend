@@ -88,7 +88,7 @@ class FileUploader {
         }
 
 
-        // Make sure the folder path esists
+        // Make sure the folder path exists
         if (!is_dir($destinationPath))
             mkdir($destinationPath, 0777, true);
 

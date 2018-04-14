@@ -19,6 +19,7 @@ define("DB_USER", "krisaxcv_chm_app");
 // Development
 define("DB_PASS", "w.kc5M!Q&J}f");
 
+define("AUTH_TOKEN_TIME_TO_LIVE_SECONDS", 24 * 60 * 60);
 
 define(
 
@@ -98,7 +99,9 @@ define("__PUBLIC_DATA__", __DIR__ . '/../../../../public_html/catchme.top/data')
 // Location constants
 define('LOCATION_MEDIA_DIR_TPL', __PRIVATE_DATA_ . '/locations/{LID}/media');
 define('LOCATION_MEDIA_TPL', LOCATION_MEDIA_DIR_TPL . '/{IMAGE_ID}');
-define('LOCATION_MEDIA_TTL', 2 * 60 * 60);
+define('LOCATION_MEDIA_TTL', 24 * 60 * 60);
+define('LOCATION_MEDIA_APPLY_TTL', false);
+define('LOCATION_MEDIA_IMAGE_404', 'http://via.placeholder.com/350x150/000000?text=404');
 
 
 define('LOCATION_AVATAR_DIR_TPL', __PUBLIC_DATA__ . '/locations/{LID}/avatar');

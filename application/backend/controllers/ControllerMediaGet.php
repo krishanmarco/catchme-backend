@@ -35,7 +35,7 @@ class ControllerMediaGet {
 
         if (!file_exists($filePath)) {
             // Development
-            return fopen('http://via.placeholder.com/350x150/000000?text=404', 'r');
+            return fopen(LOCATION_MEDIA_IMAGE_404, 'r');
             //throw new Api400(R::return_error_file_not_found);
         }
 

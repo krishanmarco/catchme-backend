@@ -547,7 +547,7 @@
           {"$ref": "#/parameters/token"},
           {"name": "typeId", "required": true, "in": "path", "type": "integer"},
           {"name": "itemId", "required": true, "in": "path", "type": "integer"},
-          {"name": "imageId", "required": true, "in": "path", "type": "integer"}
+          {"name": "imageId", "required": true, "in": "path", "type": "string"}
         ],
         "responses": {
           "401": {},

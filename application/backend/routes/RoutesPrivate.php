@@ -275,7 +275,7 @@ class RoutesPrivate {
         $uploadedFiles = $request->getUploadedFiles();
 
         /** @var UploadedFile $uploadedFile */
-        $uploadedFile = $uploadedFiles['file'];
+        $uploadedFile = $uploadedFiles['media'];
 
         if ($uploadedFile == null || $uploadedFile->getError() !== UPLOAD_ERR_OK)
             throw new Api400(R::return_error_file_upload_failed);

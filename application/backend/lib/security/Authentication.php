@@ -58,11 +58,6 @@ class Authentication {
 
 class MobileUserAuth {
 
-    // SECONDS = {MINUTES} * 60
-    const AUTH_TOKEN_TIME_TO_LIVE_SECONDS = 150 * 60;
-
-
-
     // Rounds the current time to the closest
     // range of AUTH_TOKEN_MIN_TTL minutes
     public static function getAuthTokenTime() {
@@ -72,7 +67,7 @@ class MobileUserAuth {
         // Convert the AUTH_TOKEN_MIN_TTL minutes
         // to minutes and get the remainder its
         // the division with $time
-        $remainder = $time % self::AUTH_TOKEN_TIME_TO_LIVE_SECONDS;
+        $remainder = $time % AUTH_TOKEN_TIME_TO_LIVE_SECONDS;
 
         // round $time to AUTH_TOKEN_MIN_TTL
         $time = $time - $remainder;

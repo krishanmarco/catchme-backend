@@ -17,24 +17,26 @@ class LocationImages {
 
     /** @var LocationModel $LocationModel */
     private $LocationModel;
-    public function getLocation() { return $this->LocationModel->getLocation(); }
 
+    public function getLocation() {
+        return $this->LocationModel->getLocation();
+    }
 
 
     private $approvedImages = true;
+
     public function overrideApprovedImages($approved) {
         $this->approvedImages = $approved;
         return $this;
     }
 
 
-
     private $imageTTLSeconds = LOCATION_MEDIA_TTL;
+
     public function overrideValiditySeconds($seconds) {
         $this->imageTTLSeconds = $seconds;
         return $this;
     }
-
 
 
     public function execute() {
@@ -64,26 +66,24 @@ class LocationImages {
     /** @return LocationImage[] */
     private function getDbLocationImages() {
 
-        return LocationImageQuery::create()
+        $locationImageQuery = LocationImageQuery::create()
             ->filterByLocationId($this->getLocation()->getId())
-            ->filterByApproved($this->approvedImages)
-            ->filterByInsertedTs(
+            ->filterByApproved($this->approvedImages);
+
+        if (LOCATION_MEDIA_APPLY_TTL) {
+            $locationImageQuery->filterByInsertedTs(
                 time() - $this->imageTTLSeconds,
                 Criteria::GREATER_EQUAL
 
-            )->find()
-            ->getData();
+            );
+        }
+
+        return $locationImageQuery->find()->getData();
 
     }
 
 
-
-
-
-
 }
-
-
 
 
 class LocationImagesResult {

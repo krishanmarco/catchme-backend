@@ -14,6 +14,7 @@ use \Slim\Exception\ApiExceptionHandler;
 //  *) /config/Config.php precedes /lib/propel/generated-conf/config.php
 require_once __DIR__ . '/config/Config.php';
 require_once __DIR__ . '/lib/Tools.php';
+require_once __DIR__ . '/lib/ext/ResizeImage.php';
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/propel/generated-conf/config.php';
 
@@ -66,7 +67,7 @@ $app->group('', function () use ($app) {
     $app->post('/accounts/register', RoutesProtected::accountsRegister)
         ->add(new MiddlewareValidator(Api\FormUserRegister::class));
 
-    $app->get('/media/get/{typeId:[0-9]+}/{itemId:[0-9]+}/{imageId:[0-9]+}.png', RoutesProtected::mediaGetTypeIdItemIdImageId);
+    $app->get('/media/get/{typeId:[0-9]+}/{itemId:[0-9]+}/{imageId:[0-9]+}[{ext:.*}]', RoutesProtected::mediaGetTypeIdItemIdImageId);
 
 })->add(new MiddlewareAuth($app->getContainer()));
 

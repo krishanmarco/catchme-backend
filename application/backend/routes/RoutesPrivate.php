@@ -141,7 +141,20 @@ class RoutesPrivate {
     const userProfileEdit = RoutesPrivate::class . ':userProfileEdit';
 
     public function userProfileEdit(ServerRequestInterface $request, ResponseInterface $response, $args) {
-        $res = $this->controller->user()->editProfile(SlimAttrGet::getInputData($request));
+        $uploadedFiles = $request->getUploadedFiles();
+
+        /** @var UploadedFile $uploadedFile */
+        $uploadedFile = $uploadedFiles['pictureUrl'];
+
+        if ($uploadedFile != null && $uploadedFile->getError() !== UPLOAD_ERR_OK)
+            $uploadedFiles = null;
+
+        $res = $this->controller->user()->editProfile(
+            SlimAttrGet::getInputData($request),
+            $uploadedFile
+        );
+
+
         return SlimOutput::buildAndWrite($response, $res);
     }
 

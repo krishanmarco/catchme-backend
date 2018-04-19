@@ -36,7 +36,7 @@ class LocationRegistration {
         $this->location->setTimings($formLocationRegister->timings);
         $this->location->setSignupTs(time());
 
-        if ($uploadedFile instanceof  UploadedFile) {
+        if ($uploadedFile instanceof UploadedFile) {
             $this->location->trySetAvatarFromFile($uploadedFile);
         }
 

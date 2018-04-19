@@ -108,3 +108,8 @@ define('LOCATION_AVATAR_DIR_TPL', __PUBLIC_DATA__ . '/locations/{LID}/avatar');
 define('LOCATION_AVATAR_TPL', LOCATION_AVATAR_DIR_TPL . '/{UNIQUE_NAME}');
 define('LOCATION_AVATAR_URL_TPL', SERVER_URL . '/data/locations/{LID}/avatar/{UNIQUE_NAME}');
 
+
+define('USER_AVATAR_DIR_TPL', __PUBLIC_DATA__ . '/users/{UID}/avatar');
+define('USER_AVATAR_TPL', USER_AVATAR_DIR_TPL . '/{UNIQUE_NAME}');
+define('USER_AVATAR_URL_TPL', SERVER_URL . '/data/users/{UID}/avatar/{UNIQUE_NAME}');
+

@@ -76,9 +76,9 @@ class ControllerUser {
 
 
     /** @return ApiUser */
-    public function editProfile(ApiUser $newProfile) {
+    public function editProfile(ApiUser $newProfile, $uploadedFile = null) {
         $userEditProfile = new UserEditProfile($this->authenticatedUser);
-        $userEditProfile->userEdit($newProfile)->save();
+        $userEditProfile->userEdit($newProfile, $uploadedFile)->save();
         return ModelToApiUsers::single($this->authenticatedUser)
             ->withSecureData()
             ->withPhone()
@@ -105,6 +105,7 @@ class ControllerUser {
     /** @return ApiLocation */
     public function locationsAdministratingEditLid(ApiLocation $apiLocation, $locationId, $uploadedFile = null) {
         $locationEditProfile = new LocationEditProfile($this->authenticatedUser, $locationId);
+
         $locationEditProfile->userEdit($apiLocation, $uploadedFile)->save();
 
         $locationController = new ControllerLocations(

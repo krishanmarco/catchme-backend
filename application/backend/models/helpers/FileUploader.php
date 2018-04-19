@@ -149,6 +149,8 @@ class FileUploader {
             unlink($fullpath);
             throw new Api400(R::return_error_file_upload_failed);
         }
+
+        return $fullpath;
     }
 
 }

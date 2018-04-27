@@ -39,8 +39,9 @@ class LocationEditProfile {
         if (isset($apiLocation->capacity))
             $this->location->setCapacity($apiLocation->capacity);
 
-        if (isset($apiLocation->pictureUrl))
-            $this->location->setPictureUrl($apiLocation->pictureUrl);
+        if ($uploadedFile instanceof UploadedFile) {
+            $this->location->trySetAvatarFromFile($uploadedFile);
+        }
 
         if (isset($apiLocation->email))
             $this->location->setEmail($apiLocation->email);
@@ -60,8 +61,8 @@ class LocationEditProfile {
 
 
     /** @return LocationEditProfile */
-    public function superUserEdit(ApiLocation $apiLocation) {
-        $this->userEdit($apiLocation);
+    public function superUserEdit(ApiLocation $apiLocation, $uploadedFile = null) {
+        $this->userEdit($apiLocation, $uploadedFile);
 
         if (isset($apiLocation->adminId))
             $this->location->setAdminId($apiLocation->adminId);

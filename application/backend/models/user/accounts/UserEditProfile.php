@@ -3,6 +3,7 @@
 namespace Models\User\Accounts;
 use \Propel\Runtime\Exception\PropelException;
 use Slim\Exception\Api400;
+use Slim\Http\UploadedFile;
 use User as DbUser;
 use Api\User as ApiUser;
 use R;
@@ -34,7 +35,7 @@ class UserEditProfile {
 
 
     /** @return UserEditProfile */
-    public function userEdit(ApiUser $apiUser) {
+    public function userEdit(ApiUser $apiUser, $uploadedFile = null) {
 
         if (isset($apiUser->settingPrivacy))
             $this->user->setSettingPrivacy($apiUser->settingPrivacy);
@@ -48,16 +49,17 @@ class UserEditProfile {
         if (isset($apiUser->publicMessage))
             $this->user->setPublicMessage($apiUser->publicMessage);
 
-        if (isset($apiUser->pictureUrl))
-            $this->user->setPictureUrl($apiUser->pictureUrl);
+        if ($uploadedFile instanceof UploadedFile) {
+            $this->user->trySetAvatarFromFile($uploadedFile);
+        }
 
         return $this;
     }
 
 
     /** @return UserEditProfile */
-    public function superUserEdit(ApiUser $apiUser) {
-        $this->userEdit($apiUser);
+    public function superUserEdit(ApiUser $apiUser, $uploadedFile = null) {
+        $this->userEdit($apiUser, $uploadedFile);
 
         if (isset($apiUser->name))
             $this->user->setName($apiUser->name);

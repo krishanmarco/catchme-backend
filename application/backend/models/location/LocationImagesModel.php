@@ -45,6 +45,7 @@ class LocationImagesModel {
 
 
         try {
+//            $this->location->addImage($locationImage)->save();
             $locationImage->save();
 
         } catch (PropelException $exception) {

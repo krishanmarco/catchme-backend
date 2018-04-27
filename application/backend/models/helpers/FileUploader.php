@@ -88,7 +88,7 @@ class FileUploader {
         }
 
 
-        // Make sure the folder path esists
+        // Make sure the folder path exists
         if (!is_dir($destinationPath))
             mkdir($destinationPath, 0777, true);
 
@@ -96,6 +96,43 @@ class FileUploader {
 
         try {
             $this->uploadedFile->moveTo($fullpath);
+
+            // try resize the image
+            try {
+
+                /**
+                 * easy image resize function
+                 * @param $file - file name to resize
+                 * @param $string - The image data as a string, default is null
+                 * @param $width - new image width
+                 * @param $height - new image height
+                 * @param $proportional - keep image proportional, default is no
+                 * @param $output - name of the new file (include path if needed)
+                 * @param $delete_original - if true the original image will be deleted
+                 * @param $use_linux_commands - if set to true will use "rm" to delete the image, if false will use PHP unlink
+                 * @param $quality - enter 1-100 (100 is best quality) default is 100
+                 * @return boolean|resource
+                 */
+                $res = smart_resize_image(
+                    $fullpath,
+                    null,
+                    800,
+                    800,
+                    true,
+                    $fullpath . '_',
+                    true,
+                    false,
+                    85
+                );
+
+                if ($res) {
+                    rename($fullpath . '_', $fullpath);
+                }
+
+
+            } catch (Exception $e) {
+                // Not critical error
+            }
 
         }
         catch (Exception $e) {
@@ -112,6 +149,8 @@ class FileUploader {
             unlink($fullpath);
             throw new Api400(R::return_error_file_upload_failed);
         }
+
+        return $fullpath;
     }
 
 }

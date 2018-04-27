@@ -1,6 +1,8 @@
 <?php
 
 use Base\User as BaseUser;
+use Slim\Exception\Api400;
+use \Slim\Http\UploadedFile;
 
 /**
  * Skeleton subclass for representing a row from the 'user' table.
@@ -48,6 +50,30 @@ class User extends BaseUser {
         }
 
         return $this->friendIds;
+    }
+
+
+    public function trySetAvatarFromFile(UploadedFile $uploadedFile) {
+        try {
+            // Create the file path
+            $savePath = strtr(USER_AVATAR_DIR_TPL, [
+                '{UID}' => $this->getId()
+            ]);
+
+            // Try save the file with its hash as name (no duplicates)
+            $uniqueName = FileUploader::build($uploadedFile)
+                ->saveUploadByHash($savePath);
+
+            // Save success, write to $location object
+            $this->setPictureUrl(strtr(USER_AVATAR_URL_TPL, [
+                '{UID}' => $this->getId(),
+                '{UNIQUE_NAME}' => $uniqueName
+            ]));
+
+        } catch (Api400 $exception) {
+            // Not a critical error, continue
+            // the profile avatar will not be updated
+        }
     }
 
 }

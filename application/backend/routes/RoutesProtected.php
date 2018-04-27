@@ -71,7 +71,7 @@ class RoutesProtected {
             //->withHeader('Content-Type', 'application/force-download')
             //->withHeader('Content-Type', 'application/octet-stream')
             //->withHeader('Content-Description', 'File Transfer')
-            ->withHeader('Content-Type', 'image/png')
+            ->withHeader('Content-Type', 'image/jpeg')
             ->withHeader('Content-Transfer-Encoding', 'binary')
             ->withBody(new Stream($resource));
     }

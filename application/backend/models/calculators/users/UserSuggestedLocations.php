@@ -45,25 +45,21 @@ class UserSuggestedLocations {
         // will always be 1 so do not use orderByCount
         $favoriteLocIds = UserQueriesWrapper::getUsersLocationIds([$this->getUser()->getId()]);
 
-
         // Select all this users confirmed friends, only the ids are needed
         $friendIds = UserQueriesWrapper::getUsersFriendIds([$this->getUser()->getId()]);
-
 
         // Select all the location ids the users friends are subscribed to
         // We use user count as a ranking parameter, set $orderByCount to true
         $suggestedLocIds = UserQueriesWrapper::getUsersLocationIds($friendIds);
 
-
         // Delete all the favoriteLocIds from the suggestedLocIds
-        // We do not want to suggest connections that the user already has
+        // We do not want to suggest locations that the user already has
         $suggestedLocIds = array_values(array_diff($suggestedLocIds, $favoriteLocIds));
 
-
-        // If there are no suggested locations return an empty list
-        if (sizeof($suggestedLocIds) <= 0)
-            return new UserSuggestedLocationsResult([]);
-
+        // If there are no suggested locations return a list of locations closest to this user
+        if (sizeof($suggestedLocIds) <= 0) {
+            return $this->getLocationsByPosition();
+        }
 
         // Start from (seed * self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS)
         // and add self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS number
@@ -77,11 +73,9 @@ class UserSuggestedLocations {
             array_push($suggestedIdsSubset, $suggestedLocIds[$realIndex]);
         }
 
-
         // We cannot be sure that the same index from $suggestedLocIds
         // was not selected more than once
         $suggestedIdsSubset = array_values(array_unique($suggestedIdsSubset));
-
 
         // Map the $suggestedIdsSubset to locations ordering by $suggestedIdsSubset,
         // we need to maintain the original order because it is ranked
@@ -98,6 +92,15 @@ class UserSuggestedLocations {
         return new UserSuggestedLocationsResult($suggestedLocations);
     }
 
+    /** @return UserSuggestedLocationsResult */
+    private function getLocationsByPosition($maxLocations = SUGGEST_LOCATIONS_MAX_RANDOM) {
+        // todo:
+        // Use town most common town in the users other favorite locations
+        // If the result is not as long as $maxLocations merge with random
+        // locations positioned near the requests ip address
+
+        return new UserSuggestedLocationsResult([]);
+    }
 
 
 }

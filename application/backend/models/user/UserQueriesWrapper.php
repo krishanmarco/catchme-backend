@@ -19,11 +19,9 @@ class UserQueriesWrapper {
      * ids that the input array of user ids are subscribed to
      *
      * @param int[] $userIds        Array of user ids
-     * @param bool $orderByCount    If true the results get ordered by count
      * @return int[]                Location ids that $userIds are subscribed to
      */
     public static function getUsersLocationIds(array $userIds) {
-
 
         $userFavoriteLocationQuery = UserLocationFavoriteQuery::create()
             ->select([UserLocationFavoriteTableMap::COL_LOCATION_ID])

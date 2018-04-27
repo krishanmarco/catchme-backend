@@ -115,3 +115,4 @@ define('USER_AVATAR_URL_TPL', SERVER_URL . '/data/users/{UID}/avatar/{UNIQUE_NAM
 
 
 define('USER_LOCATIONS_MAX_TOP_ITEMS', 5);
+define('SUGGEST_LOCATIONS_MAX_RANDOM', 20);

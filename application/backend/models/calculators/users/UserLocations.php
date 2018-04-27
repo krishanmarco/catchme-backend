@@ -5,11 +5,10 @@ namespace Models\Calculators\Users;
 use Models\Calculators\UserModel;
 use Propel\Runtime\ActiveQuery\Criteria as Criteria;
 
-
-use UserLocationFavoriteQuery as UserFavoriteLocationQuery;
-use UserLocationExpiredQuery as UserLocationExpiredQuery;
-use UserLocationExpired as UserLocationExpired;
-use UserLocationQuery as UserLocationQuery;
+use UserLocationFavoriteQuery;
+use UserLocationExpiredQuery;
+use UserLocationExpired;
+use UserLocationQuery;
 use Location as Location;
 
 class UserLocations {
@@ -26,7 +25,7 @@ class UserLocations {
 
 
     /** @var array(LocationId => Location) $accumulatedLocations */
-    private $accumulatedLocations;
+    private $accumulatedLocations = [];
 
 
 
@@ -47,7 +46,7 @@ class UserLocations {
 
 
     private function calcFavoriteLocations() {
-        $userFavoriteLocations = UserFavoriteLocationQuery::create()
+        $userFavoriteLocations = UserLocationFavoriteQuery::create()
             ->joinWithLocation()
             ->findByUserId($this->getUser()->getId());
 
@@ -68,12 +67,12 @@ class UserLocations {
 
 
 
-    private function calcTopLocations($numberOfItems = 5) {
+    private function calcTopLocations($numberOfItems = USER_LOCATIONS_MAX_TOP_ITEMS) {
         // Calculate a count for each location from the expired location table
         // SELECT id, location_id, COUNT(*) FROM user_location_expired
         // WHERE user_id = 1 GROUP BY location_id ORDER BY COUNT(*) DESC;
-        /** @var UserLocationExpired[] $locations */
-        $locations = UserLocationExpiredQuery::create()
+        /** @var UserLocationExpired[] $finalLocations */
+        $finalLocations = UserLocationExpiredQuery::create()
             ->filterByUserId($this->getUser()->getId())
             ->groupByLocationId()
             ->withColumn('COUNT(*)', 'Count')
@@ -82,8 +81,22 @@ class UserLocations {
             ->limit($numberOfItems)
             ->find();
 
+        if (sizeof($finalLocations) < USER_LOCATIONS_MAX_TOP_ITEMS) {
+            // Run the same query with UserLocation
+            $locations = UserLocationQuery::create()
+                ->filterByUserId($this->getUser()->getId())
+                ->groupByLocationId()
+                ->withColumn('COUNT(*)', 'Count')
+                ->joinWithLocation()
+                ->orderBy('Count', Criteria::DESC)
+                ->limit($numberOfItems - sizeof($numberOfItems))
+                ->find();
+
+            $finalLocations = array_merge($finalLocations, $locations);
+        }
+
         $topLocations = [];
-        foreach ($locations as $loc) {
+        foreach ($finalLocations as $loc) {
             $locationId = $loc->getLocationId();
 
             if (!array_key_exists($locationId, $this->accumulatedLocations))

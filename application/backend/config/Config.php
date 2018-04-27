@@ -113,3 +113,5 @@ define('USER_AVATAR_DIR_TPL', __PUBLIC_DATA__ . '/users/{UID}/avatar');
 define('USER_AVATAR_TPL', USER_AVATAR_DIR_TPL . '/{UNIQUE_NAME}');
 define('USER_AVATAR_URL_TPL', SERVER_URL . '/data/users/{UID}/avatar/{UNIQUE_NAME}');
 
+
+define('USER_LOCATIONS_MAX_TOP_ITEMS', 5);

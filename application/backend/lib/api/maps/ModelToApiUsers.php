@@ -42,8 +42,12 @@ class ModelToApiUsers {
     public function user(DbUser $dbUser) {
         $modelToApiUser = self::single($dbUser);
 
-        if (!is_null($this->requestingUser))
+        $modelToApiUser->withEmail();
+        $modelToApiUser->withPhone();
+
+        if (!is_null($this->requestingUser)) {
             $modelToApiUser->applyPrivacyPolicy($this->requestingUser);
+        }
 
         return $modelToApiUser->get();
     }

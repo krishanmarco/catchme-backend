@@ -49,6 +49,8 @@ class UserQueriesWrapper {
 
     /** @return int[] */
     public static function getUsersFriendIds(array $userIds) {
+        if (sizeof($userIds) <= 0)
+            return [];
 
         // This query is too complicated for the propel api
         // Use custom sql
@@ -71,14 +73,12 @@ class UserQueriesWrapper {
         ));
         $statement->execute();
 
-
-        $userIds = array_map(
+        $result = array_map(
             function($row) { return intval($row['id']); },
             $statement->fetchAll(\PDO::FETCH_ASSOC)
         );
 
-
-        return $userIds;
+        return $result;
     }
 
 

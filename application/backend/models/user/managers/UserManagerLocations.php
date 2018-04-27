@@ -21,19 +21,16 @@ class UserManagerLocations {
 
 
     public function add($locationId) {
-
         $userFavoriteLocation = new UserLocationFavorite();
         $userFavoriteLocation->setUserId($this->user->getId());
         $userFavoriteLocation->setLocationId($locationId);
-
 
         try {
             $userFavoriteLocation->save();
 
         } catch (PropelException $exception) {
-            switch ($exception->getCode()) {
-                default: throw new Api400(R::return_error_generic);
-            }
+            // Don't throw an exception
+            // the wanted status is already set
         }
     }
 
@@ -46,6 +43,9 @@ class UserManagerLocations {
             ->filterByLocationId($locationId)
             ->findOne();
 
+        // If $userFavoriteLocation is not set
+        // Don't throw an exception
+        // the wanted status is already set
         if (!is_null($userFavoriteLocation))
             $userFavoriteLocation->delete();
     }

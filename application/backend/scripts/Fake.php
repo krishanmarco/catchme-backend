@@ -304,6 +304,95 @@ function update() {
 }
 
 
+
+function dropAll() {
+
+    function _exec($stmt) {
+        $connection = \Propel\Runtime\Propel::getReadConnection(\Map\UserTableMap::DATABASE_NAME);
+        $statement = $connection->prepare($stmt);
+        $statement->execute();
+    }
+
+    _exec('DELETE FROM location');
+    _exec('ALTER TABLE location AUTO_INCREMENT = 1;');
+    _exec('DELETE FROM location_address');
+    _exec('DELETE FROM location_image');
+    _exec('ALTER TABLE location_image AUTO_INCREMENT = 1;');
+    _exec('DELETE FROM search_location');
+    _exec('DELETE FROM search_user WHERE user_id != 1');
+    _exec('DELETE FROM system_temp_var');
+    _exec('ALTER TABLE system_temp_var AUTO_INCREMENT = 1;');
+    _exec('DELETE FROM user WHERE id != 1');
+    _exec('ALTER TABLE user AUTO_INCREMENT = 2;');
+    _exec('DELETE FROM user_connection');
+    _exec('DELETE FROM user_location');
+    _exec('ALTER TABLE user_location AUTO_INCREMENT = 1;');
+    _exec('DELETE FROM user_location_expired');
+    _exec('ALTER TABLE user_location_expired AUTO_INCREMENT = 1;');
+    _exec('DELETE FROM user_location_favorite');
+    _exec('DELETE FROM user_social');
+}
+
+
+
+function revertToSimpleTestingState() {
+
+    function _exec($stmt) {
+        $connection = \Propel\Runtime\Propel::getReadConnection(\Map\UserTableMap::DATABASE_NAME);
+        $statement = $connection->prepare($stmt);
+        $statement->execute();
+    }
+
+    _exec('DELETE FROM location WHERE id > 5');
+    _exec('ALTER TABLE location AUTO_INCREMENT = 6;');
+    _exec('DELETE FROM location_address WHERE location_id > 5');
+    _exec('DELETE FROM location_image WHERE location_id > 5 AND inserter_id > 5');
+//    _exec('ALTER TABLE location_image AUTO_INCREMENT = 6;');
+    _exec('DELETE FROM search_location WHERE location_id > 5');
+    _exec('DELETE FROM search_user WHERE user_id > 5');
+    _exec('DELETE FROM system_temp_var');
+    _exec('ALTER TABLE system_temp_var AUTO_INCREMENT = 1;');
+    _exec('DELETE FROM user WHERE id > 5');
+    _exec('ALTER TABLE user AUTO_INCREMENT = 6;');
+    _exec('DELETE FROM user_connection WHERE user_id > 5 AND connection_id > 5');
+    _exec('DELETE FROM user_location WHERE user_id > 5 AND location_id > 5');
+//    _exec('ALTER TABLE user_location AUTO_INCREMENT = 6;');
+    _exec('DELETE FROM user_location_expired');
+    _exec('ALTER TABLE user_location_expired AUTO_INCREMENT = 1;');
+    _exec('DELETE FROM user_location_favorite WHERE user_id > 5 AND location_id > 5');
+    _exec('DELETE FROM user_social');
+}
+
+// Bash terraform
+/*
+terraform () {
+    url="http://www.catchme.krishanmadan.website/api/fake?pw=S()KD2dk290kdLksK()&function=";
+
+    run () {
+        echo $1;
+        wget $1;
+    }
+
+    run $url"generateFakeUsers";
+    run $url"generateFakeLocations";
+    run $url"generateFakeLocationImages";
+
+    iterate0_100() {
+        for i in {0..100}
+        do
+          start=$(($i * 50));
+          end=$(($start + 50));
+          run $url$1"&p1="$start"&p2="$end;
+        done
+    }
+    iterate0_100 generateFakeUserConnections;
+    iterate0_100 generateFakeUserFavorites;
+    iterate0_100 generateFakeUserLocations;
+    iterate0_100 generateFakeUserLocationExpired;
+    echo "COMPLETED!"
+}
+*/
+
 // Start the script based on the $_GET params
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $functionToExecute = $_GET['function'];

@@ -67,7 +67,7 @@
     <column       name="description"        type="VARCHAR"      required="true"                                                                                        />
     <column       name="capacity"           type="INTEGER"      required="true"                 defaultValue="0"                                                      />
     <column       name="picture_url"        type="VARCHAR"      required="true"                                                                                       />
-    <column       name="timings"            type="VARCHAR"      required="true"   size="168"    defaultValue=""                                                                              />
+    <column       name="timings"            type="VARCHAR"      required="true"   size="168"    defaultValue=""                                                       />
     <column       name="reputation"         type="INTEGER"      required="true"                 defaultValue="0"                                                      />
 
     <column       name="email"              type="VARCHAR"      required="false"                                                                                       />
@@ -82,11 +82,6 @@
     <index>
       <index-column name="id"/>
     </index>
-
-
-    <unique>
-      <unique-column name="email"/>
-    </unique>
 
   </table>
 
@@ -306,6 +301,7 @@
     <column       name="inserter_id"               type="INTEGER"             required="true"                                                                                   />
     <column       name="inserted_ts"               type="INTEGER"             required="true"    size="10"                                                                      />
     <column       name="approved"                  type="BOOLEAN"             required="true"                 defaultValue="0"                                                  />
+    <column       name="hash"                      type="VARCHAR"             required="true"                                                                                   />
 
 
     <foreign-key foreignTable="location" phpName="Location" refPhpName="Image">

@@ -59,7 +59,7 @@ class LocationRegistration {
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
                 // duplicate entry, email already exists
-                default: throw new Api400(R::return_error_email_taken);
+                default: throw new Api400(R::return_error_email_taken, null, $exception);
             }
         }
     }

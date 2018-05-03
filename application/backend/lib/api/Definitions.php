@@ -117,6 +117,7 @@ class ExceptionResponse {
     public $errorCode =         [Rule::ruleIsset => [], 		Rule::ruleInt => []];
     public $logMessage =        [Rule::ruleIsset => [], 		Rule::ruleLongString => []];
     public $errors =            [];
+    public $_ =                 [];
 }
 
 

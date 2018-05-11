@@ -91,12 +91,7 @@ class UserRegistration {
         $this->user->setSettingPrivacy('222');
         $this->user->setSettingNotifications('11111');
         $this->user->setApiKey(getRandomString(32, 32));
-
-        $userPassSalt = getRandomString(7, 15);
-        $userHash = UserAccountUtils::hashPassword($password, $userPassSalt);
-        $this->user->setPassSalt($userPassSalt);
-        $this->user->setPassSha256($userHash);
-
+        $this->user = UserAccountUtils::setUserPassword($this->user, $password);
 
         try {
             $this->user->save();

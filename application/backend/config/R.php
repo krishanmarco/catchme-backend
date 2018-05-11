@@ -22,6 +22,7 @@ class R {
     const return_error_field_email = -16;
     const return_error_field_url = -17;
     const return_error_field_country = -18;
+    const return_error_passwords_not_equal = -19;
 
 
 }

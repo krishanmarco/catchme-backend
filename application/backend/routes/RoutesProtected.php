@@ -60,6 +60,15 @@ class RoutesProtected {
 
 
 
+    const accountsPasswordChange = RoutesProtected::class . ':accountsPasswordChange';
+
+    public function accountsPasswordChange(ServerRequestInterface $request, ResponseInterface $response) {
+        $result = $this->controller->accounts()->changePassword(SlimAttrGet::getInputData($request));
+        return SlimOutput::buildAndWrite($response, $result);
+    }
+
+
+
     const mediaGetTypeIdItemIdImageId = RoutesProtected::class . ':mediaGetTypeIdItemIdImageId';
 
     public function mediaGetTypeIdItemIdImageId(ServerRequestInterface $request, ResponseInterface $response, $args) {

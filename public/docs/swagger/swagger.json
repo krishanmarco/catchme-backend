@@ -150,6 +150,22 @@
     },
 
 
+    "/accounts/password/change": {
+      "post": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormChangePassword"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
     "/locations/{lid}": {
       "get": {
         "tags": ["Locations"],
@@ -605,6 +621,16 @@
         "name":           {"type": "string"},
         "email":          {"type": "string"},
         "password":       {"type": "string"}
+      }
+    },
+
+    "FormChangePassword": {
+      "type": "object",
+      "properties": {
+        "email":                 {"type": "string"},
+        "passwordPrevious":      {"type": "string"},
+        "passwordNext":          {"type": "string"},
+        "passwordConfirmNext":   {"type": "string"}
       }
     },
 

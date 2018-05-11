@@ -67,6 +67,9 @@ $app->group('', function () use ($app) {
     $app->post('/accounts/register', RoutesProtected::accountsRegister)
         ->add(new MiddlewareValidator(Api\FormUserRegister::class));
 
+    $app->post('/accounts/password/change', RoutesProtected::accountsRegister)
+        ->add(new MiddlewareValidator(Api\FormChangePassword::class));
+
     $app->get('/media/get/{typeId:[0-9]+}/{itemId:[0-9]+}/{imageId:[0-9]+}[{ext:.*}]', RoutesProtected::mediaGetTypeIdItemIdImageId);
 
 })->add(new MiddlewareAuth($app->getContainer()));

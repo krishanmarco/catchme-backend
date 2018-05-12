@@ -14,7 +14,7 @@ use Security\DataEncrypter;
 use EmailSender;
 
 class UserManagerPassword {
-    const RECOVERY_LINK_URL_TEMPLATE = SERVER_URL . '/accounts/user/{email}/password/reset/{token}';
+    const RECOVERY_LINK_URL_TEMPLATE = API_URL . '/accounts/user/{uid}/password/reset?token={token}';
 
     public static function change($uid, ApiFormChangePassword $form) {
         $pm = new UserManagerPassword(UserQuery::create()->findPk($uid));
@@ -55,17 +55,21 @@ class UserManagerPassword {
         $tempVar = new DbSystemTempVar();
         $tempVar->setType(ESystemTempVar::PASSWORD_RECO);
         $tempVar->setExpiryTs(time() + USER_PASSWORD_RECO_TTL);
-        $tempVar->setData(RecoveryToken::fromValues(
-            $tempVar->getId(),                      // Database temp var id
+
+        $recoTkn = RecoveryToken::fromValues(
             getRandomString(15, 15),  // Random recovery key
             $this->user->getEmail()                // User email (Unique)
-        ));
+        );
+        $tempVar->setData($recoTkn);
         $tempVar->save();
+
+        // We now have an id for the $recoTkn
+        $recoTkn->systemTempVarId = $tempVar->getId();
 
         $recoLink = strtr(
             self::RECOVERY_LINK_URL_TEMPLATE, [
-                '{token}' => DataEncrypter::encryptStr(json_encode($tempVar->getData())),
-                '{email}' => $this->user->getEmail()
+                '{token}' => urlencode(DataEncrypter::publicEncryptStr(json_encode($tempVar->getData()))),
+                '{uid}' => $this->user->getId()
             ]
         );
 
@@ -75,7 +79,8 @@ class UserManagerPassword {
     }
 
     public function resetPasswordWithToken($token) {
-        $userRecoToken = RecoveryToken::fromToken(DataEncrypter::decryptStr($token));
+        $tokenStr = DataEncrypter::privateDecryptStr($token);
+        $userRecoToken = RecoveryToken::fromTokenStr($tokenStr);
 
         // Check if request is authentic
         $tempVar = SystemTempVarQuery::create()
@@ -140,19 +145,19 @@ class UserManagerPassword {
 
 class RecoveryToken {
 
-    public static function fromValues($systemTempVarId, $recoveryKey, $email) {
+    public static function fromValues($recoveryKey, $email) {
         $recoveryToken = new RecoveryToken();
-        $recoveryToken->systemTempVarId = $systemTempVarId;
         $recoveryToken->recoveryKey = $recoveryKey;
         $recoveryToken->email = $email;
         return $recoveryToken;
     }
 
-    public static function fromToken($decryptedToken) {
+    public static function fromTokenStr($decryptedToken) {
+        $decryptedToken = json_decode($decryptedToken, true);
         $recoveryToken = new RecoveryToken();
+        $recoveryToken->email = $decryptedToken['email'];
         $recoveryToken->systemTempVarId = $decryptedToken['systemTempVarId'];
         $recoveryToken->recoveryKey = $decryptedToken['recoveryKey'];
-        $recoveryToken->email = $decryptedToken['email'];
         return $recoveryToken;
     }
 

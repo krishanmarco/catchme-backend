@@ -81,7 +81,7 @@ class RoutesProtected {
     const accountsPasswordReset = RoutesProtected::class . ':accountsPasswordReset';
 
     public function accountsPasswordReset(ServerRequestInterface $request, ResponseInterface $response, $args) {
-        $result = $this->controller->accounts()->resetPassword($args['uid'], $args['token']);
+        $result = $this->controller->accounts()->resetPassword($args['uid'], $request->getQueryParams()['token']);
         return SlimOutput::buildAndWrite($response, $result);
     }
 

@@ -5,6 +5,7 @@ use \Routes\RoutesPublic;
 use \Routes\RoutesProtected;
 use \Slim\Middleware\MiddlewareValidator;
 use \Slim\Middleware\MiddlewareUserAuth;
+use \Slim\Middleware\MiddlewarePublic;
 use \Slim\Middleware\MiddlewareAuth;
 use \Slim\Exception\ApiExceptionHandler;
 
@@ -48,6 +49,12 @@ $app->group('', function () use ($app) {
     $app->get('/meta/token/{uid:[-0-9]+}/{key}', RoutesPublic::token);
 });
 
+$app->group('', function () use ($app) {
+
+    // /accounts/user/{uid}/password/reset?token=abcdef
+    $app->get('/accounts/user/{uid}/password/reset', RoutesProtected::accountsPasswordReset);
+})->add(new MiddlewarePublic($app->getContainer()));;
+
 
 /** Anonymous authenticated web
  * -----------------------------------------------------------------
@@ -71,8 +78,6 @@ $app->group('', function () use ($app) {
         ->add(new MiddlewareValidator(Api\FormChangePassword::class));
 
     $app->get('/accounts/user/{email}/password/recover', RoutesProtected::accountsPasswordRecover);
-
-    $app->get('/accounts/user/{uid}/password/reset/{token}', RoutesProtected::accountsPasswordReset);
 
     $app->get('/media/get/{typeId:[0-9]+}/{itemId:[0-9]+}/{imageId:[0-9]+}[{ext:.*}]', RoutesProtected::mediaGetTypeIdItemIdImageId);
 

@@ -28,7 +28,7 @@ class Authentication {
 
         // The encryptedHttpAuthentication was encrypted from the client
         // using the public RSA corresponding to self::RSA_PRIVATE_KEY
-        $authToken = DataEncrypter::decryptStr($this->encryptedAuthToken);
+        $authToken = DataEncrypter::privateDecryptStr($this->encryptedAuthToken);
 
         // if $encryptedAuthToken is valid,
         // the decryption result will be a valid json
@@ -78,7 +78,7 @@ class MobileUserAuth {
     }
 
     public static function buildTokenStr($id, $key) {
-        return DataEncrypter::encryptStr(json_encode(self::buildTokenObj($id, $key)));
+        return DataEncrypter::publicEncryptStr(json_encode(self::buildTokenObj($id, $key)));
     }
 
 

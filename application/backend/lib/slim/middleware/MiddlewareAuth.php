@@ -52,13 +52,6 @@ class MiddlewareAuth {
 }
 
 
-
-
-
-
-
-
-
 class MiddlewareUserAuth {
 
     public function __construct(ContainerInterface $container) {

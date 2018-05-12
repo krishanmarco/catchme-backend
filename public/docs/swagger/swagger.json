@@ -42,7 +42,7 @@
       "name": "email",
       "required": true,
       "in": "path",
-      "type": "integer"
+      "type": "string"
     },
     "lid": {
       "name": "lid",
@@ -180,11 +180,11 @@
 
 
     "/accounts/user/{email}/password/recover": {
-      "post": {
+      "get": {
         "tags": ["Accounts"],
         "parameters": [
           {"$ref": "#/parameters/token"},
-          {"name": "email", "required": true, "default": -1, "in": "path", "type": "integer"}
+          {"name": "email", "required": true, "default": -1, "in": "path", "type": "string"}
         ],
         "responses": {
           "401": {},
@@ -195,8 +195,8 @@
     },
 
 
-    "/accounts/user/{uid}/password/reset/{recoveryToken}": {
-      "post": {
+    "/accounts/user/{uid}/password/reset?token={recoveryToken}": {
+      "get": {
         "tags": ["Accounts"],
         "parameters": [
           {"$ref": "#/parameters/token"},

@@ -4,7 +4,7 @@ namespace Security;
 
 class DataEncrypter {
 
-    public static function encryptStr($string) {
+    public static function publicEncryptStr($string) {
         $encrypted = null;
         openssl_public_encrypt(
             $string,
@@ -15,7 +15,7 @@ class DataEncrypter {
         return $encrypted;
     }
 
-    public static function decryptStr($string) {
+    public static function privateDecryptStr($string) {
         $decrypted = null;
         openssl_private_decrypt(
             base64_decode($string),

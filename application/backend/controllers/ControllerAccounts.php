@@ -2,7 +2,7 @@
 
 namespace Controllers;
 use Models\User\Accounts\UserLogin;
-use Models\User\Accounts\UserPassword;
+use Models\User\Accounts\UserManagerPassword;
 use Models\User\Accounts\UserRegistration;
 use Api\User as ApiUser;
 use Api\FormUserLogin as ApiFormUserLogin;
@@ -66,8 +66,18 @@ class ControllerAccounts {
 
 
     /** @return int */
-    public function changePassword(ApiFormChangePassword $apiFormUserRegister) {
-        return UserPassword::change($apiFormUserRegister);
+    public function changePassword($uid, ApiFormChangePassword $apiFormUserRegister) {
+        return UserManagerPassword::change($uid, $apiFormUserRegister);
+    }
+
+    /** @return int */
+    public function recoverPassword($email) {
+        return UserManagerPassword::recover($email);
+    }
+
+    /** @return int */
+    public function resetPassword($uid, $token) {
+        return UserManagerPassword::reset($uid, $token);
     }
 
 

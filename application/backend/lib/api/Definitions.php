@@ -29,7 +29,6 @@ class FormLocationRegister {
 }
 
 class FormChangePassword {
-    public $email =                 [Rule::ruleIsset => [],         Rule::ruleEmail => []];
     public $passwordPrevious =      [Rule::ruleIsset => [],         Rule::rulePassword => []];
     public $passwordNext =          [Rule::ruleIsset => [],         Rule::rulePassword => []];
     public $passwordConfirmNext =   [Rule::ruleIsset => [],         Rule::rulePassword => []];

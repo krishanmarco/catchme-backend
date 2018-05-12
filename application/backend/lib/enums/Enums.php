@@ -24,3 +24,7 @@ class EPrivacy {
     const EVERYONE = '2';
 }
 
+class ESystemTempVar {
+    const PASSWORD_RECO = 0;
+}
+

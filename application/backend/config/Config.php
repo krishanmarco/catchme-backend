@@ -112,7 +112,7 @@ define('LOCATION_AVATAR_URL_TPL', SERVER_URL . '/data/locations/{LID}/avatar/{UN
 define('USER_AVATAR_DIR_TPL', __PUBLIC_DATA__ . '/users/{UID}/avatar');
 define('USER_AVATAR_TPL', USER_AVATAR_DIR_TPL . '/{UNIQUE_NAME}');
 define('USER_AVATAR_URL_TPL', SERVER_URL . '/data/users/{UID}/avatar/{UNIQUE_NAME}');
-
+define('USER_PASSWORD_RECO_TTL', 30 * 60);
 
 define('USER_LOCATIONS_MAX_TOP_ITEMS', 5);
 define('SUGGEST_LOCATIONS_MAX_RANDOM', 20);

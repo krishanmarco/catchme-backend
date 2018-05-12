@@ -38,6 +38,12 @@
       "in": "path",
       "type": "integer"
     },
+    "email": {
+      "name": "email",
+      "required": true,
+      "in": "path",
+      "type": "integer"
+    },
     "lid": {
       "name": "lid",
       "required": true,
@@ -58,6 +64,12 @@
     },
     "seed": {
       "name": "seed",
+      "required": true,
+      "in": "path",
+      "type": "string"
+    },
+    "recoveryToken": {
+      "name": "recoveryToken",
       "required": true,
       "in": "path",
       "type": "string"
@@ -150,12 +162,46 @@
     },
 
 
-    "/accounts/password/change": {
+    "/accounts/user/{uid}/password/change": {
       "post": {
         "tags": ["Accounts"],
         "parameters": [
           {"$ref": "#/parameters/token"},
+          {"name": "uid", "required": true, "default": -1, "in": "path", "type": "integer"},
           {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormChangePassword"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/accounts/user/{email}/password/recover": {
+      "post": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "email", "required": true, "default": -1, "in": "path", "type": "integer"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/accounts/user/{uid}/password/reset/{recoveryToken}": {
+      "post": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "uid", "required": true, "default": -1, "in": "path", "type": "integer"},
+          {"name": "recoveryToken", "required": true, "default": -1, "in": "path", "type": "string"}
         ],
         "responses": {
           "401": {},
@@ -627,7 +673,6 @@
     "FormChangePassword": {
       "type": "object",
       "properties": {
-        "email":                 {"type": "string"},
         "passwordPrevious":      {"type": "string"},
         "passwordNext":          {"type": "string"},
         "passwordConfirmNext":   {"type": "string"}

@@ -64,7 +64,7 @@ class UserManagerPassword {
 
         $recoLink = strtr(
             self::RECOVERY_LINK_URL_TEMPLATE, [
-                '{token}' => DataEncrypter::encrypt(json_encode($tempVar->getData())),
+                '{token}' => DataEncrypter::encryptStr(json_encode($tempVar->getData())),
                 '{email}' => $this->user->getEmail()
             ]
         );
@@ -75,7 +75,7 @@ class UserManagerPassword {
     }
 
     public function resetPasswordWithToken($token) {
-        $userRecoToken = RecoveryToken::fromToken(DataEncrypter::decrypt($token));
+        $userRecoToken = RecoveryToken::fromToken(DataEncrypter::decryptStr($token));
 
         // Check if request is authentic
         $tempVar = SystemTempVarQuery::create()

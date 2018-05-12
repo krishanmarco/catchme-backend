@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer 1.0 © */
 
 namespace Mobile\Auth;
+use Security\DataEncrypter;
 use User;
 use UserQuery;
 
@@ -27,13 +28,10 @@ class Authentication {
 
         // The encryptedHttpAuthentication was encrypted from the client
         // using the public RSA corresponding to self::RSA_PRIVATE_KEY
-        $authToken = null;
-
-        openssl_private_decrypt(base64_decode($this->encryptedAuthToken), $authToken, CATCHME_API_PRIVATE_KEY, OPENSSL_PKCS1_PADDING);
+        $authToken = DataEncrypter::decryptStr($this->encryptedAuthToken);
 
         // if $encryptedAuthToken is valid,
         // the decryption result will be a valid json
-
         $authToken = json_decode($authToken, JSON_OBJECT_AS_ARRAY);
         if (is_null($authToken))
             return false;
@@ -80,13 +78,7 @@ class MobileUserAuth {
     }
 
     public static function buildTokenStr($id, $key) {
-
-        $token = json_encode(self::buildTokenObj($id, $key));
-
-        $encrypted = null;
-        openssl_public_encrypt($token, $encrypted, CATCHME_API_PUBLIC_KEY);
-
-        return base64_encode($encrypted);
+        return DataEncrypter::encryptStr(json_encode(self::buildTokenObj($id, $key)));
     }
 
 

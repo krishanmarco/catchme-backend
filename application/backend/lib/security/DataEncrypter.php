@@ -4,14 +4,26 @@ namespace Security;
 
 class DataEncrypter {
 
-    public static function encrypt($string) {
-        // todo
-        return $string;
+    public static function encryptStr($string) {
+        $encrypted = null;
+        openssl_public_encrypt(
+            $string,
+            $encrypted,
+            CATCHME_API_PUBLIC_KEY
+        );
+        $encrypted = base64_encode($encrypted);
+        return $encrypted;
     }
 
-    public static function decrypt($string) {
-        // todo
-        return $string;
+    public static function decryptStr($string) {
+        $decrypted = null;
+        openssl_private_decrypt(
+            base64_decode($string),
+            $decrypted,
+            CATCHME_API_PRIVATE_KEY,
+            OPENSSL_PKCS1_PADDING
+        );
+        return $decrypted;
     }
 
 

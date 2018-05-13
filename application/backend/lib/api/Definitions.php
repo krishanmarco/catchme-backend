@@ -116,6 +116,7 @@ class UserLocations {
 
 class UserConnections {
     public $friends =           [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [User::class]];
+    public $pending =           [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [User::class]];
     public $requests =          [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [User::class]];
     public $blocked =           [Rule::ruleIsset => [], 		Rule::ruleArrayOf => [User::class]];
 }

@@ -27,7 +27,7 @@ abstract class ApiRules {
 
     public static function validateId($fieldValue) {
 
-        if (!(v::intVal()->min(0)->validate($fieldValue)))
+        if (!(v::intVal()->min(-1)->validate($fieldValue)))
             return R::return_error_field_length;
 
         return R::return_ok;

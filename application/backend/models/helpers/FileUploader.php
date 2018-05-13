@@ -51,11 +51,8 @@ class FileUploader {
         // Create a new unique name for this file
         $uniqueName = uniqueName();
 
-        // Move it to the correct dir
-        $this->saveUpload($destinationPath, $uniqueName);
-
-        // Recreate the full path
-        $currentFullPath = "{$destinationPath}/{$uniqueName}";
+        // Save the image regularly
+        $currentFullPath = $this->saveUpload($destinationPath, $uniqueName);
 
         // Calculate the file hash
         $filehash = filehash($currentFullPath);

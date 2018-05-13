@@ -15,7 +15,6 @@ use Models\Calculators\Users\UserLocationsResult;
 use Models\Calculators\Users\UserSuggestedFriends;
 use Models\Calculators\Users\UserSuggestedFriendsResult;
 use User as User;
-use Location as Location;
 use UserQuery as UserQuery;
 
 

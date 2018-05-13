@@ -44,7 +44,6 @@ class UserSuggestedFriends {
         // only the ids are needed
         $friendIds = UserQueriesWrapper::getUsersFriendIds([$this->getUser()->getId()]);
 
-
         // Get the friends of the selected friends
         // Note, the array returned by array_unique is ASSOCIATIVE
         $suggestedIds = array_unique(UserQueriesWrapper::getUsersFriendIds($friendIds));

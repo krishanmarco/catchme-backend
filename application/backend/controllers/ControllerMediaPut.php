@@ -3,16 +3,14 @@
 namespace Controllers;
 
 use Models\Calculators\UserModel;
-use Models\Feed\MultiFeedManager;
+use Models\Feed\MultiNotificationManager;
 use Models\Location\LocationImagesModel;
 use Models\User\Accounts\UserEditProfile;
 use Firebase\FeedManager;
 use Firebase\FeedItems\FeedItemFriendAddedImage;
-use Firebase\FeedItems\FeedItemUserAttendanceRequest;
 use FileUploader;
 use Slim\Exception\Api400;
 use Slim\Http\UploadedFile;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use User as DbUser;
 use EMediaType;
 use R;
@@ -50,7 +48,7 @@ class ControllerMediaPut {
                 '{LID}' => $locationImage->getLocationId()
             ]);
 
-            FileUploader::build($uploadedFile)  // todo add hash column to database images and use saveUploadUnique
+            FileUploader::build($uploadedFile)
                 ->saveUpload($savePath, $locationImage->getId());
 
         } catch (Api400 $apiException) {
@@ -59,7 +57,7 @@ class ControllerMediaPut {
             throw $apiException;
         }
 
-        $mfm = new MultiFeedManager($this->authenticatedUser);
+        $mfm = new MultiNotificationManager($this->authenticatedUser);
 
         // Add the notification item to firebase
         FeedManager::build($this->authenticatedUser)

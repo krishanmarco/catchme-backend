@@ -1,10 +1,12 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Catch Me 1.0 © */
 
+use \Routes\RoutesAdmin;
 use \Routes\RoutesPrivate;
 use \Routes\RoutesPublic;
 use \Routes\RoutesProtected;
 use \Slim\Middleware\MiddlewareValidator;
 use \Slim\Middleware\MiddlewareUserAuth;
+use \Slim\Middleware\MiddlewarePublic;
 use \Slim\Middleware\MiddlewareAuth;
 use \Slim\Exception\ApiExceptionHandler;
 
@@ -48,6 +50,12 @@ $app->group('', function () use ($app) {
     $app->get('/meta/token/{uid:[-0-9]+}/{key}', RoutesPublic::token);
 });
 
+$app->group('', function () use ($app) {
+
+    // /accounts/user/{uid}/password/reset?token=abcdef
+    $app->get('/accounts/user/{uid}/password/reset', RoutesProtected::accountsPasswordReset);
+})->add(new MiddlewarePublic($app->getContainer()));;
+
 
 /** Anonymous authenticated web
  * -----------------------------------------------------------------
@@ -66,6 +74,11 @@ $app->group('', function () use ($app) {
 
     $app->post('/accounts/register', RoutesProtected::accountsRegister)
         ->add(new MiddlewareValidator(Api\FormUserRegister::class));
+
+    $app->post('/accounts/user/{uid}/password/change', RoutesProtected::accountsPasswordChange)
+        ->add(new MiddlewareValidator(Api\FormChangePassword::class));
+
+    $app->get('/accounts/user/{email}/password/recover', RoutesProtected::accountsPasswordRecover);
 
     $app->get('/media/get/{typeId:[0-9]+}/{itemId:[0-9]+}/{imageId:[0-9]+}[{ext:.*}]', RoutesProtected::mediaGetTypeIdItemIdImageId);
 
@@ -118,6 +131,20 @@ $app->group('', function () use ($app) {
     $app->post('/media/add/{typeId:[0-9]+}/{itemId:[0-9]+}', RoutesPrivate::mediaAddTypeIdItemId);
 
 })->add(new MiddlewareUserAuth($app->getContainer()));
+
+
+
+
+/** User authenticated as admin
+ * -----------------------------------------------------------------
+ * Private Admin access, api and user key and user access verification
+ */
+$app->group('', function () use ($app) {
+
+    $app->post('/admin/featuredAds/sendAttendanceRequest', RoutesAdmin::sendFeaturedAdAttendanceRequest)
+        ->add(new MiddlewareValidator(Api\FormFeaturedAdAdd::class));
+
+})->add(new MiddlewareUserAuth($app->getContainer(), EAccessLevel::ADMIN));
 
 
 $app->run();

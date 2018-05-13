@@ -21,7 +21,10 @@ class UserLoginValidations {
         return $this->user;
     }
 
-
+    public function checkExistsAndPassword($password) {
+        $this->checkExists();
+        $this->checkPassword($password);
+    }
 
     public function checkExistsBannedAndPassword($inPassword) {
         $this->checkExistsAndBanned();

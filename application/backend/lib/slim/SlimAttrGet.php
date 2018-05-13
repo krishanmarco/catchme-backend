@@ -1,16 +1,19 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
 
 namespace Slim;
+
 use \Psr\Http\Message\ServerRequestInterface;
 use Psr\Container\ContainerInterface;
 use Routes\Accessors\ControllerAccessorAuth;
+use Routes\Accessors\ControllerAccessorAuthAdmin;
 use Routes\Accessors\ControllerAccessorUnauth;
 
 
 abstract class SlimAttrGet {
-    
+
     const FIELD_AUTHENTICATED_CONTROLLER = 'fieldAuthenticatedController';
     const FIELD_UNAUTHENTICATED_CONTROLLER = 'fieldUnauthenticatedController';
+    const FIELD_AUTHENTICATED_ADMIN_CONTROLLER = 'fieldAuthenticatedAdminController';
     const FIELD_INPUT_DATA = 'fieldInputData';
 
 
@@ -26,6 +29,16 @@ abstract class SlimAttrGet {
     }
 
 
+    public static function putAuthenticatedAdminController(ContainerInterface $container,
+                                                           ControllerAccessorAuthAdmin $controller) {
+        $container[self::FIELD_AUTHENTICATED_ADMIN_CONTROLLER] = $controller;
+        return $container;
+    }
+
+    /** @return ControllerAccessorAuthAdmin */
+    public static function getAuthenticatedAdminController(ContainerInterface $container) {
+        return $container->get(self::FIELD_AUTHENTICATED_ADMIN_CONTROLLER);
+    }
 
 
     public static function putUnAuthenticatedController(ContainerInterface $container,
@@ -38,8 +51,6 @@ abstract class SlimAttrGet {
     public static function getUnAuthenticatedController(ContainerInterface $container) {
         return $container->get(self::FIELD_UNAUTHENTICATED_CONTROLLER);
     }
-
-
 
 
     public static function putInputData(ServerRequestInterface $request, $data) {

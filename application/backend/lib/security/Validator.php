@@ -110,7 +110,13 @@ class Validator {
 
             // Only validate a field if it is set because
             // isset is a validator in itself
-            if (!isset($fieldValue) && !in_array(ApiRules::ruleIsset, array_keys($validators)))
+            $shouldBeValidated = isset($fieldValue);
+            if (is_string($fieldValue))
+                $shouldBeValidated &= strlen($fieldValue);
+            else if ($fieldValue instanceof \Countable)
+                $shouldBeValidated &= sizeof($fieldValue);
+
+            if (!$shouldBeValidated && !in_array(ApiRules::ruleIsset, array_keys($validators)))
                 continue;
 
             // Execute the sub function

@@ -19,11 +19,9 @@ class UserQueriesWrapper {
      * ids that the input array of user ids are subscribed to
      *
      * @param int[] $userIds        Array of user ids
-     * @param bool $orderByCount    If true the results get ordered by count
      * @return int[]                Location ids that $userIds are subscribed to
      */
     public static function getUsersLocationIds(array $userIds) {
-
 
         $userFavoriteLocationQuery = UserLocationFavoriteQuery::create()
             ->select([UserLocationFavoriteTableMap::COL_LOCATION_ID])
@@ -49,6 +47,8 @@ class UserQueriesWrapper {
 
     /** @return int[] */
     public static function getUsersFriendIds(array $userIds) {
+        if (sizeof($userIds) <= 0)
+            return [];
 
         // This query is too complicated for the propel api
         // Use custom sql
@@ -71,14 +71,12 @@ class UserQueriesWrapper {
         ));
         $statement->execute();
 
-
-        $userIds = array_map(
+        $result = array_map(
             function($row) { return intval($row['id']); },
             $statement->fetchAll(\PDO::FETCH_ASSOC)
         );
 
-
-        return $userIds;
+        return $result;
     }
 
 

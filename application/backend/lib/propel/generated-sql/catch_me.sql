@@ -21,8 +21,9 @@ CREATE TABLE `user`
     `signup_ts` INTEGER(10) DEFAULT 1483228800 NOT NULL,
     `gender` TINYINT(1) DEFAULT 0 NOT NULL,
     `reputation` INTEGER DEFAULT 0 NOT NULL,
-    `setting_privacy` VARCHAR(255) DEFAULT '333' NOT NULL,
+    `setting_privacy` VARCHAR(255) DEFAULT '222' NOT NULL,
     `setting_notifications` VARCHAR(255) DEFAULT '11111' NOT NULL,
+    `access_level` TINYINT DEFAULT 0 NOT NULL,
     `phone` VARCHAR(255),
     `public_message` VARCHAR(255),
     `picture_url` VARCHAR(255),
@@ -65,7 +66,6 @@ CREATE TABLE `location`
     `email` VARCHAR(255),
     `phone` VARCHAR(255),
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `location_u_ce4c89` (`email`),
     INDEX `location_i_db2f7c` (`id`),
     INDEX `location_fi_f2be84` (`admin_id`)
 ) ENGINE=MyISAM;

@@ -1,8 +1,10 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer 1.0 © */
 
 namespace Mobile\Auth;
+use Security\DataEncrypter;
 use User;
 use UserQuery;
+use EAccessLevel;
 
 
 class Authentication {
@@ -27,13 +29,10 @@ class Authentication {
 
         // The encryptedHttpAuthentication was encrypted from the client
         // using the public RSA corresponding to self::RSA_PRIVATE_KEY
-        $authToken = null;
-
-        openssl_private_decrypt(base64_decode($this->encryptedAuthToken), $authToken, CATCHME_API_PRIVATE_KEY, OPENSSL_PKCS1_PADDING);
+        $authToken = DataEncrypter::privateDecryptStr($this->encryptedAuthToken);
 
         // if $encryptedAuthToken is valid,
         // the decryption result will be a valid json
-
         $authToken = json_decode($authToken, JSON_OBJECT_AS_ARRAY);
         if (is_null($authToken))
             return false;
@@ -80,26 +79,19 @@ class MobileUserAuth {
     }
 
     public static function buildTokenStr($id, $key) {
-
-        $token = json_encode(self::buildTokenObj($id, $key));
-
-        $encrypted = null;
-        openssl_public_encrypt($token, $encrypted, CATCHME_API_PUBLIC_KEY);
-
-        return base64_encode($encrypted);
+        return DataEncrypter::publicEncryptStr(json_encode(self::buildTokenObj($id, $key)));
     }
 
-
-
-
-    public function __construct($encryptedAuthToken) {
+    public function __construct($encryptedAuthToken, $accessLevel = EAccessLevel::USER) {
         $this->authenticator = new Authentication($encryptedAuthToken);
+        $this->accessLevel = $accessLevel;
     }
 
     /** @var Authentication $authenticator */
     private $authenticator;
 
-
+    /** @var int<EAccessLevel> $accessLevel */
+    private $accessLevel;
 
     /** @var User $verifiedUser */
     private $verifiedUser;
@@ -107,8 +99,6 @@ class MobileUserAuth {
     public function getVerifiedUser() {
         return $this->verifiedUser;
     }
-
-
 
 
     public function authenticate() {
@@ -142,10 +132,13 @@ class MobileUserAuth {
         if (strtoupper($localMD5) != strtoupper($authToken->key))
             return false;
 
+        // Verify the expected access level
+        if ($user->getAccessLevel() < $this->accessLevel)
+            return false;
+
         // The request is verified successfully
         // Save the user as verified
         $this->verifiedUser = $user;
-
 
         return true;
     }

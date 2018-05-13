@@ -28,6 +28,20 @@ class FormLocationRegister {
     public $timings =           [Rule::ruleIsset => [],         Rule::ruleLongString => [168, 168]];
 }
 
+class FormChangePassword {
+    public $passwordPrevious =      [Rule::ruleIsset => [],         Rule::rulePassword => []];
+    public $passwordNext =          [Rule::ruleIsset => [],         Rule::rulePassword => []];
+    public $passwordConfirmNext =   [Rule::ruleIsset => [],         Rule::rulePassword => []];
+}
+
+class FormFeaturedAdAdd {
+    public $title =             [Rule::ruleIsset => [],         Rule::ruleMediumString];
+    public $locationId =        [Rule::ruleIsset => [],         Rule::ruleId];
+    public $image =             [Rule::ruleIsset => [],         Rule::ruleUrl];
+    public $subTitle =          [                               Rule::ruleMediumString => []];
+    public $expiry =            [                               Rule::ruleTimestamp => []];
+}
+
 class SearchStrings {
     public $queries =           [Rule::ruleIsset => []];
 }
@@ -117,6 +131,7 @@ class ExceptionResponse {
     public $errorCode =         [Rule::ruleIsset => [], 		Rule::ruleInt => []];
     public $logMessage =        [Rule::ruleIsset => [], 		Rule::ruleLongString => []];
     public $errors =            [];
+    public $_ =                 [];
 }
 
 

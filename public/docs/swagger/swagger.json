@@ -38,6 +38,12 @@
       "in": "path",
       "type": "integer"
     },
+    "email": {
+      "name": "email",
+      "required": true,
+      "in": "path",
+      "type": "string"
+    },
     "lid": {
       "name": "lid",
       "required": true,
@@ -58,6 +64,12 @@
     },
     "seed": {
       "name": "seed",
+      "required": true,
+      "in": "path",
+      "type": "string"
+    },
+    "recoveryToken": {
+      "name": "recoveryToken",
       "required": true,
       "in": "path",
       "type": "string"
@@ -145,6 +157,56 @@
           "401": {},
           "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
           "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/accounts/user/{uid}/password/change": {
+      "post": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "uid", "required": true, "default": -1, "in": "path", "type": "integer"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormChangePassword"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/accounts/user/{email}/password/recover": {
+      "get": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "email", "required": true, "default": -1, "in": "path", "type": "string"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/accounts/user/{uid}/password/reset?token={recoveryToken}": {
+      "get": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "uid", "required": true, "default": -1, "in": "path", "type": "integer"},
+          {"name": "recoveryToken", "required": true, "default": -1, "in": "path", "type": "string"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
         }
       }
     },
@@ -576,6 +638,25 @@
           "200": {}
         }
       }
+    },
+
+
+    "/admin/featuredAds/sendAttendanceRequest": {
+      "post": {
+        "tags": ["Admin"],
+        "consumes": ["multipart/form-data"],
+        "supportHeaderParams": true,
+        "headers": { "Content-Type": "multipart/form-data" },
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormFeaturedAdAdd"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
     }
 
 
@@ -583,6 +664,17 @@
 
 
   "definitions": {
+
+    "FormFeaturedAdAdd": {
+      "type": "object",
+      "properties": {
+        "title":          {"type": "string"},
+        "subTitle":       {"type": "string"},
+        "locationId":     {"type": "integer"},
+        "image":          {"type": "string"},
+        "expiry":         {"type": "integer"}
+      }
+    },
 
     "FormUserLogin": {
       "type": "object",
@@ -605,6 +697,15 @@
         "name":           {"type": "string"},
         "email":          {"type": "string"},
         "password":       {"type": "string"}
+      }
+    },
+
+    "FormChangePassword": {
+      "type": "object",
+      "properties": {
+        "passwordPrevious":      {"type": "string"},
+        "passwordNext":          {"type": "string"},
+        "passwordConfirmNext":   {"type": "string"}
       }
     },
 
@@ -737,6 +838,7 @@
       "type": "object",
       "properties": {
         "friends":        {"type": "array", "items": {"$ref": "#/definitions/User"}},
+        "pending":        {"type": "array", "items": {"$ref": "#/definitions/User"}},
         "requests":       {"type": "array", "items": {"$ref": "#/definitions/User"}},
         "blocked":        {"type": "array", "items": {"$ref": "#/definitions/User"}}
       }

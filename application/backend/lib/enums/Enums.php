@@ -24,3 +24,12 @@ class EPrivacy {
     const EVERYONE = '2';
 }
 
+class ESystemTempVar {
+    const PASSWORD_RECO = 0;
+}
+
+class EAccessLevel {
+    const USER = 0;
+    const ADMIN = 1;
+}
+

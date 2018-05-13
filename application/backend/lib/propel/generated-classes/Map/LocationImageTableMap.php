@@ -59,7 +59,7 @@ class LocationImageTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 6;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class LocationImageTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 6;
 
     /**
      * the column name for the id field
@@ -97,6 +97,11 @@ class LocationImageTableMap extends TableMap
     const COL_APPROVED = 'location_image.approved';
 
     /**
+     * the column name for the hash field
+     */
+    const COL_HASH = 'location_image.hash';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -108,11 +113,11 @@ class LocationImageTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'LocationId', 'InserterId', 'InsertedTs', 'Approved', ),
-        self::TYPE_CAMELNAME     => array('id', 'locationId', 'inserterId', 'insertedTs', 'approved', ),
-        self::TYPE_COLNAME       => array(LocationImageTableMap::COL_ID, LocationImageTableMap::COL_LOCATION_ID, LocationImageTableMap::COL_INSERTER_ID, LocationImageTableMap::COL_INSERTED_TS, LocationImageTableMap::COL_APPROVED, ),
-        self::TYPE_FIELDNAME     => array('id', 'location_id', 'inserter_id', 'inserted_ts', 'approved', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id', 'LocationId', 'InserterId', 'InsertedTs', 'Approved', 'Hash', ),
+        self::TYPE_CAMELNAME     => array('id', 'locationId', 'inserterId', 'insertedTs', 'approved', 'hash', ),
+        self::TYPE_COLNAME       => array(LocationImageTableMap::COL_ID, LocationImageTableMap::COL_LOCATION_ID, LocationImageTableMap::COL_INSERTER_ID, LocationImageTableMap::COL_INSERTED_TS, LocationImageTableMap::COL_APPROVED, LocationImageTableMap::COL_HASH, ),
+        self::TYPE_FIELDNAME     => array('id', 'location_id', 'inserter_id', 'inserted_ts', 'approved', 'hash', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -122,11 +127,11 @@ class LocationImageTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'LocationId' => 1, 'InserterId' => 2, 'InsertedTs' => 3, 'Approved' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'locationId' => 1, 'inserterId' => 2, 'insertedTs' => 3, 'approved' => 4, ),
-        self::TYPE_COLNAME       => array(LocationImageTableMap::COL_ID => 0, LocationImageTableMap::COL_LOCATION_ID => 1, LocationImageTableMap::COL_INSERTER_ID => 2, LocationImageTableMap::COL_INSERTED_TS => 3, LocationImageTableMap::COL_APPROVED => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'location_id' => 1, 'inserter_id' => 2, 'inserted_ts' => 3, 'approved' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'LocationId' => 1, 'InserterId' => 2, 'InsertedTs' => 3, 'Approved' => 4, 'Hash' => 5, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'locationId' => 1, 'inserterId' => 2, 'insertedTs' => 3, 'approved' => 4, 'hash' => 5, ),
+        self::TYPE_COLNAME       => array(LocationImageTableMap::COL_ID => 0, LocationImageTableMap::COL_LOCATION_ID => 1, LocationImageTableMap::COL_INSERTER_ID => 2, LocationImageTableMap::COL_INSERTED_TS => 3, LocationImageTableMap::COL_APPROVED => 4, LocationImageTableMap::COL_HASH => 5, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'location_id' => 1, 'inserter_id' => 2, 'inserted_ts' => 3, 'approved' => 4, 'hash' => 5, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
     );
 
     /**
@@ -151,6 +156,7 @@ class LocationImageTableMap extends TableMap
         $this->addForeignKey('inserter_id', 'InserterId', 'INTEGER', 'user', 'id', true, null, null);
         $this->addColumn('inserted_ts', 'InsertedTs', 'INTEGER', true, 10, null);
         $this->addColumn('approved', 'Approved', 'BOOLEAN', true, 1, false);
+        $this->addColumn('hash', 'Hash', 'VARCHAR', true, 32, null);
     } // initialize()
 
     /**
@@ -320,12 +326,14 @@ class LocationImageTableMap extends TableMap
             $criteria->addSelectColumn(LocationImageTableMap::COL_INSERTER_ID);
             $criteria->addSelectColumn(LocationImageTableMap::COL_INSERTED_TS);
             $criteria->addSelectColumn(LocationImageTableMap::COL_APPROVED);
+            $criteria->addSelectColumn(LocationImageTableMap::COL_HASH);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.location_id');
             $criteria->addSelectColumn($alias . '.inserter_id');
             $criteria->addSelectColumn($alias . '.inserted_ts');
             $criteria->addSelectColumn($alias . '.approved');
+            $criteria->addSelectColumn($alias . '.hash');
         }
     }
 

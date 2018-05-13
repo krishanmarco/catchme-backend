@@ -32,6 +32,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery orderByReputation($order = Criteria::ASC) Order by the reputation column
  * @method     ChildUserQuery orderBySettingPrivacy($order = Criteria::ASC) Order by the setting_privacy column
  * @method     ChildUserQuery orderBySettingNotifications($order = Criteria::ASC) Order by the setting_notifications column
+ * @method     ChildUserQuery orderByAccessLevel($order = Criteria::ASC) Order by the access_level column
  * @method     ChildUserQuery orderByPhone($order = Criteria::ASC) Order by the phone column
  * @method     ChildUserQuery orderByPublicMessage($order = Criteria::ASC) Order by the public_message column
  * @method     ChildUserQuery orderByPictureUrl($order = Criteria::ASC) Order by the picture_url column
@@ -48,6 +49,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery groupByReputation() Group by the reputation column
  * @method     ChildUserQuery groupBySettingPrivacy() Group by the setting_privacy column
  * @method     ChildUserQuery groupBySettingNotifications() Group by the setting_notifications column
+ * @method     ChildUserQuery groupByAccessLevel() Group by the access_level column
  * @method     ChildUserQuery groupByPhone() Group by the phone column
  * @method     ChildUserQuery groupByPublicMessage() Group by the public_message column
  * @method     ChildUserQuery groupByPictureUrl() Group by the picture_url column
@@ -167,6 +169,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneByReputation(int $reputation) Return the first ChildUser filtered by the reputation column
  * @method     ChildUser findOneBySettingPrivacy(string $setting_privacy) Return the first ChildUser filtered by the setting_privacy column
  * @method     ChildUser findOneBySettingNotifications(string $setting_notifications) Return the first ChildUser filtered by the setting_notifications column
+ * @method     ChildUser findOneByAccessLevel(int $access_level) Return the first ChildUser filtered by the access_level column
  * @method     ChildUser findOneByPhone(string $phone) Return the first ChildUser filtered by the phone column
  * @method     ChildUser findOneByPublicMessage(string $public_message) Return the first ChildUser filtered by the public_message column
  * @method     ChildUser findOneByPictureUrl(string $picture_url) Return the first ChildUser filtered by the picture_url column *
@@ -186,6 +189,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser requireOneByReputation(int $reputation) Return the first ChildUser filtered by the reputation column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneBySettingPrivacy(string $setting_privacy) Return the first ChildUser filtered by the setting_privacy column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneBySettingNotifications(string $setting_notifications) Return the first ChildUser filtered by the setting_notifications column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByAccessLevel(int $access_level) Return the first ChildUser filtered by the access_level column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPhone(string $phone) Return the first ChildUser filtered by the phone column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPublicMessage(string $public_message) Return the first ChildUser filtered by the public_message column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPictureUrl(string $picture_url) Return the first ChildUser filtered by the picture_url column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -203,6 +207,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser[]|ObjectCollection findByReputation(int $reputation) Return ChildUser objects filtered by the reputation column
  * @method     ChildUser[]|ObjectCollection findBySettingPrivacy(string $setting_privacy) Return ChildUser objects filtered by the setting_privacy column
  * @method     ChildUser[]|ObjectCollection findBySettingNotifications(string $setting_notifications) Return ChildUser objects filtered by the setting_notifications column
+ * @method     ChildUser[]|ObjectCollection findByAccessLevel(int $access_level) Return ChildUser objects filtered by the access_level column
  * @method     ChildUser[]|ObjectCollection findByPhone(string $phone) Return ChildUser objects filtered by the phone column
  * @method     ChildUser[]|ObjectCollection findByPublicMessage(string $public_message) Return ChildUser objects filtered by the public_message column
  * @method     ChildUser[]|ObjectCollection findByPictureUrl(string $picture_url) Return ChildUser objects filtered by the picture_url column
@@ -304,7 +309,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, email, api_key, pass_sha256, pass_salt, ban, signup_ts, gender, reputation, setting_privacy, setting_notifications, phone, public_message, picture_url FROM user WHERE id = :p0';
+        $sql = 'SELECT id, name, email, api_key, pass_sha256, pass_salt, ban, signup_ts, gender, reputation, setting_privacy, setting_notifications, access_level, phone, public_message, picture_url FROM user WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -758,6 +763,47 @@ abstract class UserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserTableMap::COL_SETTING_NOTIFICATIONS, $settingNotifications, $comparison);
+    }
+
+    /**
+     * Filter the query on the access_level column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByAccessLevel(1234); // WHERE access_level = 1234
+     * $query->filterByAccessLevel(array(12, 34)); // WHERE access_level IN (12, 34)
+     * $query->filterByAccessLevel(array('min' => 12)); // WHERE access_level > 12
+     * </code>
+     *
+     * @param     mixed $accessLevel The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByAccessLevel($accessLevel = null, $comparison = null)
+    {
+        if (is_array($accessLevel)) {
+            $useMinMax = false;
+            if (isset($accessLevel['min'])) {
+                $this->addUsingAlias(UserTableMap::COL_ACCESS_LEVEL, $accessLevel['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($accessLevel['max'])) {
+                $this->addUsingAlias(UserTableMap::COL_ACCESS_LEVEL, $accessLevel['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_ACCESS_LEVEL, $accessLevel, $comparison);
     }
 
     /**

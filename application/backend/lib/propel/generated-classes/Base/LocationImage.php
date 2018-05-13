@@ -100,6 +100,13 @@ abstract class LocationImage implements ActiveRecordInterface
     protected $approved;
 
     /**
+     * The value for the hash field.
+     *
+     * @var        string
+     */
+    protected $hash;
+
+    /**
      * @var        ChildLocation
      */
     protected $aLocation;
@@ -416,6 +423,16 @@ abstract class LocationImage implements ActiveRecordInterface
     }
 
     /**
+     * Get the [hash] column value.
+     *
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -532,6 +549,26 @@ abstract class LocationImage implements ActiveRecordInterface
     } // setApproved()
 
     /**
+     * Set the value of [hash] column.
+     *
+     * @param string $v new value
+     * @return $this|\LocationImage The current object (for fluent API support)
+     */
+    public function setHash($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->hash !== $v) {
+            $this->hash = $v;
+            $this->modifiedColumns[LocationImageTableMap::COL_HASH] = true;
+        }
+
+        return $this;
+    } // setHash()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -585,6 +622,9 @@ abstract class LocationImage implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : LocationImageTableMap::translateFieldName('Approved', TableMap::TYPE_PHPNAME, $indexType)];
             $this->approved = (null !== $col) ? (boolean) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : LocationImageTableMap::translateFieldName('Hash', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->hash = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -593,7 +633,7 @@ abstract class LocationImage implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = LocationImageTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = LocationImageTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\LocationImage'), 0, $e);
@@ -836,6 +876,9 @@ abstract class LocationImage implements ActiveRecordInterface
         if ($this->isColumnModified(LocationImageTableMap::COL_APPROVED)) {
             $modifiedColumns[':p' . $index++]  = 'approved';
         }
+        if ($this->isColumnModified(LocationImageTableMap::COL_HASH)) {
+            $modifiedColumns[':p' . $index++]  = 'hash';
+        }
 
         $sql = sprintf(
             'INSERT INTO location_image (%s) VALUES (%s)',
@@ -861,6 +904,9 @@ abstract class LocationImage implements ActiveRecordInterface
                         break;
                     case 'approved':
                         $stmt->bindValue($identifier, (int) $this->approved, PDO::PARAM_INT);
+                        break;
+                    case 'hash':
+                        $stmt->bindValue($identifier, $this->hash, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -939,6 +985,9 @@ abstract class LocationImage implements ActiveRecordInterface
             case 4:
                 return $this->getApproved();
                 break;
+            case 5:
+                return $this->getHash();
+                break;
             default:
                 return null;
                 break;
@@ -974,6 +1023,7 @@ abstract class LocationImage implements ActiveRecordInterface
             $keys[2] => $this->getInserterId(),
             $keys[3] => $this->getInsertedTs(),
             $keys[4] => $this->getApproved(),
+            $keys[5] => $this->getHash(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1060,6 +1110,9 @@ abstract class LocationImage implements ActiveRecordInterface
             case 4:
                 $this->setApproved($value);
                 break;
+            case 5:
+                $this->setHash($value);
+                break;
         } // switch()
 
         return $this;
@@ -1100,6 +1153,9 @@ abstract class LocationImage implements ActiveRecordInterface
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setApproved($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setHash($arr[$keys[5]]);
         }
     }
 
@@ -1156,6 +1212,9 @@ abstract class LocationImage implements ActiveRecordInterface
         }
         if ($this->isColumnModified(LocationImageTableMap::COL_APPROVED)) {
             $criteria->add(LocationImageTableMap::COL_APPROVED, $this->approved);
+        }
+        if ($this->isColumnModified(LocationImageTableMap::COL_HASH)) {
+            $criteria->add(LocationImageTableMap::COL_HASH, $this->hash);
         }
 
         return $criteria;
@@ -1247,6 +1306,7 @@ abstract class LocationImage implements ActiveRecordInterface
         $copyObj->setInserterId($this->getInserterId());
         $copyObj->setInsertedTs($this->getInsertedTs());
         $copyObj->setApproved($this->getApproved());
+        $copyObj->setHash($this->getHash());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1395,6 +1455,7 @@ abstract class LocationImage implements ActiveRecordInterface
         $this->inserter_id = null;
         $this->inserted_ts = null;
         $this->approved = null;
+        $this->hash = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

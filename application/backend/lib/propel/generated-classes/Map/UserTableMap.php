@@ -59,7 +59,7 @@ class UserTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 15;
+    const NUM_COLUMNS = 16;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class UserTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 15;
+    const NUM_HYDRATE_COLUMNS = 16;
 
     /**
      * the column name for the id field
@@ -132,6 +132,11 @@ class UserTableMap extends TableMap
     const COL_SETTING_NOTIFICATIONS = 'user.setting_notifications';
 
     /**
+     * the column name for the access_level field
+     */
+    const COL_ACCESS_LEVEL = 'user.access_level';
+
+    /**
      * the column name for the phone field
      */
     const COL_PHONE = 'user.phone';
@@ -158,11 +163,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Email', 'ApiKey', 'PassSha256', 'PassSalt', 'Ban', 'SignupTs', 'Gender', 'Reputation', 'SettingPrivacy', 'SettingNotifications', 'Phone', 'PublicMessage', 'PictureUrl', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'email', 'apiKey', 'passSha256', 'passSalt', 'ban', 'signupTs', 'gender', 'reputation', 'settingPrivacy', 'settingNotifications', 'phone', 'publicMessage', 'pictureUrl', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_NAME, UserTableMap::COL_EMAIL, UserTableMap::COL_API_KEY, UserTableMap::COL_PASS_SHA256, UserTableMap::COL_PASS_SALT, UserTableMap::COL_BAN, UserTableMap::COL_SIGNUP_TS, UserTableMap::COL_GENDER, UserTableMap::COL_REPUTATION, UserTableMap::COL_SETTING_PRIVACY, UserTableMap::COL_SETTING_NOTIFICATIONS, UserTableMap::COL_PHONE, UserTableMap::COL_PUBLIC_MESSAGE, UserTableMap::COL_PICTURE_URL, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'email', 'api_key', 'pass_sha256', 'pass_salt', 'ban', 'signup_ts', 'gender', 'reputation', 'setting_privacy', 'setting_notifications', 'phone', 'public_message', 'picture_url', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+        self::TYPE_PHPNAME       => array('Id', 'Name', 'Email', 'ApiKey', 'PassSha256', 'PassSalt', 'Ban', 'SignupTs', 'Gender', 'Reputation', 'SettingPrivacy', 'SettingNotifications', 'AccessLevel', 'Phone', 'PublicMessage', 'PictureUrl', ),
+        self::TYPE_CAMELNAME     => array('id', 'name', 'email', 'apiKey', 'passSha256', 'passSalt', 'ban', 'signupTs', 'gender', 'reputation', 'settingPrivacy', 'settingNotifications', 'accessLevel', 'phone', 'publicMessage', 'pictureUrl', ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_NAME, UserTableMap::COL_EMAIL, UserTableMap::COL_API_KEY, UserTableMap::COL_PASS_SHA256, UserTableMap::COL_PASS_SALT, UserTableMap::COL_BAN, UserTableMap::COL_SIGNUP_TS, UserTableMap::COL_GENDER, UserTableMap::COL_REPUTATION, UserTableMap::COL_SETTING_PRIVACY, UserTableMap::COL_SETTING_NOTIFICATIONS, UserTableMap::COL_ACCESS_LEVEL, UserTableMap::COL_PHONE, UserTableMap::COL_PUBLIC_MESSAGE, UserTableMap::COL_PICTURE_URL, ),
+        self::TYPE_FIELDNAME     => array('id', 'name', 'email', 'api_key', 'pass_sha256', 'pass_salt', 'ban', 'signup_ts', 'gender', 'reputation', 'setting_privacy', 'setting_notifications', 'access_level', 'phone', 'public_message', 'picture_url', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -172,11 +177,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Email' => 2, 'ApiKey' => 3, 'PassSha256' => 4, 'PassSalt' => 5, 'Ban' => 6, 'SignupTs' => 7, 'Gender' => 8, 'Reputation' => 9, 'SettingPrivacy' => 10, 'SettingNotifications' => 11, 'Phone' => 12, 'PublicMessage' => 13, 'PictureUrl' => 14, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'apiKey' => 3, 'passSha256' => 4, 'passSalt' => 5, 'ban' => 6, 'signupTs' => 7, 'gender' => 8, 'reputation' => 9, 'settingPrivacy' => 10, 'settingNotifications' => 11, 'phone' => 12, 'publicMessage' => 13, 'pictureUrl' => 14, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_NAME => 1, UserTableMap::COL_EMAIL => 2, UserTableMap::COL_API_KEY => 3, UserTableMap::COL_PASS_SHA256 => 4, UserTableMap::COL_PASS_SALT => 5, UserTableMap::COL_BAN => 6, UserTableMap::COL_SIGNUP_TS => 7, UserTableMap::COL_GENDER => 8, UserTableMap::COL_REPUTATION => 9, UserTableMap::COL_SETTING_PRIVACY => 10, UserTableMap::COL_SETTING_NOTIFICATIONS => 11, UserTableMap::COL_PHONE => 12, UserTableMap::COL_PUBLIC_MESSAGE => 13, UserTableMap::COL_PICTURE_URL => 14, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'api_key' => 3, 'pass_sha256' => 4, 'pass_salt' => 5, 'ban' => 6, 'signup_ts' => 7, 'gender' => 8, 'reputation' => 9, 'setting_privacy' => 10, 'setting_notifications' => 11, 'phone' => 12, 'public_message' => 13, 'picture_url' => 14, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Email' => 2, 'ApiKey' => 3, 'PassSha256' => 4, 'PassSalt' => 5, 'Ban' => 6, 'SignupTs' => 7, 'Gender' => 8, 'Reputation' => 9, 'SettingPrivacy' => 10, 'SettingNotifications' => 11, 'AccessLevel' => 12, 'Phone' => 13, 'PublicMessage' => 14, 'PictureUrl' => 15, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'apiKey' => 3, 'passSha256' => 4, 'passSalt' => 5, 'ban' => 6, 'signupTs' => 7, 'gender' => 8, 'reputation' => 9, 'settingPrivacy' => 10, 'settingNotifications' => 11, 'accessLevel' => 12, 'phone' => 13, 'publicMessage' => 14, 'pictureUrl' => 15, ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_NAME => 1, UserTableMap::COL_EMAIL => 2, UserTableMap::COL_API_KEY => 3, UserTableMap::COL_PASS_SHA256 => 4, UserTableMap::COL_PASS_SALT => 5, UserTableMap::COL_BAN => 6, UserTableMap::COL_SIGNUP_TS => 7, UserTableMap::COL_GENDER => 8, UserTableMap::COL_REPUTATION => 9, UserTableMap::COL_SETTING_PRIVACY => 10, UserTableMap::COL_SETTING_NOTIFICATIONS => 11, UserTableMap::COL_ACCESS_LEVEL => 12, UserTableMap::COL_PHONE => 13, UserTableMap::COL_PUBLIC_MESSAGE => 14, UserTableMap::COL_PICTURE_URL => 15, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'email' => 2, 'api_key' => 3, 'pass_sha256' => 4, 'pass_salt' => 5, 'ban' => 6, 'signup_ts' => 7, 'gender' => 8, 'reputation' => 9, 'setting_privacy' => 10, 'setting_notifications' => 11, 'access_level' => 12, 'phone' => 13, 'public_message' => 14, 'picture_url' => 15, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
     /**
@@ -206,8 +211,9 @@ class UserTableMap extends TableMap
         $this->addColumn('signup_ts', 'SignupTs', 'INTEGER', true, 10, 1483228800);
         $this->addColumn('gender', 'Gender', 'TINYINT', true, 1, 0);
         $this->addColumn('reputation', 'Reputation', 'INTEGER', true, null, 0);
-        $this->addColumn('setting_privacy', 'SettingPrivacy', 'VARCHAR', true, 255, '333');
-        $this->addColumn('setting_notifications', 'SettingNotifications', 'VARCHAR', true, 255, '333');
+        $this->addColumn('setting_privacy', 'SettingPrivacy', 'VARCHAR', true, 255, '222');
+        $this->addColumn('setting_notifications', 'SettingNotifications', 'VARCHAR', true, 255, '11111');
+        $this->addColumn('access_level', 'AccessLevel', 'TINYINT', true, null, 0);
         $this->addColumn('phone', 'Phone', 'VARCHAR', false, 255, null);
         $this->addColumn('public_message', 'PublicMessage', 'VARCHAR', false, 255, null);
         $this->addColumn('picture_url', 'PictureUrl', 'VARCHAR', false, 255, null);
@@ -445,6 +451,7 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_REPUTATION);
             $criteria->addSelectColumn(UserTableMap::COL_SETTING_PRIVACY);
             $criteria->addSelectColumn(UserTableMap::COL_SETTING_NOTIFICATIONS);
+            $criteria->addSelectColumn(UserTableMap::COL_ACCESS_LEVEL);
             $criteria->addSelectColumn(UserTableMap::COL_PHONE);
             $criteria->addSelectColumn(UserTableMap::COL_PUBLIC_MESSAGE);
             $criteria->addSelectColumn(UserTableMap::COL_PICTURE_URL);
@@ -461,6 +468,7 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.reputation');
             $criteria->addSelectColumn($alias . '.setting_privacy');
             $criteria->addSelectColumn($alias . '.setting_notifications');
+            $criteria->addSelectColumn($alias . '.access_level');
             $criteria->addSelectColumn($alias . '.phone');
             $criteria->addSelectColumn($alias . '.public_message');
             $criteria->addSelectColumn($alias . '.picture_url');

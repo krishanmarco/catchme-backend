@@ -25,12 +25,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationImageQuery orderByInserterId($order = Criteria::ASC) Order by the inserter_id column
  * @method     ChildLocationImageQuery orderByInsertedTs($order = Criteria::ASC) Order by the inserted_ts column
  * @method     ChildLocationImageQuery orderByApproved($order = Criteria::ASC) Order by the approved column
+ * @method     ChildLocationImageQuery orderByHash($order = Criteria::ASC) Order by the hash column
  *
  * @method     ChildLocationImageQuery groupById() Group by the id column
  * @method     ChildLocationImageQuery groupByLocationId() Group by the location_id column
  * @method     ChildLocationImageQuery groupByInserterId() Group by the inserter_id column
  * @method     ChildLocationImageQuery groupByInsertedTs() Group by the inserted_ts column
  * @method     ChildLocationImageQuery groupByApproved() Group by the approved column
+ * @method     ChildLocationImageQuery groupByHash() Group by the hash column
  *
  * @method     ChildLocationImageQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildLocationImageQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -69,7 +71,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationImage findOneByLocationId(int $location_id) Return the first ChildLocationImage filtered by the location_id column
  * @method     ChildLocationImage findOneByInserterId(int $inserter_id) Return the first ChildLocationImage filtered by the inserter_id column
  * @method     ChildLocationImage findOneByInsertedTs(int $inserted_ts) Return the first ChildLocationImage filtered by the inserted_ts column
- * @method     ChildLocationImage findOneByApproved(boolean $approved) Return the first ChildLocationImage filtered by the approved column *
+ * @method     ChildLocationImage findOneByApproved(boolean $approved) Return the first ChildLocationImage filtered by the approved column
+ * @method     ChildLocationImage findOneByHash(string $hash) Return the first ChildLocationImage filtered by the hash column *
 
  * @method     ChildLocationImage requirePk($key, ConnectionInterface $con = null) Return the ChildLocationImage by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocationImage requireOne(ConnectionInterface $con = null) Return the first ChildLocationImage matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -79,6 +82,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationImage requireOneByInserterId(int $inserter_id) Return the first ChildLocationImage filtered by the inserter_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocationImage requireOneByInsertedTs(int $inserted_ts) Return the first ChildLocationImage filtered by the inserted_ts column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocationImage requireOneByApproved(boolean $approved) Return the first ChildLocationImage filtered by the approved column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLocationImage requireOneByHash(string $hash) Return the first ChildLocationImage filtered by the hash column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildLocationImage[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildLocationImage objects based on current ModelCriteria
  * @method     ChildLocationImage[]|ObjectCollection findById(int $id) Return ChildLocationImage objects filtered by the id column
@@ -86,6 +90,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationImage[]|ObjectCollection findByInserterId(int $inserter_id) Return ChildLocationImage objects filtered by the inserter_id column
  * @method     ChildLocationImage[]|ObjectCollection findByInsertedTs(int $inserted_ts) Return ChildLocationImage objects filtered by the inserted_ts column
  * @method     ChildLocationImage[]|ObjectCollection findByApproved(boolean $approved) Return ChildLocationImage objects filtered by the approved column
+ * @method     ChildLocationImage[]|ObjectCollection findByHash(string $hash) Return ChildLocationImage objects filtered by the hash column
  * @method     ChildLocationImage[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -184,7 +189,7 @@ abstract class LocationImageQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, location_id, inserter_id, inserted_ts, approved FROM location_image WHERE id = :p0';
+        $sql = 'SELECT id, location_id, inserter_id, inserted_ts, approved, hash FROM location_image WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -467,6 +472,31 @@ abstract class LocationImageQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(LocationImageTableMap::COL_APPROVED, $approved, $comparison);
+    }
+
+    /**
+     * Filter the query on the hash column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByHash('fooValue');   // WHERE hash = 'fooValue'
+     * $query->filterByHash('%fooValue%', Criteria::LIKE); // WHERE hash LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $hash The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildLocationImageQuery The current query, for fluid interface
+     */
+    public function filterByHash($hash = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($hash)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(LocationImageTableMap::COL_HASH, $hash, $comparison);
     }
 
     /**

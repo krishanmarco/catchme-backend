@@ -1,57 +1,52 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 07/10/2017 - Fithancer © */
 
-namespace Firebase\FeedItems;
+namespace Firebase\FeaturedAdItems;
+use Api\FormFeaturedAdAdd;
 
-use User;
-use Location;
+final class FeaturedAdItemAttendanceRequest extends FeaturedAdItemBuilder {
 
-final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
-
-    public function __construct(User $currentUser, Location $location) {
+    public function __construct(FormFeaturedAdAdd $formFeaturedAdAdd) {
         parent::__construct();
-        $this->currentUser = $currentUser;
-        $this->location = $location;
+        $this->featuredAd = $formFeaturedAdAdd;
     }
 
-
-    /** @var User $currentUser */
-    private $currentUser;
-    /** @var Location $location */
-    private $location;
-
+    /** @var FormFeaturedAdAdd $featuredAd */
+    private $featuredAd;
 
     public function setExpiry() {
-        return FeedItem::EXPIRY_NEVER;
+        if (isset($this->featuredAd->expiry))
+            return $this->featuredAd->expiry;
+        return FeaturedAdItem::EXPIRY_NEVER;
     }
 
-    public function setConsumeOnView() {
-        return false;
+    protected function setTitle() {
+        return $this->featuredAd->title;
     }
 
-    public function setContent() {
-        return "<b>{$this->currentUser->getName()}</b> will be at <b>{$this->location->getName()}</b>, will you be there too?";
+    protected function setSubTitle() {
+        return $this->featuredAd->subTitle;
     }
 
-    protected function setLeftAvatar() {
-        return $this->currentUser->getPictureUrl();
-    }
-
-    protected function setRightAvatar() {
-        return null;
+    protected function setImage() {
+        return $this->featuredAd->image;
     }
 
     public function setActions() {
-        return [FeedItem::ACTION_ATTENDANCE_CONFIRM];
+        return [
+            FeaturedAdItem::ACTION_ATTENDANCE_CONFIRM,
+            FeaturedAdItem::ACTION_LOCATION_FOLLOW,
+        ];
     }
 
     protected function setClickAction() {
-        return [FeedItem::ACTION_GOTO_LOCATION_PROFILE];
+        return [FeaturedAdItem::ACTION_GOTO_LOCATION_PROFILE];
     }
 
     public function setPayload() {
         $class = new \stdClass();
-        $class->locationId = $this->location->getId();
+        $class->locationId = $this->featuredAd->locationId;
         return $class;
     }
-    
+
+
 }

@@ -4,8 +4,8 @@ namespace Firebase\FeaturedAdItems;
 
 /**
     FeaturedAdItem: {
-        id: 1,                                      // (P) (!) Unique feed item identifier
-        time: 10000000000,                          // (P) (!) Seconds in which the feed was generated
+        id: 1,                                      // (P) (!) Unique featuredAd item identifier
+        time: 10000000000,                          // (P) (!) Seconds in which the featuredAd was generated
 
         title: 'AreaDocks - DJ Alvarez'             // (P) (!) Title text
         subTitle: 'Monday 27 October @AreaDocks'    // (P) (?) Subtitle text
@@ -13,7 +13,7 @@ namespace Firebase\FeaturedAdItems;
 
         expiry: -1,                                 // (C) (!) Seconds of expiry, if expired the item is not displayed (-1 means never)
         clickAction: 'LocationGoToProfile',         // (C) (?) Action to be triggered when the item is clicked
-        actions: [                                  // (C) (?) {ACTION}s. When an action is triggered a feed object is passed in
+        actions: [                                  // (C) (?) {ACTION}s. When an action is triggered a featuredAd object is passed in
             'FriendshipRequestAccept',              // (C) (?) {ACTION}
             'FriendshipRequestDeny',                // (C) (?) {ACTION}
             ...                                     // (C) (?) {ACTION}

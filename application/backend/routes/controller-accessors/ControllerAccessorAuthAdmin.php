@@ -1,44 +1,20 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
 
 namespace Routes\Accessors;
-use Controllers\ControllerLocations;
-use Controllers\ControllerMediaPut;
-use Controllers\ControllerUsers;
-use User;
-use Controllers\ControllerUser;
-use Controllers\ControllerSearch;
+use Controllers\ControllerAdmin;
+use User as DbUser;
 
+class ControllerAccessorAuthAdmin {
 
-class ControllerAccessorAuth {
-
-    public function __construct(User $user) {
-        $this->authenticatedUser = $user;
+    public function __construct(DbUser $authAdmin) {
+        $this->authAdmin = $authAdmin;
     }
 
-    /** @var User $authenticatedUser */
-    private $authenticatedUser;
+    /** @var DbUser $authAdmin */
+    private $authAdmin;
 
-
-
-
-    public function locations($locationId) {
-        return new ControllerLocations($this->authenticatedUser, $locationId);
-    }
-
-    public function search() {
-        return new ControllerSearch($this->authenticatedUser);
-    }
-
-    public function users($userId) {
-        return new ControllerUsers($this->authenticatedUser, $userId);
-    }
-
-    public function user() {
-        return new ControllerUser($this->authenticatedUser);
-    }
-
-    public function media() {
-        return new ControllerMediaPut($this->authenticatedUser);
+    public function asAdmin() {
+        return new ControllerAdmin($this->authAdmin);
     }
 
 }

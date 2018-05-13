@@ -303,8 +303,6 @@
     <column       name="inserter_id"               type="INTEGER"             required="true"                                                                                   />
     <column       name="inserted_ts"               type="INTEGER"             required="true"    size="10"                                                                      />
     <column       name="approved"                  type="BOOLEAN"             required="true"                 defaultValue="0"                                                  />
-    <column       name="hash"                      type="VARCHAR"             required="true"    size="32"                                                                      />
-
 
     <foreign-key foreignTable="location" phpName="Location" refPhpName="Image">
       <reference local="location_id" foreign="id"/>

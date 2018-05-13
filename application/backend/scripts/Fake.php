@@ -126,14 +126,18 @@ function generateFakeLocationImages() {
             $locationImg->setInsertedTs(time() + rand(-(3 * 60 * 60), 0));
             $locationImg->setApproved(1);
             $locationImg->save();
+
+            // Download and save the image in the correct dir
+            $savePath = strtr(LOCATION_MEDIA_DIR_TPL . '/{IMG_ID}', [
+                '{LID}' => $locationImg->getLocationId(),
+                '{IMG_ID}' => $locationImg->getId()
+            ]);
+            file_put_contents($savePath, file_get_contents($faker->image(null, 100, 100)));
         }
     }
 }
 
 function updateFakeLocationImages() {
-    $faker = Faker\Factory::create();
-    $faker->seed(1234);
-
 
     $uu = LocationImageQuery::create()->find();
     foreach ($uu as $locationImage) {

@@ -203,7 +203,6 @@ CREATE TABLE `location_image`
     `inserter_id` INTEGER NOT NULL,
     `inserted_ts` INTEGER(10) NOT NULL,
     `approved` TINYINT(1) DEFAULT 0 NOT NULL,
-    `hash` VARCHAR(32) NOT NULL,
     PRIMARY KEY (`id`),
     INDEX `location_image_i_5d8314` (`location_id`),
     INDEX `location_image_fi_bd7f1d` (`inserter_id`)

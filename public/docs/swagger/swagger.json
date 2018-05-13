@@ -638,6 +638,25 @@
           "200": {}
         }
       }
+    },
+
+
+    "/admin/featuredAds/sendAttendanceRequest": {
+      "post": {
+        "tags": ["Admin"],
+        "consumes": ["multipart/form-data"],
+        "supportHeaderParams": true,
+        "headers": { "Content-Type": "multipart/form-data" },
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormFeaturedAdAdd"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
     }
 
 
@@ -645,6 +664,17 @@
 
 
   "definitions": {
+
+    "FormFeaturedAdAdd": {
+      "type": "object",
+      "properties": {
+        "title":          {"type": "string"},
+        "subTitle":       {"type": "string"},
+        "locationId":     {"type": "integer"},
+        "image":          {"type": "string"},
+        "expiry":         {"type": "integer"}
+      }
+    },
 
     "FormUserLogin": {
       "type": "object",
@@ -808,6 +838,7 @@
       "type": "object",
       "properties": {
         "friends":        {"type": "array", "items": {"$ref": "#/definitions/User"}},
+        "pending":        {"type": "array", "items": {"$ref": "#/definitions/User"}},
         "requests":       {"type": "array", "items": {"$ref": "#/definitions/User"}},
         "blocked":        {"type": "array", "items": {"$ref": "#/definitions/User"}}
       }

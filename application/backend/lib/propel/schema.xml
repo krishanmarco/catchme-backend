@@ -22,6 +22,8 @@
     <column       name="setting_privacy"            type="VARCHAR"      required="true"                   defaultValue="222"                                           />
     <column       name="setting_notifications"      type="VARCHAR"      required="true"                   defaultValue="11111"                                         />
 
+    <column       name="access_level"               type="TINYINT"      required="true"                   defaultValue="0"                                             />
+
     <column       name="phone"                      type="VARCHAR"      required="false"                                                                               />
     <column       name="public_message"             type="VARCHAR"      required="false"                                                                               />
     <column       name="picture_url"                type="VARCHAR"      required="false"                                                                               />
@@ -301,7 +303,7 @@
     <column       name="inserter_id"               type="INTEGER"             required="true"                                                                                   />
     <column       name="inserted_ts"               type="INTEGER"             required="true"    size="10"                                                                      />
     <column       name="approved"                  type="BOOLEAN"             required="true"                 defaultValue="0"                                                  />
-    <column       name="hash"                      type="VARCHAR"             required="true"                                                                                   />
+    <column       name="hash"                      type="VARCHAR"             required="true"    size="32"                                                                      />
 
 
     <foreign-key foreignTable="location" phpName="Location" refPhpName="Image">

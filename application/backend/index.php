@@ -1,5 +1,6 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Catch Me 1.0 © */
 
+use \Routes\RoutesAdmin;
 use \Routes\RoutesPrivate;
 use \Routes\RoutesPublic;
 use \Routes\RoutesProtected;
@@ -130,6 +131,20 @@ $app->group('', function () use ($app) {
     $app->post('/media/add/{typeId:[0-9]+}/{itemId:[0-9]+}', RoutesPrivate::mediaAddTypeIdItemId);
 
 })->add(new MiddlewareUserAuth($app->getContainer()));
+
+
+
+
+/** User authenticated as admin
+ * -----------------------------------------------------------------
+ * Private Admin access, api and user key and user access verification
+ */
+$app->group('', function () use ($app) {
+
+    $app->post('/admin/featuredAds/sendAttendanceRequest', RoutesAdmin::sendFeaturedAdAttendanceRequest)
+        ->add(new MiddlewareValidator(Api\FormFeaturedAdAdd::class));
+
+})->add(new MiddlewareUserAuth($app->getContainer(), EAccessLevel::ADMIN));
 
 
 $app->run();

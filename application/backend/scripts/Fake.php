@@ -128,11 +128,18 @@ function generateFakeLocationImages() {
             $locationImg->save();
 
             // Download and save the image in the correct dir
-            $savePath = strtr(LOCATION_MEDIA_DIR_TPL . '/{IMG_ID}', [
-                '{LID}' => $locationImg->getLocationId(),
-                '{IMG_ID}' => $locationImg->getId()
+            $savePath = strtr(LOCATION_MEDIA_DIR_TPL, [
+                '{LID}' => $locationImg->getLocationId()
             ]);
-            file_put_contents($savePath, file_get_contents($faker->image(null, 100, 100)));
+
+
+            // Make sure the folder path exists
+            if (!is_dir($savePath))
+                mkdir($savePath, 0777, true);
+
+            $savePath .= '/' . $locationImg->getId();
+
+            file_put_contents($savePath, file_get_contents($faker->imageUrl(100, 100)));
         }
     }
 }
@@ -335,6 +342,10 @@ function dropAll() {
     _exec('ALTER TABLE user_location_expired AUTO_INCREMENT = 1;');
     _exec('DELETE FROM user_location_favorite');
     _exec('DELETE FROM user_social');
+
+    // Delete all media
+    deleteDirectory(__PRIVATE_DATA__);
+    deleteDirectory(__PUBLIC_DATA__);
 }
 
 

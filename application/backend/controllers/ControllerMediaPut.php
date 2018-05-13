@@ -3,7 +3,7 @@
 namespace Controllers;
 
 use Models\Calculators\UserModel;
-use Models\Feed\MultiFeedManager;
+use Models\Feed\MultiNotificationManager;
 use Models\Location\LocationImagesModel;
 use Models\User\Accounts\UserEditProfile;
 use Firebase\FeedManager;
@@ -57,7 +57,7 @@ class ControllerMediaPut {
             throw $apiException;
         }
 
-        $mfm = new MultiFeedManager($this->authenticatedUser);
+        $mfm = new MultiNotificationManager($this->authenticatedUser);
 
         // Add the notification item to firebase
         FeedManager::build($this->authenticatedUser)

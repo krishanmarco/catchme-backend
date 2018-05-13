@@ -4,6 +4,7 @@ namespace Mobile\Auth;
 use Security\DataEncrypter;
 use User;
 use UserQuery;
+use EAccessLevel;
 
 
 class Authentication {
@@ -81,17 +82,16 @@ class MobileUserAuth {
         return DataEncrypter::publicEncryptStr(json_encode(self::buildTokenObj($id, $key)));
     }
 
-
-
-
-    public function __construct($encryptedAuthToken) {
+    public function __construct($encryptedAuthToken, $accessLevel = EAccessLevel::USER) {
         $this->authenticator = new Authentication($encryptedAuthToken);
+        $this->accessLevel = $accessLevel;
     }
 
     /** @var Authentication $authenticator */
     private $authenticator;
 
-
+    /** @var int<EAccessLevel> $accessLevel */
+    private $accessLevel;
 
     /** @var User $verifiedUser */
     private $verifiedUser;
@@ -99,8 +99,6 @@ class MobileUserAuth {
     public function getVerifiedUser() {
         return $this->verifiedUser;
     }
-
-
 
 
     public function authenticate() {
@@ -134,10 +132,13 @@ class MobileUserAuth {
         if (strtoupper($localMD5) != strtoupper($authToken->key))
             return false;
 
+        // Verify the expected access level
+        if ($user->getAccessLevel() < $this->accessLevel)
+            return false;
+
         // The request is verified successfully
         // Save the user as verified
         $this->verifiedUser = $user;
-
 
         return true;
     }

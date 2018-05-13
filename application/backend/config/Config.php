@@ -91,13 +91,13 @@ define("FACEBOOK_CLIENT_APPLICATION_NAME", 'Catchme');
 
 
 define("__APPLICATION__", __DIR__ . '/../../../../applications/catchme');
-define("__PRIVATE_DATA_", __DIR__ . '/../../data');
+define("__PRIVATE_DATA__", __DIR__ . '/../../data');
 define("__PUBLIC_DATA__", __DIR__ . '/../../../../public_html/catchme.top/data');
 
 
 
 // Location constants
-define('LOCATION_MEDIA_DIR_TPL', __PRIVATE_DATA_ . '/locations/{LID}/media');
+define('LOCATION_MEDIA_DIR_TPL', __PRIVATE_DATA__ . '/locations/{LID}/media');
 define('LOCATION_MEDIA_TPL', LOCATION_MEDIA_DIR_TPL . '/{IMAGE_ID}');
 define('LOCATION_MEDIA_TTL', 24 * 60 * 60);
 define('LOCATION_MEDIA_APPLY_TTL', false);

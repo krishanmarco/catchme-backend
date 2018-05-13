@@ -28,3 +28,8 @@ class ESystemTempVar {
     const PASSWORD_RECO = 0;
 }
 
+class EAccessLevel {
+    const USER = 0;
+    const ADMIN = 1;
+}
+

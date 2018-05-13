@@ -1,13 +1,13 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 - Fithancer © */
 
 namespace Controllers;
-use Api\Map\ModelToApiUserLocation;
+use Firebase\FirebaseHelper;
 use Api\Map\ModelToApiUserLocations;
 use Firebase\FeedManager;
 use Firebase\FeedItems\FeedItemFriendshipRequest;
-use Firebase\FeedItems\FeedItemUserAttendanceRequest;
+use Firebase\FeedItems\FeaturedAdItemAttendanceRequest;
 use Models\Calculators\UserModel;
-use Models\Feed\MultiFeedManager;
+use Models\Feed\MultiNotificationManager;
 use Models\Location\Accounts\LocationEditProfile;
 use Models\Location\Accounts\LocationRegistration;
 use Models\User\Accounts\UserManagerConnections;
@@ -16,7 +16,6 @@ use Models\User\Accounts\UserManagerLocations;
 use Models\User\Accounts\UserManagerStatus;
 use Slim\Exception\Api500;
 use User as DbUser;
-use UserAuthJWT;
 use Api\Map\ModelToApiUsers;
 use Api\User as ApiUser;
 use Api\Location as ApiLocation;
@@ -51,7 +50,7 @@ class ControllerUser {
 
     /** @return String */
     public function getJwt() {
-        return UserAuthJWT::build($this->userModel->getUser()->getId());
+        return FirebaseHelper::getUserFirebaseJWT($this->userModel->getUser()->getId());
     }
 
     
@@ -161,11 +160,11 @@ class ControllerUser {
         $userLocationStatus = $manager->add($apiUserLocationStatus);
 
 
-        $mfm = new MultiFeedManager($this->authenticatedUser);
+        $mfm = new MultiNotificationManager($this->authenticatedUser);
 
         // Add the notification item to firebase
         FeedManager::build($this->authenticatedUser)
-            ->postMultipleFeeds(new FeedItemUserAttendanceRequest(
+            ->postMultipleFeeds(new FeaturedAdItemAttendanceRequest(
                 $this->authenticatedUser,
                 $userLocationStatus->getLocation()
             ), $mfm->getNotifiableFriendIds());

@@ -4,7 +4,7 @@ namespace Models\Feed;
 use Models\Calculators\UserModel;
 use User;
 
-class MultiFeedManager {
+class MultiNotificationManager {
 
 
     public function __construct(User $user) {

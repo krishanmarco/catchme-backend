@@ -81,6 +81,58 @@ class UserQueriesWrapper {
 
 
 
+    /**
+     SELECT user_id, id FROM (
+        SELECT user_id, IF(user_id IN (1, 2, 3), connection_id, user_id) AS id, COUNT(*)
+        FROM user_connection
+        WHERE (user_id IN (1, 2, 3) OR connection_id IN (1, 2, 3))
+        GROUP BY id ORDER BY COUNT(*) DESC
+     ) AS x ORDER BY user_id ASC , id ASC
+    */
+    /** @return array(friendId => [friendsFriendId, friendsFriendsId, ...]) */
+    public static function getUsersFriendsIdsGroupedByUserId(array $userIds) {
+        $result = [];       // array(friendId => [friendsFriendId, friendsFriendsId, ...])
+
+        if (sizeof($userIds) <= 0)
+            return $result;
+
+        // This query is too complicated for the propel api
+        // Use custom sql
+        $connection = Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME);
+        $statement = $connection->prepare(strtr(
+            "SELECT {user_id}, {result_col_name} FROM (" .
+            "SELECT IF({user_id} IN ({ids}), {connection_to}, {user_id}) as {result_col_name}, COUNT(*) " .
+            "FROM {user_connection} " .
+            "WHERE ({user_id} IN ({ids}) OR {connection_to} IN ({ids})) " .
+            "GROUP BY  {result_col_name}" .
+            ") AS x",
+            [
+                '{user_id}' => UserConnectionTableMap::COL_USER_ID,
+                '{connection_to}' => UserConnectionTableMap::COL_CONNECTION_ID,
+                '{user_connection}' => UserConnectionTableMap::TABLE_NAME,
+                '{result_col_name}' => 'id',
+                '{ids}' => implode(',', $userIds)
+            ]
+        ));
+        $statement->execute();
+
+
+        $fetch = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($fetch as $row) {
+            $userId = intval($row['user_id']);
+            $id = intval($row['id']);
+
+            if (!key_exists($userId, $result))
+                $result[$userId] = [];
+
+            array_push($result[$userId], $id);
+        }
+
+        return $result;
+    }
+
+
+
 
     /** @return null|UserConnection */
     public static function findUsersConnection($user1, $user2)  {

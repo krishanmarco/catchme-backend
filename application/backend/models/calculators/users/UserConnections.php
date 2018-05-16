@@ -21,9 +21,10 @@ class UserConnections {
 
 
     public function execute() {
-        $confirmedFriends = [];
-        $pendingRequests = [];
-        $blockedRequests = [];
+        $friends = [];
+        $pending = [];
+        $requests = [];
+        $blocked = [];
 
 
         $leftAssoc = UserConnectionQuery::create()
@@ -35,17 +36,19 @@ class UserConnections {
             switch ($uf->getState()) {
 
                 case EConnectionState::CONFIRMED:
-                    array_push($confirmedFriends, $uf->getConnectionTo());
+                    array_push($friends, $uf->getConnectionTo());
                     break;
 
                 case EConnectionState::BLOCKED:
-                    array_push($blockedRequests, $uf->getConnectionTo());
+                    array_push($blocked, $uf->getConnectionTo());
+                    break;
+
+                case EConnectionState::PENDING:
+                    array_push($pending, $uf->getConnectionTo());
                     break;
 
             }
         }
-
-
 
 
         $rightAssoc = UserConnectionQuery::create()
@@ -57,17 +60,24 @@ class UserConnections {
             switch ($uf->getState()) {
 
                 case EConnectionState::CONFIRMED:
-                    array_push($confirmedFriends, $uf->getUser());
+                    array_push($friends, $uf->getUser());
                     break;
 
                 case EConnectionState::PENDING:
-                    array_push($pendingRequests, $uf->getUser());
+                    array_push($requests, $uf->getUser());
+                    break;
+
+                case EConnectionState::BLOCKED:
+                    // Don't add anything to the blocked array because
+                    // If the current user sent a request to the
+                    // {connectionId} user and the {connectionId} user denied it
+                    // This user shouldn't have the possibility 'unblock'
                     break;
 
             }
         }
 
-        return new UserConnectionsResult($confirmedFriends, $pendingRequests, $blockedRequests);
+        return new UserConnectionsResult($friends, $pending, $requests, $blocked);
     }
 
 
@@ -87,8 +97,9 @@ class UserConnectionsResult {
      * @param User[] $requests
      * @param User[] $blocked
      */
-    public function __construct(array $friends, array $requests, array $blocked) {
+    public function __construct(array $friends, array $pending, array $requests, array $blocked) {
         $this->friends = $friends;
+        $this->pending = $pending;
         $this->requests = $requests;
         $this->blocked = $blocked;
     }
@@ -97,6 +108,10 @@ class UserConnectionsResult {
     /** @var User[] $friends */
     private $friends;
     public function getFriends() { return $this->friends; }
+
+    /** @var User[] $requests */
+    private $pending;
+    public function getPending() { return $this->pending; }
 
     /** @var User[] $requests */
     private $requests;

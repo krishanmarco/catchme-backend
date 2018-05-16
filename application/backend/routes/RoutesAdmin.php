@@ -27,7 +27,7 @@ class RoutesAdmin {
 
 
 
-    const sendFeaturedAdAttendanceRequest = RoutesPrivate::class . ':sendFeaturedAdAttendanceRequest';
+    const sendFeaturedAdAttendanceRequest = RoutesAdmin::class . ':sendFeaturedAdAttendanceRequest';
 
     public function sendFeaturedAdAttendanceRequest(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $result = $this->adminController->asAdmin()->sendFeaturedAdAttendanceRequest(

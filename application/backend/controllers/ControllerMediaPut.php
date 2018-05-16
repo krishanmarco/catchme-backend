@@ -57,7 +57,7 @@ class ControllerMediaPut {
             throw $apiException;
         }
 
-        $mfm = new MultiNotificationManager($this->authenticatedUser);
+        $mfm = new MultiNotificationManager();
 
         // Add the notification item to firebase
         FeedManager::build($this->authenticatedUser)
@@ -65,7 +65,7 @@ class ControllerMediaPut {
                 $this->authenticatedUser,
                 $locationImagesModel->getLocation(),
                 $locationImage
-            ), $mfm->getNotifiableFriendIds());
+            ), $mfm->getUidsInterestedInUser($this->authenticatedUser->getId()));
 
         return $locationImage->getUrl();
     }

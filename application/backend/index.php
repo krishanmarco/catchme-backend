@@ -26,9 +26,9 @@ $app = new \Slim\App([
     'settings' => ['displayErrorDetails' => true]
 ]);
 
-$app->getContainer()['errorHandler'] = function ($c) {
-    return new ApiExceptionHandler();
-};
+//$app->getContainer()['errorHandler'] = function ($c) {
+//    return new ApiExceptionHandler();
+//};
 
 
 
@@ -37,9 +37,13 @@ $app->getContainer()['errorHandler'] = function ($c) {
  */
 $app->get('/fake', function () {
     require_once __DIR__ . '/scripts/Fake.php';
+    die();
 });
 
-
+$app->get('/test', function() {
+    require_once __DIR__ . '/scripts/Test.php';
+    die();
+});
 
 /** Unauthenticated web
  * -----------------------------------------------------------------

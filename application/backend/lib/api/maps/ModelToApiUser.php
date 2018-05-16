@@ -116,6 +116,9 @@ class ModelToApiUser {
         $apiUserConnections->friends = $this->modelToApiUsers
             ->users($userConnections->getFriends());
 
+        $apiUserConnections->pending = $this->modelToApiUsers
+            ->users($userConnections->getPending());
+
         $apiUserConnections->requests = $this->modelToApiUsers
             ->users($userConnections->getRequests());
 

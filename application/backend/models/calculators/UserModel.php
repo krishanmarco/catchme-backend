@@ -2,8 +2,10 @@
 
 
 namespace Models\Calculators;
+
 use Models\Calculators\Users\UserAdminLocations;
 use Models\Calculators\Users\UserAdminLocationsResult;
+use Models\Calculators\Users\UserConnectionManager;
 use Models\Calculators\Users\UserLocationStatus;
 use Models\Calculators\Users\UserLocationStatusResult;
 use Models\Calculators\Users\UserSuggestedLocations;
@@ -43,16 +45,27 @@ class UserModel {
     }
 
 
-
-
     private function __construct(User $user) {
         $this->user = $user;
     }
 
     /** @var User $user */
     private $user;
-    public function getUser() { return $this->user; }
 
+    public function getUser() {
+        return $this->user;
+    }
+
+
+    /** @var UserConnectionManager */
+    private $userConnectionManager;
+
+    public function getUserConnectionManager() {
+        if (is_null($this->userConnectionManager)) {
+            $this->userConnectionManager = new UserConnectionManager($this->user);
+        }
+        return $this->userConnectionManager;
+    }
 
 
     /** @var UserConnectionsResult $userConnectionsResult */
@@ -68,7 +81,6 @@ class UserModel {
     }
 
 
-
     /** @var UserLocationsResult $userLocationsResult */
     private $userLocationsResult;
 
@@ -80,7 +92,6 @@ class UserModel {
 
         return $this->userLocationsResult;
     }
-
 
 
     /** @var UserAdminLocationsResult $userAdminLocationsResult */
@@ -96,8 +107,6 @@ class UserModel {
     }
 
 
-
-
     /** @var UserSuggestedFriendsResult $userSuggestedFriendsResult */
     private $userSuggestedFriendsResult;
 
@@ -109,7 +118,6 @@ class UserModel {
 
         return $this->userSuggestedFriendsResult;
     }
-
 
 
     /** @var UserSuggestedLocationsResult $userSuggestedLocationsResult */
@@ -125,7 +133,6 @@ class UserModel {
     }
 
 
-
     /** @var UserLocationStatusResult $userLocationStatusResult */
     private $userLocationStatusResult;
 
@@ -137,11 +144,6 @@ class UserModel {
 
         return $this->userLocationStatusResult;
     }
-
-
-
-
-
 
 
 }

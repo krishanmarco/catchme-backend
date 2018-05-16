@@ -1,11 +1,12 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 - Fithancer © */
 
 namespace Controllers;
+use Firebase\FeedItems\FeedItemUserAttendanceRequest;
 use Firebase\FirebaseHelper;
 use Api\Map\ModelToApiUserLocations;
 use Firebase\FeedManager;
 use Firebase\FeedItems\FeedItemFriendshipRequest;
-use Firebase\FeedItems\FeaturedAdItemAttendanceRequest;
+use Firebase\FeaturedAdItems\FeaturedAdItemAttendanceRequest;
 use Models\Calculators\UserModel;
 use Models\Feed\MultiNotificationManager;
 use Models\Location\Accounts\LocationEditProfile;
@@ -152,7 +153,6 @@ class ControllerUser {
     /**
      * @param ApiUserLocationStatus $apiUserLocationStatus
      * @return ApiUserLocationStatus
-     * @throws Api500
      */
     public function statusAdd(ApiUserLocationStatus $apiUserLocationStatus) {
         $manager = new UserManagerStatus($this->authenticatedUser);
@@ -160,14 +160,14 @@ class ControllerUser {
         $userLocationStatus = $manager->add($apiUserLocationStatus);
 
 
-        $mfm = new MultiNotificationManager($this->authenticatedUser);
+        $mfm = new MultiNotificationManager();
 
         // Add the notification item to firebase
         FeedManager::build($this->authenticatedUser)
-            ->postMultipleFeeds(new FeaturedAdItemAttendanceRequest(
+            ->postMultipleFeeds(new FeedItemUserAttendanceRequest(
                 $this->authenticatedUser,
                 $userLocationStatus->getLocation()
-            ), $mfm->getNotifiableFriendIds());
+            ), $mfm->getUidsInterestedInUser($this->authenticatedUser->getId()));
 
         return ModelToApiUserLocations::single($userLocationStatus)
             ->get();

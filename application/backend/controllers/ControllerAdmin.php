@@ -3,7 +3,6 @@
 namespace Controllers;
 
 use Api\FormFeaturedAdAdd;
-use Firebase\FeaturedAdItems\FeaturedAdItem;
 use Firebase\FeaturedAdItems\FeaturedAdItemAttendanceRequest;
 use Firebase\FeaturedAdsManager;
 use Models\Feed\MultiNotificationManager;
@@ -21,14 +20,13 @@ class ControllerAdmin {
 
 
     public function sendFeaturedAdAttendanceRequest(FormFeaturedAdAdd $featuredAd) {
-// todo: why MultiFeedManager???
-        $mfm = new MultiNotificationManager($this->authAdmin);
+        $mfm = new MultiNotificationManager();
 
         // Add the notification item to firebase
         FeaturedAdsManager::build()
             ->postMultipleFeaturedAds(
                 new FeaturedAdItemAttendanceRequest($featuredAd),
-                $mfm->getNotifiableFriendIds()
+                $mfm->getUidsInterestedInLocation($featuredAd->locationId)
             );
 
         return R::return_ok;

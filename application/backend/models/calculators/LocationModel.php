@@ -5,6 +5,7 @@ use Location as Location;
 use LocationQuery as LocationQuery;
 use Models\Calculators\Locations\LocationCount;
 use Models\Calculators\Locations\LocationCountResult;
+use Models\Calculators\Locations\LocationFollowers;
 use Models\Calculators\Locations\LocationImages;
 use Models\Calculators\Locations\LocationImagesResult;
 use Models\Calculators\Locations\LocationUsers;
@@ -88,6 +89,18 @@ class LocationModel {
         }
 
         return $this->locationUsersResult;
+    }
+
+
+    /** @var LocationFollowers $locationFollowers */
+    private $locationFollowers;
+
+    /** @return LocationFollowers */
+    public function getLocationFollowers() {
+        if (is_null($this->locationUsersResult))
+            $this->locationFollowers = new LocationFollowers($this->getLocation());
+
+        return $this->locationFollowers;
     }
 
 

@@ -45,7 +45,7 @@ class UserQueriesWrapper {
 
 
 
-    /** @return int[] */
+    /** @return int[] */ // todo test
     public static function getUsersFriendIds(array $userIds) {
         if (sizeof($userIds) <= 0)
             return [];
@@ -82,15 +82,24 @@ class UserQueriesWrapper {
 
 
     /**
-     SELECT user_id, id FROM (
-        SELECT user_id, IF(user_id IN (1, 2, 3), connection_id, user_id) AS id, COUNT(*)
-        FROM user_connection
-        WHERE (user_id IN (1, 2, 3) OR connection_id IN (1, 2, 3))
-        GROUP BY id ORDER BY COUNT(*) DESC
-     ) AS x ORDER BY user_id ASC , id ASC
+
     */
-    /** @return array(friendId => [friendsFriendId, friendsFriendsId, ...]) */
-    public static function getUsersFriendsIdsGroupedByUserId(array $userIds) {
+    /**
+     * This method returns the friends of all the ids in the {$userIds} field
+     * in a way that if both {x} and {y} are in {userIds} and {x friends y} then
+     * either {x} will be indicated in {y}s friends or {y} will be indicated in {x}s friends
+     * but not both.
+     *
+     * ---- Db testing Query
+     * SELECT
+     *  IF(user_id IN (2, 3, 4), user_id, connection_id) AS id1,
+     *  IF(user_id IN (2, 3, 4), connection_id, user_id) AS id2
+     * FROM user_connection
+     * WHERE (user_id IN (2, 3, 4) OR connection_id IN (2, 3, 4))
+     * ORDER BY id1 ASC, id2 ASC
+     * ----
+     * @return array(friendId => [friendsFriendId, friendsFriendsId, ...]) */
+    public static function getUsersFriendsIdsGroupedByUserIdUnique(array $userIds) {
         $result = [];       // array(friendId => [friendsFriendId, friendsFriendsId, ...])
 
         if (sizeof($userIds) <= 0)
@@ -100,32 +109,31 @@ class UserQueriesWrapper {
         // Use custom sql
         $connection = Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME);
         $statement = $connection->prepare(strtr(
-            "SELECT {user_id}, {result_col_name} FROM (" .
-            "SELECT IF({user_id} IN ({ids}), {connection_to}, {user_id}) as {result_col_name}, COUNT(*) " .
+            "SELECT " .
+            "IF({user_id} IN ({ids}), {user_id}, {connection_id}) as {result_col_name_1}, " .
+            "IF({user_id} IN ({ids}), {connection_id}, {user_id}) as {result_col_name_2} " .
             "FROM {user_connection} " .
-            "WHERE ({user_id} IN ({ids}) OR {connection_to} IN ({ids})) " .
-            "GROUP BY  {result_col_name}" .
-            ") AS x",
+            "WHERE {user_id} IN ({ids}) OR {connection_id} IN ({ids})",
             [
                 '{user_id}' => UserConnectionTableMap::COL_USER_ID,
-                '{connection_to}' => UserConnectionTableMap::COL_CONNECTION_ID,
+                '{connection_id}' => UserConnectionTableMap::COL_CONNECTION_ID,
                 '{user_connection}' => UserConnectionTableMap::TABLE_NAME,
-                '{result_col_name}' => 'id',
+                '{result_col_name_1}' => 'id1',
+                '{result_col_name_2}' => 'id2',
                 '{ids}' => implode(',', $userIds)
             ]
         ));
         $statement->execute();
 
-
         $fetch = $statement->fetchAll(\PDO::FETCH_ASSOC);
         foreach ($fetch as $row) {
-            $userId = intval($row['user_id']);
-            $id = intval($row['id']);
+            $id1 = intval($row['id1']);
+            $id2 = intval($row['id2']);
 
-            if (!key_exists($userId, $result))
-                $result[$userId] = [];
+            if (!key_exists($id1, $result))
+                $result[$id1] = [];
 
-            array_push($result[$userId], $id);
+            array_push($result[$id1], $id2);
         }
 
         return $result;

@@ -176,7 +176,7 @@ abstract class ApiRules {
         if (!v::intVal()->validate($fieldValue))
             return R::return_error_field_invalid;
 
-        if (!v::length(10, 10)->validate($fieldValue))
+        if ($fieldValue != -1 && !v::length(10, 10)->validate($fieldValue))
             return R::return_error_field_length;
 
         return R::return_ok;

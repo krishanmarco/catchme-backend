@@ -35,9 +35,9 @@ class FormChangePassword {
 }
 
 class FormFeaturedAdAdd {
-    public $title =             [Rule::ruleIsset => [],         Rule::ruleMediumString];
-    public $locationId =        [Rule::ruleIsset => [],         Rule::ruleId];
-    public $image =             [Rule::ruleIsset => [],         Rule::ruleUrl];
+    public $title =             [Rule::ruleIsset => [],         Rule::ruleMediumString => []];
+    public $locationId =        [Rule::ruleIsset => [],         Rule::ruleId => []];
+    public $image =             [Rule::ruleIsset => [],         Rule::ruleUrl => []];
     public $subTitle =          [                               Rule::ruleMediumString => []];
     public $expiry =            [                               Rule::ruleTimestamp => []];
 }

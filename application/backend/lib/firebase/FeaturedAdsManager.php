@@ -31,7 +31,6 @@ class FeaturedAdsManager {
      * @param int[] $toUids
      */
     public function postMultipleFeaturedAds(FeaturedAdItemBuilder $featuredAdItemBuilder, array $toUids) {
-
         $faId = $this->firebase->getDatabase()
             ->getReference(self::FEATURED_ADS_PATH)->push([])->getKey();
 

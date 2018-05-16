@@ -23,8 +23,9 @@ use Models\Queries\User\UserQueriesWrapper;
  */
 class UserConnectionManager {
 
-    public function constructor(DbUser $user) {
+    public function __construct(DbUser $user) {
         $this->userModel = UserModel::fromUser($user);
+        $this->calculateConnections();
     }
 
     /** @var UserModel $userModel */
@@ -37,6 +38,11 @@ class UserConnectionManager {
     /** @var array(User => float) $connectionStrength */
     private $connectionStrengths = [];
 
+    /** @return array(User => float) $connectionStrength */
+    public function getConnectionStrengths() {
+        return $this->connectionStrengths;
+    }
+
 
     private function calculateConnections() {
 
@@ -45,15 +51,14 @@ class UserConnectionManager {
 
         // Foreach friend, get that friends friends
         // array(friendId => [friendsFriendId, friendsFriendsId, ...])
-        $friendsFriends = UserQueriesWrapper::getUsersFriendsIdsGroupedByUserId($usersFriendIds);
+        $friendsFriends = UserQueriesWrapper::getUsersFriendsIdsGroupedByUserIdUnique($usersFriendIds);
 
         // Build the connection array
-        foreach ($friendsFriends as $friendId => $friendsFriendsIds) {
-            // Sum starts at 2 because $friendId and this user have each-other in common
-            // but $friendId will not be in $friendsFriendsIds value so whe $id == $friendId a -1 will apply
-            $sum = 2;
+        foreach ($friendsFriends as $friendId => $friendIdsFriends) {
+            // Sum starts at 1 because $friendId and this user have each-other in common
+            $sum = 1;
             foreach ($usersFriendIds as $id) {
-                if (in_array($id, $friendsFriendsIds))
+                if (in_array($id, $friendIdsFriends))
                     $sum += 1;          // This friends friend is in common
                 else
                     $sum -= 1;          // This friends friend is not in common
@@ -63,7 +68,7 @@ class UserConnectionManager {
         }
 
         // Order the $connectionStrength array by strength
-        $this->connectionStrengths = asort($this->connectionStrengths);
+        arsort($this->connectionStrengths);
         return $this->connectionStrengths;
     }
 

@@ -644,9 +644,6 @@
     "/admin/featuredAds/sendAttendanceRequest": {
       "post": {
         "tags": ["Admin"],
-        "consumes": ["multipart/form-data"],
-        "supportHeaderParams": true,
-        "headers": { "Content-Type": "multipart/form-data" },
         "parameters": [
           {"$ref": "#/parameters/token"},
           {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormFeaturedAdAdd"}}

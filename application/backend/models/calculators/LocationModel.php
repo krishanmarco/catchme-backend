@@ -1,33 +1,33 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
 
 namespace Models\Calculators;
-use Location as Location;
+
+use Location as DbLocation;
 use LocationQuery as LocationQuery;
 use Models\Calculators\Locations\LocationCount;
-use Models\Calculators\Locations\LocationCountResult;
 use Models\Calculators\Locations\LocationFollowers;
 use Models\Calculators\Locations\LocationImages;
-use Models\Calculators\Locations\LocationImagesResult;
 use Models\Calculators\Locations\LocationUsers;
-use Models\Calculators\Locations\LocationUsersResult;
-
 
 class LocationModel {
 
     private static $LocationModel = [
-        // array of type {location-id} => LocationModel
+        // array of type {lid} => LocationModel
     ];
 
-
     /** @return LocationModel */
-    public static function fromId($locationId) {
-        return self::fromLocation(LocationQuery::create()->findPk(intval($locationId)));
+    public static function fromId($lid) {
+        if (array_key_exists($lid, self::$LocationModel))
+            return self::$LocationModel[$lid];
+
+        $location = LocationQuery::create()->findPk(intval($lid));
+        self::$LocationModel[$lid] = new LocationModel($location);
+
+        return self::$LocationModel[$lid];
     }
 
-
     /** @return LocationModel */
-    public static function fromLocation(Location $location) {
-
+    public static function fromLocation(DbLocation $location) {
         if (array_key_exists($location->getId(), self::$LocationModel))
             return self::$LocationModel[$location->getId()];
 
@@ -36,70 +36,55 @@ class LocationModel {
         return self::$LocationModel[$location->getId()];
     }
 
-
-
-
-    private function __construct(Location $location) {
+    private function __construct(DbLocation $location) {
         $this->location = $location;
     }
 
-
-    /** @var Location $location */
+    /** @var DbLocation */
     private $location;
-    public function getLocation() { return $this->location; }
 
+    /** @var LocationCount */
+    private $locationCount;
 
+    /** @var LocationImages */
+    private $locationImages;
 
-    /** @var LocationCountResult $locationCountResult */
-    private $locationCountResult;
+    /** @var LocationUsers */
+    private $locationUsers;
 
-    public function getLocationCountResult() {
-        if (is_null($this->locationCountResult)) {
-            $locationCount = new LocationCount($this);
-            $this->locationCountResult = $locationCount->execute();
-        }
-
-        return $this->locationCountResult;
-    }
-
-
-
-
-    /** @var LocationImagesResult[] $locationImagesResult */
-    private $locationImagesResult;
-
-    public function getLocationImagesResult() {
-        if (is_null($this->locationImagesResult)) {
-            $locationImages = new LocationImages($this);
-            $this->locationImagesResult = $locationImages->execute();
-        }
-
-        return $this->locationImagesResult;
-    }
-
-
-
-    /** @var LocationUsersResult $locationUsersResult */
-    private $locationUsersResult;
-
-    public function getLocationUsersResult() {
-        if (is_null($this->locationUsersResult)) {
-            $locationUsers = new LocationUsers($this);
-            $this->locationUsersResult = $locationUsers->execute();
-        }
-
-        return $this->locationUsersResult;
-    }
-
-
-    /** @var LocationFollowers $locationFollowers */
+    /** @var LocationFollowers */
     private $locationFollowers;
+
+    /** @return DbLocation */
+    public function getLocation() {
+        return $this->location;
+    }
+
+    /** @return LocationCount */
+    public function getLocationCount() {
+        if (is_null($this->locationCount))
+            $this->locationCount = new LocationCount($this->location);
+        return $this->locationCount;
+    }
+
+    /** @return LocationImages */
+    public function getLocationImages() {
+        if (is_null($this->locationImages))
+            $this->locationImages = new LocationImages($this->location);
+        return $this->locationImages;
+    }
+
+    /** @return LocationUsers */
+    public function getLocationUsers() {
+        if (is_null($this->locationUsers))
+            $this->locationUsers = new LocationUsers($this->location);
+        return $this->locationUsers;
+    }
 
     /** @return LocationFollowers */
     public function getLocationFollowers() {
-        if (is_null($this->locationUsersResult))
+        if (is_null($this->locationUsers))
             $this->locationFollowers = new LocationFollowers($this->getLocation());
-
         return $this->locationFollowers;
     }
 

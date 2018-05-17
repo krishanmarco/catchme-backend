@@ -2,55 +2,34 @@
 
 namespace Models\Calculators\Users;
 
-use Models\Calculators\UserModel;
-use Location;
+use User as DbUser;
+use Models\UserAdminLocationsResult;
 use LocationQuery;
-
 
 class UserAdminLocations {
 
-
-    public function __construct(UserModel $userModel) {
-        $this->userModel = $userModel;
+    public function __construct(DbUser $user) {
+        $this->user = $user;
+        $this->calculateUserAdminLocations();
     }
 
+    /** @var DbUser $user */
+    private $user;
 
-    /** @var UserModel $userModel */
-    private $userModel;
-    public function getUser() { return $this->userModel->getUser(); }
+    /** @var UserAdminLocationsResult $result */
+    private $result;
 
+    /** @return UserAdminLocationsResult */
+    public function getResult() {
+        return $this->result;
+    }
 
-
-    public function execute() {
+    private function calculateUserAdminLocations() {
         $adminOfLocations = LocationQuery::create()
-            ->findByAdminId($this->getUser()->getId())
+            ->findByAdminId($this->user->getId())
             ->getData();
 
-        return new UserAdminLocationsResult($adminOfLocations);
+        $this->result = new UserAdminLocationsResult($adminOfLocations);
     }
-
 
 }
-
-
-class UserAdminLocationsResult {
-
-    /**
-     * UserAdminLocationsResult constructor.
-     * @param array $adminOfLocations
-     */
-    public function __construct(array $adminOfLocations) {
-        $this->adminOfLocations = $adminOfLocations;
-    }
-
-
-    /** @var Location[] $suggestedFriends */
-    private $adminOfLocations;
-
-    public function getAdminOfLocations() {
-        return $this->adminOfLocations;
-    }
-
-
-}
-

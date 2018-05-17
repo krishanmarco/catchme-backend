@@ -4,7 +4,6 @@ namespace Models\Queries\User;
 
 use UserLocationFavoriteQuery;
 use UserConnection;
-use UserConnectionQuery;
 use Map\UserLocationFavoriteTableMap;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Map\UserConnectionTableMap;
@@ -12,20 +11,18 @@ use Propel\Runtime\Propel;
 
 class UserQueriesWrapper {
 
-
-
-
-    /** Returns an [optionally ordered] int array of all location
-     * ids that the input array of user ids are subscribed to
+    /**
+     * Returns an ordered int[] of all location ids that
+     * the input array of user ids are subscribed to
      *
-     * @param int[] $userIds        Array of user ids
+     * @param int[] $uids        Array of user ids
      * @return int[]                Location ids that $userIds are subscribed to
      */
-    public static function getUsersLocationIds(array $userIds) {
+    public static function getUsersLocationIds(array $uids) {
 
         $userFavoriteLocationQuery = UserLocationFavoriteQuery::create()
             ->select([UserLocationFavoriteTableMap::COL_LOCATION_ID])
-            ->add(UserLocationFavoriteTableMap::COL_USER_ID, $userIds, Criteria::IN)
+            ->add(UserLocationFavoriteTableMap::COL_USER_ID, $uids, Criteria::IN)
             ->groupByLocationId()
             ->withColumn('COUNT(*)', 'Count')
             ->orderBy('Count', Criteria::DESC);;
@@ -43,11 +40,19 @@ class UserQueriesWrapper {
         return $locationIds;
     }
 
-
-
-    /** @return int[] */ // todo test
-    public static function getUsersFriendIds(array $userIds) {
-        if (sizeof($userIds) <= 0)
+    /**
+     * This method returns all the friends of ${userIds} unique
+     *
+     * ---- Db testing Query
+     * SELECT IF(user_id IN (1), connection_id, user_id) as id, COUNT(*)
+     * FROM user_connection
+     * WHERE user_id IN (1) OR connection_id IN (1)
+     * GROUP BY id
+     * ORDER BY COUNT(*) DESC
+     * ----
+     * @return int[] */
+    public static function getUsersFriendIds(array $uids) {
+        if (sizeof($uids) <= 0)
             return [];
 
         // This query is too complicated for the propel api
@@ -66,7 +71,7 @@ class UserQueriesWrapper {
                 '{connection_to}' => UserConnectionTableMap::COL_CONNECTION_ID,
                 '{user_connection}' => UserConnectionTableMap::TABLE_NAME,
                 '{result_col_name}' => 'id',
-                '{ids}' => implode(',', $userIds)
+                '{ids}' => implode(',', $uids)
             ]
         ));
         $statement->execute();
@@ -79,11 +84,6 @@ class UserQueriesWrapper {
         return $result;
     }
 
-
-
-    /**
-
-    */
     /**
      * This method returns the friends of all the ids in the {$userIds} field
      * in a way that if both {x} and {y} are in {userIds} and {x friends y} then
@@ -99,10 +99,10 @@ class UserQueriesWrapper {
      * ORDER BY id1 ASC, id2 ASC
      * ----
      * @return array(friendId => [friendsFriendId, friendsFriendsId, ...]) */
-    public static function getUsersFriendsIdsGroupedByUserIdUnique(array $userIds) {
+    public static function getUsersFriendsIdsGroupedByUserIdUnique(array $uids) {
         $result = [];       // array(friendId => [friendsFriendId, friendsFriendsId, ...])
 
-        if (sizeof($userIds) <= 0)
+        if (sizeof($uids) <= 0)
             return $result;
 
         // This query is too complicated for the propel api
@@ -120,7 +120,7 @@ class UserQueriesWrapper {
                 '{user_connection}' => UserConnectionTableMap::TABLE_NAME,
                 '{result_col_name_1}' => 'id1',
                 '{result_col_name_2}' => 'id2',
-                '{ids}' => implode(',', $userIds)
+                '{ids}' => implode(',', $uids)
             ]
         ));
         $statement->execute();
@@ -138,14 +138,5 @@ class UserQueriesWrapper {
 
         return $result;
     }
-
-
-
-
-    /** @return null|UserConnection */
-    public static function findUsersConnection($user1, $user2)  {
-
-    }
-
 
 }

@@ -12,7 +12,23 @@ use Base\UserConnectionQuery as BaseUserConnectionQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class UserConnectionQuery extends BaseUserConnectionQuery
-{
+class UserConnectionQuery extends BaseUserConnectionQuery {
+
+
+    public function filterByConnectionIds($uid1, $uid2) {
+
+        $whereClause = strtr('{table}.{colLeft} = ? AND {table}.{colRight} = ?', [
+            '{table}' => \Map\UserConnectionTableMap::CLASS_DEFAULT,
+            '{colLeft}' => \Map\UserConnectionTableMap::COL_USER_ID,
+            '{colRight}' => \Map\UserConnectionTableMap::COL_CONNECTION_ID
+        ]);
+
+        $this
+            ->where($whereClause, $uid1, $uid2)
+            ->_or()
+            ->where($whereClause, $uid2, $uid1);
+
+        return $this;
+    }
 
 }

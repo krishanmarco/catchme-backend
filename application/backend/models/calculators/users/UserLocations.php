@@ -2,61 +2,60 @@
 
 namespace Models\Calculators\Users;
 
-use Models\Calculators\UserModel;
-use Propel\Runtime\ActiveQuery\Criteria as Criteria;
-
+use Propel\Runtime\ActiveQuery\Criteria;
 use UserLocationFavoriteQuery;
 use UserLocationExpiredQuery;
 use UserLocationExpired;
 use UserLocationQuery;
-use Location as Location;
+use User as DbUser;
+use Models\UserLocationsResult;
 
 class UserLocations {
 
-
-    public function __construct(UserModel $UserModel) {
-        $this->UserModel = $UserModel;
+    public function __construct(DbUser $user) {
+        $this->user = $user;
+        $this->calculateUserLocations();
     }
 
+    /** @var DbUser $user */
+    private $user;
 
-    /** @var UserModel $UserModel */
-    private $UserModel;
-    public function getUser() { return $this->UserModel->getUser(); }
-
+    /** @var UserLocationsResult $result */
+    private $result;
 
     /** @var array(LocationId => Location) $accumulatedLocations */
-    private $accumulatedLocations = [];
+    private $accLocations = [];
 
+    /** @return UserLocationsResult */
+    public function getResult() {
+        return $this->result;
+    }
 
-
-    public function execute() {
+    private function calculateUserLocations() {
         $favoriteLocations = $this->calcFavoriteLocations();
         $topLocations = $this->calcTopLocations();
         $userLocationStatuses = $this->calcUserLocationStatuses();
 
-        return new UserLocationsResult(
+        $this->result = new UserLocationsResult(
             $favoriteLocations,
             $topLocations,
             $userLocationStatuses,
-            array_values($this->accumulatedLocations)
+            array_values($this->accLocations)
         );
     }
-
-
-
 
     private function calcFavoriteLocations() {
         $userFavoriteLocations = UserLocationFavoriteQuery::create()
             ->joinWithLocation()
-            ->findByUserId($this->getUser()->getId());
+            ->findByUserId($this->user->getId());
 
 
         $favoriteLocations = [];
         foreach ($userFavoriteLocations as $loc) {
             $locationId = $loc->getLocationId();
 
-            if (!array_key_exists($locationId, $this->accumulatedLocations))
-                $this->accumulatedLocations[$locationId] = $loc->getLocation();
+            if (!array_key_exists($locationId, $this->accLocations))
+                $this->accLocations[$locationId] = $loc->getLocation();
 
             array_push($favoriteLocations, $locationId);
         }
@@ -64,16 +63,13 @@ class UserLocations {
         return $favoriteLocations;
     }
 
-
-
-
     private function calcTopLocations($numberOfItems = USER_LOCATIONS_MAX_TOP_ITEMS) {
         // Calculate a count for each location from the expired location table
         // SELECT id, location_id, COUNT(*) FROM user_location_expired
         // WHERE user_id = 1 GROUP BY location_id ORDER BY COUNT(*) DESC;
         /** @var UserLocationExpired[] $finalLocations */
         $finalLocations = UserLocationExpiredQuery::create()
-            ->filterByUserId($this->getUser()->getId())
+            ->filterByUserId($this->user->getId())
             ->groupByLocationId()
             ->withColumn('COUNT(*)', 'Count')
             ->joinWithLocation()
@@ -84,7 +80,7 @@ class UserLocations {
         if (sizeof($finalLocations) < USER_LOCATIONS_MAX_TOP_ITEMS) {
             // Run the same query with UserLocation
             $locations = UserLocationQuery::create()
-                ->filterByUserId($this->getUser()->getId())
+                ->filterByUserId($this->user->getId())
                 ->groupByLocationId()
                 ->withColumn('COUNT(*)', 'Count')
                 ->joinWithLocation()
@@ -99,12 +95,11 @@ class UserLocations {
         foreach ($finalLocations as $loc) {
             $locationId = $loc->getLocationId();
 
-            if (!array_key_exists($locationId, $this->accumulatedLocations))
-                $this->accumulatedLocations[$locationId] = $loc->getLocation();
+            if (!array_key_exists($locationId, $this->accLocations))
+                $this->accLocations[$locationId] = $loc->getLocation();
 
             array_push($topLocations, $locationId);
         }
-
 
         return $topLocations;
     }
@@ -116,50 +111,19 @@ class UserLocations {
         $userLocations = UserLocationQuery::create()
             ->orderByFromTs(Criteria::ASC)
             ->joinWithLocation()
-            ->findByUserId($this->getUser()->getId());
+            ->findByUserId($this->user->getId());
 
 
         foreach ($userLocations as $userLoc) {
             $locationId = $userLoc->getLocationId();
 
-            if (!array_key_exists($locationId, $this->accumulatedLocations))
-                $this->accumulatedLocations[$locationId] = $userLoc->getLocation();
+            if (!array_key_exists($locationId, $this->accLocations))
+                $this->accLocations[$locationId] = $userLoc->getLocation();
 
             array_push($userLocationStatuses, $userLoc);
         }
 
         return $userLocationStatuses;
     }
-
-
-
-}
-
-
-
-class UserLocationsResult {
-
-    public function __construct(array $favorites, array $top, array $userLocationStatuses, array $locations) {
-        $this->favorites = $favorites;
-        $this->top = $top;
-        $this->userLocationStatuses = $userLocationStatuses;
-        $this->locations = $locations;
-    }
-
-    /* @var integer[] $favorites */
-    private $favorites;
-    public function getFavorites() { return $this->favorites; }
-
-    /* @var integer[] $top */
-    private $top;
-    public function getTop() { return $this->top; }
-
-    /* @var UserLocationStatus[] $userLocationStatuses */
-    private $userLocationStatuses;
-    public function getUserLocationStatuses() { return $this->userLocationStatuses; }
-
-    /** @var Location[] $locations */
-    private $locations;
-    public function getLocations() { return $this->locations; }
 
 }

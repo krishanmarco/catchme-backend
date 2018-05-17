@@ -3,7 +3,7 @@
 namespace Api\Sec;
 use Api\User;
 use Api\UserLocations;
-use \User as DbUser;
+use User as DbUser;
 
 class ConnectionPrivacyPolicy {
 

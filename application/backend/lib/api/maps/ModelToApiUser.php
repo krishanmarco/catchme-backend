@@ -4,11 +4,9 @@ namespace Api\Map;
 use Api\Sec\ConnectionPrivacyPolicy;
 use Api\UserConnections;
 use Api\UserLocations;
-use Models\Calculators\Users\UserAdminLocationsResult;
-use Models\Calculators\Users\UserConnectionsResult;
-use Models\Calculators\Users\UserLocationsResult;
-use Location as DbLocation;
-use Models\Calculators\Users\UserLocationStatusResult;
+use Models\UserAdminLocationsResult;
+use Models\UserConnectionsResult;
+use Models\UserLocationsResult;
 use User as DbUser;
 use Api\User as ApiUser;
 
@@ -100,7 +98,7 @@ class ModelToApiUser {
     public function withAdminLocations(UserAdminLocationsResult $userAdminLocationsResult) {
 
         $this->apiUser->adminLocations = $this->modelToApiLocations
-            ->locations($userAdminLocationsResult->getAdminOfLocations());
+            ->locations($userAdminLocationsResult->adminOfLocations);
 
         return $this;
     }
@@ -114,16 +112,16 @@ class ModelToApiUser {
         $apiUserConnections = new UserConnections();
 
         $apiUserConnections->friends = $this->modelToApiUsers
-            ->users($userConnections->getFriends());
+            ->users($userConnections->friends);
 
         $apiUserConnections->pending = $this->modelToApiUsers
-            ->users($userConnections->getPending());
+            ->users($userConnections->pending);
 
         $apiUserConnections->requests = $this->modelToApiUsers
-            ->users($userConnections->getRequests());
+            ->users($userConnections->requests);
 
         $apiUserConnections->blocked = $this->modelToApiUsers
-            ->users($userConnections->getBlocked());
+            ->users($userConnections->blocked);
 
         $this->apiUser->connections = $apiUserConnections;
         return $this;
@@ -137,14 +135,14 @@ class ModelToApiUser {
     public function withLocations(UserLocationsResult $userLocations) {
         $apiUserLocations = new UserLocations();
 
-        $apiUserLocations->favorites = $userLocations->getFavorites();
-        $apiUserLocations->top = $userLocations->getTop();
+        $apiUserLocations->favorites = $userLocations->favorites;
+        $apiUserLocations->top = $userLocations->top;
 
         $apiUserLocations->userLocationStatuses = $this->modelToApiUserLocationStatuses
-            ->userLocationStatuses($userLocations->getUserLocationStatuses());
+            ->userLocationStatuses($userLocations->userLocationStatuses);
 
         $apiUserLocations->locations = $this->modelToApiLocations
-            ->locations($userLocations->getLocations());
+            ->locations($userLocations->locations);
 
         $this->apiUser->locations = $apiUserLocations;
 

@@ -26,24 +26,19 @@ use R;
 
 class ControllerUser {
     
-    public function __construct(DbUser $authenticatedUser) {
-        $this->authenticatedUser = $authenticatedUser;
-        $this->userModel = UserModel::fromUser($this->authenticatedUser);
+    public function __construct(DbUser $authUser) {
+        $this->authUser = $authUser;
     }
 
 
-    /** @var DbUser $authenticatedUser */
-    private $authenticatedUser;
-
-    /** @var UserModel $userModel */
-    private $userModel;
-
+    /** @var DbUser $authUser */
+    private $authUser;
 
 
 
     /** @return ApiUser */
     public function get() {
-        return ModelToApiUsers::single($this->authenticatedUser)
+        return ModelToApiUsers::single($this->authUser)
             ->withSecureData()
             ->get();
     }
@@ -51,35 +46,36 @@ class ControllerUser {
 
     /** @return String */
     public function getJwt() {
-        return FirebaseHelper::getUserFirebaseJWT($this->userModel->getUser()->getId());
+        return FirebaseHelper::getUserFirebaseJWT($this->authUser->getId());
     }
 
     
     /** @return ApiUser */
     public function getProfile() {
-        return ModelToApiUsers::single($this->authenticatedUser)
+        $userModel = UserModel::fromUser($this->authUser);
+        return ModelToApiUsers::single($this->authUser)
             ->withSecureData()
             ->withPhone()
             ->withEmail()
-            ->withAdminLocations($this->userModel->getUserAdminLocationsResult())
-            ->withLocations($this->userModel->getUserLocationsResult())
-            ->withConnections($this->userModel->getUserConnectionsResult())
+            ->withAdminLocations($userModel->getUserAdminLocations()->getResult())
+            ->withLocations($userModel->getUserLocations()->getResult())
+            ->withConnections($userModel->getUserConnections()->getResult())
             ->get();
     }
 
 
     /** @return int */
     public function editProfileFirebase($firebaseToken) {
-        $userEditProfile = new UserEditProfile($this->authenticatedUser);
+        $userEditProfile = new UserEditProfile($this->authUser);
         return $userEditProfile->editFirebaseToken($firebaseToken);
     }
 
 
     /** @return ApiUser */
     public function editProfile(ApiUser $newProfile, $uploadedFile = null) {
-        $userEditProfile = new UserEditProfile($this->authenticatedUser);
+        $userEditProfile = new UserEditProfile($this->authUser);
         $userEditProfile->userEdit($newProfile, $uploadedFile)->save();
-        return ModelToApiUsers::single($this->authenticatedUser)
+        return ModelToApiUsers::single($this->authUser)
             ->withSecureData()
             ->withPhone()
             ->withEmail()
@@ -89,12 +85,12 @@ class ControllerUser {
 
     /** @return ApiLocation */
     public function locationsAdministratingRegister(ApiFormLocationRegister $form, $uploadedFile = null) {
-        $locationRegistration = new LocationRegistration($this->authenticatedUser);
+        $locationRegistration = new LocationRegistration($this->authUser);
 
         $locationRegistration->register($form, $uploadedFile);
 
         $locationController = new ControllerLocations(
-            $this->authenticatedUser,
+            $this->authUser,
             $locationRegistration->getLocation()->getId()
         );
 
@@ -104,12 +100,12 @@ class ControllerUser {
 
     /** @return ApiLocation */
     public function locationsAdministratingEditLid(ApiLocation $apiLocation, $locationId, $uploadedFile = null) {
-        $locationEditProfile = new LocationEditProfile($this->authenticatedUser, $locationId);
+        $locationEditProfile = new LocationEditProfile($this->authUser, $locationId);
 
         $locationEditProfile->userEdit($apiLocation, $uploadedFile)->save();
 
         $locationController = new ControllerLocations(
-            $this->authenticatedUser,
+            $this->authUser,
             $locationEditProfile->getLocation()->getId()
         );
 
@@ -120,21 +116,21 @@ class ControllerUser {
 
 
     public function connectionsAddUid($uid) {
-        $manager = new UserManagerConnections($this->authenticatedUser);
+        $manager = new UserManagerConnections($this->authUser);
         $manager->add($uid);
 
         // Add the notification item to firebase
-        FeedManager::build($this->authenticatedUser)
-            ->postSingleFeed(new FeedItemFriendshipRequest($this->authenticatedUser), $uid);
+        FeedManager::build($this->authUser)
+            ->postSingleFeed(new FeedItemFriendshipRequest($this->authUser), $uid);
     }
 
     public function connectionsAcceptUid($uid) {
-        $manager = new UserManagerConnections($this->authenticatedUser);
+        $manager = new UserManagerConnections($this->authUser);
         $manager->accept($uid);
     }
 
     public function connectionsBlockUid($uid) {
-        $manager = new UserManagerConnections($this->authenticatedUser);
+        $manager = new UserManagerConnections($this->authUser);
         $manager->block($uid);
     }
 
@@ -143,9 +139,9 @@ class ControllerUser {
 
     /** @return ApiUserLocationStatus[] */
     public function status() {
-        $userLocationStatusList = $this->userModel
-            ->getUserLocationStatusResult()
-            ->getUserLocationStatusList();
+        $userLocationStatusList = UserModel::fromUser($this->authUser)
+            ->getUserLocationStatus()->getResult()
+            ->userLocationStatus;
 
         return ModelToApiUserLocations::multiple($userLocationStatusList);
     }
@@ -155,7 +151,7 @@ class ControllerUser {
      * @return ApiUserLocationStatus
      */
     public function statusAdd(ApiUserLocationStatus $apiUserLocationStatus) {
-        $manager = new UserManagerStatus($this->authenticatedUser);
+        $manager = new UserManagerStatus($this->authUser);
 
         $userLocationStatus = $manager->add($apiUserLocationStatus);
 
@@ -163,11 +159,11 @@ class ControllerUser {
         $mfm = new MultiNotificationManager();
 
         // Add the notification item to firebase
-        FeedManager::build($this->authenticatedUser)
+        FeedManager::build($this->authUser)
             ->postMultipleFeeds(new FeedItemUserAttendanceRequest(
-                $this->authenticatedUser,
+                $this->authUser,
                 $userLocationStatus->getLocation()
-            ), $mfm->getUidsInterestedInUser($this->authenticatedUser->getId()));
+            ), $mfm->getUidsInterestedInUser($this->authUser->getId()));
 
         return ModelToApiUserLocations::single($userLocationStatus)
             ->get();
@@ -175,7 +171,7 @@ class ControllerUser {
 
     /** @return int */
     public function statusDel($tid) {
-        $manager = new UserManagerStatus($this->authenticatedUser);
+        $manager = new UserManagerStatus($this->authUser);
         return $manager->del($tid);
     }
 
@@ -184,14 +180,14 @@ class ControllerUser {
 
     /** @return int */
     public function locationsFavoritesAdd($lid) {
-        $manager = new UserManagerLocations($this->authenticatedUser);
+        $manager = new UserManagerLocations($this->authUser);
         $manager->add($lid);
         return R::return_ok;
     }
 
     /** @return int */
     public function locationsFavoritesDel($lid) {
-        $manager = new UserManagerLocations($this->authenticatedUser);
+        $manager = new UserManagerLocations($this->authUser);
         $manager->del($lid);
         return R::return_ok;
     }

@@ -9,6 +9,7 @@ use UserConnection;
 use UserConnectionQuery;
 use User;
 use R;
+use EConnectionState;
 
 class UserManagerConnections {
 
@@ -16,19 +17,15 @@ class UserManagerConnections {
         $this->user = $user;
     }
 
-
     /** @var User $user */
     private $user;
 
 
-
     public function add($uid) {
-
         $userConnection = new UserConnection();
         $userConnection->setUserId($this->user->getId());
         $userConnection->setConnectionId(intval($uid));
-        $userConnection->setState(\EConnectionState::PENDING);
-
+        $userConnection->setState(EConnectionState::PENDING);
 
         try {
             $userConnection->save();
@@ -41,7 +38,6 @@ class UserManagerConnections {
         }
     }
 
-
     public function accept($uid) {
         // To accept a request the current user must be
         // in the connectionId column and the state must be 0
@@ -51,30 +47,27 @@ class UserManagerConnections {
             ->findOne();
 
         if (!is_null($userConnection))
-            $userConnection->setState(\EConnectionState::CONFIRMED)->save();
+            $userConnection->setState(EConnectionState::CONFIRMED)->save();
     }
 
 
     public function block($uid) {
+        $userConnection = UserConnectionQuery::create()
+            ->filterByConnectionIds($this->user->getId(), $uid)
+            ->findOne();
 
-        $userConnection = UserQueriesWrapper::findUsersConnection(
-            $this->user->getId(),
-            $uid
-        );
-
-        $userConnection->setState(\EConnectionState::BLOCKED)->save();
+        $userConnection->setState(EConnectionState::BLOCKED)->save();
     }
 
 
-
+// todo?
     private function del($uid, UserConnection $userConnection = null) {
 
-        if (is_null($userConnection))
-            $userConnection = UserQueriesWrapper::findUsersConnection(
-                $this->user->getId(),
-                $uid
-            );
-
+        if (is_null($userConnection)) {
+            $userConnection = UserConnectionQuery::create()
+                ->filterByConnectionIds($this->user->getId(), $uid)
+                ->findOne();
+        }
 
         if (!is_null($userConnection))
             $userConnection->delete();

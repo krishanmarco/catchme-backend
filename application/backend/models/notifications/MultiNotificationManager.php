@@ -3,9 +3,6 @@
 namespace Models\Feed;
 use Models\Calculators\LocationModel;
 use Models\Calculators\UserModel;
-use Models\Calculators\Users\UserConnectionManager;
-use User as DbUser;
-use Location as DbLocation;
 
 class MultiNotificationManager {
 
@@ -16,9 +13,7 @@ class MultiNotificationManager {
      * @return int[]
      */
     public function getUidsInterestedInUser($userId) {
-        $userModel = UserModel::fromId($userId);
-
-        $connectionStrengths = $userModel
+        $connectionStrengths = UserModel::fromId($userId)
             ->getUserConnectionManager()
             ->getConnectionStrengths();
 
@@ -33,7 +28,7 @@ class MultiNotificationManager {
     public function getUidsInterestedInLocation($locationId) {
         return LocationModel::fromId($locationId)
             ->getLocationFollowers()
-            ->asIds();
+            ->getResultIds();
     }
 
 

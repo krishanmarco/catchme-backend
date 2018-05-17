@@ -1,41 +1,36 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
 
-
 namespace Models\Calculators;
 
 use Models\Calculators\Users\UserAdminLocations;
-use Models\Calculators\Users\UserAdminLocationsResult;
 use Models\Calculators\Users\UserConnectionManager;
 use Models\Calculators\Users\UserLocationStatus;
-use Models\Calculators\Users\UserLocationStatusResult;
 use Models\Calculators\Users\UserSuggestedLocations;
-use Models\Calculators\Users\UserSuggestedLocationsResult;
 use Models\Calculators\Users\UserConnections;
-use Models\Calculators\Users\UserConnectionsResult;
 use Models\Calculators\Users\UserLocations;
-use Models\Calculators\Users\UserLocationsResult;
 use Models\Calculators\Users\UserSuggestedFriends;
-use Models\Calculators\Users\UserSuggestedFriendsResult;
-use User as User;
-use UserQuery as UserQuery;
-
+use UserQuery;
+use User as DbUser;
 
 class UserModel {
 
     private static $UserModels = [
-        // array of type {user-id} => UserModel
+        // array of type {uid} => UserModel
     ];
 
-
     /** @return UserModel */
-    public static function fromId($userId) {
-        return UserModel::fromUser(UserQuery::create()->findPk($userId));
+    public static function fromId($uid) {
+        if (array_key_exists($uid, self::$UserModels))
+            return self::$UserModels[$uid];
+
+        $user = UserQuery::create()->findPk(intval($uid));
+        self::$UserModels[$uid] = new UserModel($user);
+
+        return self::$UserModels[$uid];
     }
 
-
     /** @return UserModel */
-    public static function fromUser(User $user) {
-
+    public static function fromUser(DbUser $user) {
         if (array_key_exists($user->getId(), self::$UserModels))
             return self::$UserModels[$user->getId()];
 
@@ -44,106 +39,86 @@ class UserModel {
         return self::$UserModels[$user->getId()];
     }
 
-
-    private function __construct(User $user) {
+    private function __construct(DbUser $user) {
         $this->user = $user;
     }
 
-    /** @var User $user */
+    /** @var DbUser */
     private $user;
-
-    public function getUser() {
-        return $this->user;
-    }
-
 
     /** @var UserConnectionManager */
     private $userConnectionManager;
 
+    /** @var UserConnections */
+    private $userConnections;
+
+    /** @var UserLocations */
+    private $userLocations;
+
+    /** @var UserAdminLocations */
+    private $userAdminLocations;
+
+    /** @var UserSuggestedFriends */
+    private $userSuggestedFriends;
+
+    /** @var UserSuggestedLocations */
+    private $userSuggestedLocations;
+
+    /** @var UserLocationStatus */
+    private $userLocationStatus;
+
+    /** @return DbUser */
+    public function getUser() {
+        return $this->user;
+    }
+
+    /** @return UserConnectionManager */
     public function getUserConnectionManager() {
-        if (is_null($this->userConnectionManager)) {
+        if (is_null($this->userConnectionManager))
             $this->userConnectionManager = new UserConnectionManager($this->user);
-        }
         return $this->userConnectionManager;
     }
 
-
-    /** @var UserConnectionsResult $userConnectionsResult */
-    private $userConnectionsResult;
-
-    public function getUserConnectionsResult() {
-        if (is_null($this->userConnectionsResult)) {
-            $userConnections = new UserConnections($this);
-            $this->userConnectionsResult = $userConnections->execute();
-        }
-
-        return $this->userConnectionsResult;
+    /** @return UserConnections */
+    public function getUserConnections() {
+        if (is_null($this->userConnections))
+            $this->userConnections = new UserConnections($this->user);
+        return $this->userConnections;
     }
 
-
-    /** @var UserLocationsResult $userLocationsResult */
-    private $userLocationsResult;
-
-    public function getUserLocationsResult() {
-        if (is_null($this->userLocationsResult)) {
-            $userLocations = new UserLocations($this);
-            $this->userLocationsResult = $userLocations->execute();
-        }
-
-        return $this->userLocationsResult;
+    /** @return UserLocations */
+    public function getUserLocations() {
+        if (is_null($this->userLocations))
+            $this->userLocations = new UserLocations($this->user);
+        return $this->userLocations;
     }
 
-
-    /** @var UserAdminLocationsResult $userAdminLocationsResult */
-    private $userAdminLocationsResult;
-
-    public function getUserAdminLocationsResult() {
-        if (is_null($this->userAdminLocationsResult)) {
-            $adminLocations = new UserAdminLocations($this);
-            $this->userAdminLocationsResult = $adminLocations->execute();
-        }
-
-        return $this->userAdminLocationsResult;
+    /** @return UserAdminLocations */
+    public function getUserAdminLocations() {
+        if (is_null($this->userAdminLocations))
+            $this->userAdminLocations = new UserAdminLocations($this->user);
+        return $this->userAdminLocations;
     }
 
-
-    /** @var UserSuggestedFriendsResult $userSuggestedFriendsResult */
-    private $userSuggestedFriendsResult;
-
-    public function getUserSuggestedFriendsResult($seed) {
-        if (is_null($this->userSuggestedFriendsResult)) {
-            $userSuggested = new UserSuggestedFriends($this, $seed);
-            $this->userSuggestedFriendsResult = $userSuggested->execute();
-        }
-
-        return $this->userSuggestedFriendsResult;
+    /** @return UserSuggestedFriends */
+    public function getUserSuggestedFriends($seed) {
+        if (is_null($this->userSuggestedFriends))
+            $this->userSuggestedFriends = new UserSuggestedFriends($this->user, $seed);
+        return $this->userSuggestedFriends;
     }
 
-
-    /** @var UserSuggestedLocationsResult $userSuggestedLocationsResult */
-    private $userSuggestedLocationsResult;
-
-    public function getSuggestedLocationResult($seed) {
-        if (is_null($this->userSuggestedLocationsResult)) {
-            $locationSuggested = new UserSuggestedLocations($this, $seed);
-            $this->userSuggestedLocationsResult = $locationSuggested->execute();
-        }
-
-        return $this->userSuggestedLocationsResult;
+    /** @return UserSuggestedLocations */
+    public function getUserSuggestedLocations($seed) {
+        if (is_null($this->userSuggestedLocations))
+            $this->userSuggestedLocations = new UserSuggestedLocations($this->user, $seed);
+        return $this->userSuggestedLocations;
     }
 
-
-    /** @var UserLocationStatusResult $userLocationStatusResult */
-    private $userLocationStatusResult;
-
-    public function getUserLocationStatusResult() {
-        if (is_null($this->userLocationStatusResult)) {
-            $locationStatus = new UserLocationStatus($this);
-            $this->userLocationStatusResult = $locationStatus->execute();
-        }
-
-        return $this->userLocationStatusResult;
+    /** @return UserLocationStatus */
+    public function getUserLocationStatus() {
+        if (is_null($this->userLocationStatus))
+            $this->userLocationStatus = new UserLocationStatus($this->user);
+        return $this->userLocationStatus;
     }
-
 
 }

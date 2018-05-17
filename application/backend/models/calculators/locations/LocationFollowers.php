@@ -25,7 +25,7 @@ class LocationFollowers {
     }
 
     /** @return int[] */
-    public function asIds() {
+    public function getResultIds() {
         return array_map(function(UserLocationFavorite $ulf) {
             return $ulf->getUserId();
         }, $this->locationFollowers);

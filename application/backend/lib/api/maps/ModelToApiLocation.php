@@ -7,9 +7,9 @@ use Api\LocationPeople;
 use Location as DbLocation;
 use User as DbUser;
 use Api\Location as ApiLocation;
-use Models\Calculators\JoinedLocationUser\LocationFriendsResult;
-use Models\Calculators\Locations\LocationCountResult;
-use Models\Calculators\Locations\LocationImagesResult;
+use Models\LocationFriendsResult;
+use Models\LocationCountResult;
+use Models\LocationImagesResult;
 
 
 class ModelToApiLocation {
@@ -108,9 +108,9 @@ class ModelToApiLocation {
      */
     public function withPeople(LocationCountResult $locationCount) {
         $apiLocationPeople = new LocationPeople();
-        $apiLocationPeople->men = $locationCount->getMenCount();
-        $apiLocationPeople->women = $locationCount->getWomenCount();
-        $apiLocationPeople->total = $locationCount->getTotalCount();
+        $apiLocationPeople->men = $locationCount->men;
+        $apiLocationPeople->women = $locationCount->women;
+        $apiLocationPeople->total = $locationCount->total;
         $this->apiLocation->people = $apiLocationPeople;
         return $this;
     }
@@ -129,7 +129,7 @@ class ModelToApiLocation {
             ->users($locationFriends->getFuture());
 
         $apiLocationConnections->now = $this->modelToApiUsers
-            ->users($locationFriends->getNow());
+            ->users($locationFriends->n);
 
         $this->apiLocation->connections = $apiLocationConnections;
         return $this;

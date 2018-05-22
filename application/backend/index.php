@@ -110,8 +110,7 @@ $app->group('', function () use ($app) {
     $app->get('/user/profile', RoutesPrivate::userProfile);
     $app->get('/user/profile/edit/firebase/{token}', RoutesPrivate::userProfileEditFirebaseToken);
     $app->get('/user/connections/add/{uid:[0-9]+}', RoutesPrivate::userConnectionsAddUid);
-    $app->get('/user/connections/accept/{uid:[0-9]+}', RoutesPrivate::userConnectionsAcceptUid);
-    $app->get('/user/connections/block/{uid:[0-9]+}', RoutesPrivate::userConnectionsBlockUid);
+    $app->get('/user/connections/remove/{uid:[0-9]+}', RoutesPrivate::userConnectionsRemoveUid);
     $app->get('/user/status', RoutesPrivate::userStatus);
     $app->get('/user/status/del/{tid:[0-9]+}', RoutesPrivate::userStatusDelTid);
     $app->get('/user/locations/favorites/add/{lid:[0-9]+}', RoutesPrivate::userLocationsFavoritesAddLid);

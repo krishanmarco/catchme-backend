@@ -116,22 +116,20 @@ class ControllerUser {
 
 
     public function connectionsAddUid($uid) {
-        $manager = new UserManagerConnections($this->authUser);
-        $manager->add($uid);
+        $manager = new UserManagerConnections($this->authUser, $uid);
+        $manager->add();
 
         // Add the notification item to firebase
         FeedManager::build($this->authUser)
             ->postSingleFeed(new FeedItemFriendshipRequest($this->authUser), $uid);
+
+        return R::return_ok;
     }
 
-    public function connectionsAcceptUid($uid) {
-        $manager = new UserManagerConnections($this->authUser);
-        $manager->accept($uid);
-    }
-
-    public function connectionsBlockUid($uid) {
-        $manager = new UserManagerConnections($this->authUser);
-        $manager->block($uid);
+    public function connectionsRemoveUid($uid) {
+        $manager = new UserManagerConnections($this->authUser, $uid);
+        $manager->del();
+        return R::return_ok;
     }
 
 

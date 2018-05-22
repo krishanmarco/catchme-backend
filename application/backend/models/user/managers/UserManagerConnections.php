@@ -2,77 +2,121 @@
 
 namespace Models\User\Accounts;
 
-use Models\Queries\User\UserQueriesWrapper;
-use Propel\Runtime\Exception\PropelException;
-use Slim\Exception\Api400;
 use UserConnection;
 use UserConnectionQuery;
-use User;
-use R;
 use EConnectionState;
 
 class UserManagerConnections {
 
-    public function __construct(User $user) {
-        $this->user = $user;
+    public function __construct($authUid, $connectionUid) {
+        $this->authUid = $authUid;
+        $this->connectionUid = $connectionUid;
+        $this->userConnection = UserConnectionQuery::create()
+            ->filterByConnectionIds($authUid, $connectionUid)
+            ->findOne();
     }
 
-    /** @var User $user */
-    private $user;
+    /** @var int */
+    private $authUid;
+
+    /** @var int */
+    private $connectionUid;
+
+    /** @var UserConnection */
+    private $userConnection;
 
 
-    public function add($uid) {
-        $userConnection = new UserConnection();
-        $userConnection->setUserId($this->user->getId());
-        $userConnection->setConnectionId(intval($uid));
-        $userConnection->setState(EConnectionState::PENDING);
+    public function add() {
 
-        try {
-            $userConnection->save();
+        // If the connection doesn't exist and
+        // authUid is trying to add it, create
+        if (is_null($this->userConnection)) {
+            $this->create(EConnectionState::PENDING)
+                ->save();
+            return;
+        }
 
-        } catch (PropelException $exception) {
-            switch ($exception->getCode()) {
-                default:
-                    throw new Api400(R::return_error_generic, $exception);
+        // If the current user is the left user
+        if ($this->userConnection->getUserId() == $this->authUid) {
+
+            // This user is the reference frame for this connection
+            if ($this->userConnection->getState() == EConnectionState::BLOCKED) {
+                // $leftUser (this user) had previously blocked $rightUser
+                // And is now undoing that operation
+                $this->userConnection->delete();
+                return;
             }
+
+            // No other operation to handle in this case
+            return;
+        }
+
+        // The current user is the right user
+        if ($this->userConnection->getState() == EConnectionState::PENDING) {
+
+            // $leftUser had previously requested a friendship from $rightUser (This user)
+            // Accept the friendship
+            $this->userConnection->setState(EConnectionState::CONFIRMED);
+            $this->userConnection->save();
+            return;
         }
     }
 
-    public function accept($uid) {
-        // To accept a request the current user must be
-        // in the connectionId column and the state must be 0
-        $userConnection = UserConnectionQuery::create()
-            ->filterByUserId($uid)
-            ->filterByConnectionId($this->user->getId())
-            ->findOne();
+    public function del() {
 
-        if (!is_null($userConnection))
-            $userConnection->setState(EConnectionState::CONFIRMED)->save();
-    }
-
-
-    public function block($uid) {
-        $userConnection = UserConnectionQuery::create()
-            ->filterByConnectionIds($this->user->getId(), $uid)
-            ->findOne();
-
-        $userConnection->setState(EConnectionState::BLOCKED)->save();
-    }
-
-
-// todo?
-    private function del($uid, UserConnection $userConnection = null) {
-
-        if (is_null($userConnection)) {
-            $userConnection = UserConnectionQuery::create()
-                ->filterByConnectionIds($this->user->getId(), $uid)
-                ->findOne();
+        // If the connection doesn't exist and $authId is
+        // trying to delete it, create it in a blocked state
+        if (is_null($this->userConnection)) {
+            $this->create(EConnectionState::BLOCKED)
+                ->save();
+            return;
         }
 
-        if (!is_null($userConnection))
-            $userConnection->delete();
+        // If the current user is the left user
+        if ($this->userConnection->getUserId() == $this->authUid) {
+
+            // This user is the reference frame for this connection
+            if ($this->userConnection->getState() != EConnectionState::BLOCKED) {
+                // $authUser (left) had previously added or confirmed $connectionUid
+                // and is now deleting the friendship
+                $this->userConnection->delete();
+                return;
+            }
+
+            // No other operation to handle in this case
+            return;
+        }
+
+        // The $authUid on the right of the connection
+
+        // If the current state is pending, and a del was sent, swap and block
+        if ($this->userConnection->getState() == EConnectionState::PENDING) {
+
+            // $connectionUid (left) previously requested a friendship to $authUser (right)
+            // $authUser (right) is now blocking, so the reference frame has to be swapped
+            $this->userConnection->setUserId($this->authUid);
+            $this->userConnection->setConnectionId($this->connectionUid);
+            $this->userConnection->setState(EConnectionState::BLOCKED);
+            $this->userConnection->save();
+            return;
+        }
+
+        // If the current state is confirmed, and a del was sent, delete
+        if ($this->userConnection->getState() == EConnectionState::CONFIRMED) {
+            // $authUser (right) previously added $connectionUid
+            // and is now deleting the friendship
+            $this->userConnection->delete();
+            return;
+        }
     }
 
 
+    private function create($connectionState) {
+        $this->userConnection = new UserConnection();
+        $this->userConnection->setUserId($this->authUid);
+        $this->userConnection->setConnectionId($this->connectionUid);
+        $this->userConnection->setState($connectionState);
+        return $this->userConnection;
+    }
 
 }

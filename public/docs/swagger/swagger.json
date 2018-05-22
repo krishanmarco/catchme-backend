@@ -451,23 +451,8 @@
     },
 
 
-    "/user/connections/accept/{uid}": {
-      "get": {
-        "tags": ["User"],
-        "parameters": [
-          {"$ref": "#/parameters/token"},
-          {"$ref": "#/parameters/uid"}
-        ],
-        "responses": {
-          "401": {},
-          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
-          "200": {}
-        }
-      }
-    },
 
-
-    "/user/connections/block/{uid}": {
+    "/user/connections/remove/{uid}": {
       "get": {
         "tags": ["User"],
         "parameters": [

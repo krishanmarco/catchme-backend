@@ -17,18 +17,24 @@ class UserConnectionQuery extends BaseUserConnectionQuery {
 
     public function filterByConnectionIds($uid1, $uid2) {
 
-        $whereClause = strtr('{table}.{colLeft} = ? AND {table}.{colRight} = ?', [
+        $whereLeft = strtr('{colLeft} = ?', [
             '{table}' => \Map\UserConnectionTableMap::CLASS_DEFAULT,
-            '{colLeft}' => \Map\UserConnectionTableMap::COL_USER_ID,
+            '{colLeft}' => \Map\UserConnectionTableMap::COL_USER_ID
+        ]);
+
+        $whereRight = strtr('{colRight} = ?', [
+            '{table}' => \Map\UserConnectionTableMap::CLASS_DEFAULT,
             '{colRight}' => \Map\UserConnectionTableMap::COL_CONNECTION_ID
         ]);
 
-        $this
-            ->where($whereClause, $uid1, $uid2)
-            ->_or()
-            ->where($whereClause, $uid2, $uid1);
-
-        return $this;
+        return $this
+            ->condition('left1', $whereLeft, $uid1)
+            ->condition('right2', $whereRight, $uid2)
+            ->combine(['left1', 'right2'], 'and', 'leftFrame')
+            ->condition('left2', $whereLeft, $uid2)
+            ->condition('right1', $whereRight, $uid1)
+            ->combine(['left2', 'right1'], 'and', 'rightFrame')
+            ->where(['leftFrame', 'rightFrame'], 'or');
     }
 
 }

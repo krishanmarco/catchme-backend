@@ -94,9 +94,11 @@ class UserManagerConnections {
 
             // $connectionUid (left) previously requested a friendship to $authUser (right)
             // $authUser (right) is now blocking, so the reference frame has to be swapped
-            $this->userConnection->setUserId($this->authUid);
-            $this->userConnection->setConnectionId($this->connectionUid);
-            $this->userConnection->setState(EConnectionState::BLOCKED);
+            $this->userConnection->delete();
+            $this->create(EConnectionState::BLOCKED);
+//            $this->userConnection->setUserId($this->authUid);
+//            $this->userConnection->setConnectionId($this->connectionUid);
+//            $this->userConnection->setState(EConnectionState::BLOCKED);
             $this->userConnection->save();
             return;
         }

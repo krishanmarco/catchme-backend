@@ -116,7 +116,7 @@ class ControllerUser {
 
 
     public function connectionsAddUid($uid) {
-        $manager = new UserManagerConnections($this->authUser, $uid);
+        $manager = new UserManagerConnections($this->authUser->getId(), $uid);
         $manager->add();
 
         // Add the notification item to firebase
@@ -127,7 +127,7 @@ class ControllerUser {
     }
 
     public function connectionsRemoveUid($uid) {
-        $manager = new UserManagerConnections($this->authUser, $uid);
+        $manager = new UserManagerConnections($this->authUser->getId(), $uid);
         $manager->del();
         return R::return_ok;
     }

@@ -5,6 +5,7 @@ namespace Firebase\FeedItems;
 use User;
 use Location;
 use LocationImage;
+use stdClass;
 
 final class FeedItemFriendAddedImage extends FeedItemBuilder {
 
@@ -35,7 +36,10 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
     }
 
     public function setContent() {
-        return "<b>{$this->currentUser->getName()}</b> posted a picture at {$this->location->getName()}.<br>Tap to check it out!";
+        return [
+            ["{$this->currentUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
+            ["posted a picture at {$this->location->getName()}"]
+        ];
     }
 
     protected function setLeftAvatar() {

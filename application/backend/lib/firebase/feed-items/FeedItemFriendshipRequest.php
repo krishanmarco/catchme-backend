@@ -25,7 +25,10 @@ final class FeedItemFriendshipRequest extends FeedItemBuilder {
     }
 
     public function setContent() {
-        return "<b>{$this->currentUser->getName()}</b> wants to catch you!";
+        return [
+            ["{$this->currentUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
+            ["wants to catch you!"]
+        ];
     }
 
     protected function setLeftAvatar() {

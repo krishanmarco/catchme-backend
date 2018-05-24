@@ -29,7 +29,10 @@ final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
     }
 
     public function setContent() {
-        return "<b>{$this->currentUser->getName()}</b> will be at <b>{$this->location->getName()}</b>, will you be there too?";
+        return [
+            ["{$this->currentUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
+            ["will be at {$this->location->getName()}, will you be there too?"],
+        ];
     }
 
     protected function setLeftAvatar() {

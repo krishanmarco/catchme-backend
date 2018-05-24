@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 07/10/2017 - Fithancer © */
 
 namespace Firebase\FeedItems;
+use stdClass;
 
 /**
     FeedItem: {
@@ -58,44 +59,44 @@ abstract class FeedItemBuilder {
     }
 
 
-    /** @var String $id */
+    /** @var String */
     private $id;
 
-    /** @var int $time */
+    /** @var int */
     private $time;
     public function getTime() { return $this->time; }
 
 
 
-    /** @var int $expiry */
+    /** @var int */
     private $expiry;
     protected abstract function setExpiry();
 
-    /** @var boolean $consumeOnView */
+    /** @var boolean */
     private $consumeOnView;
     protected abstract function setConsumeOnView();
 
-    /** @var String $content */
+    /** @var Object[][] */
     private $content;
     protected abstract function setContent();
 
-    /** @var String $leftAvatar */
+    /** @var String */
     private $leftAvatar;
     protected abstract function setLeftAvatar();
 
-    /** @var String $rightAvatar */
+    /** @var String */
     private $rightAvatar;
     protected abstract function setRightAvatar();
 
-    /** @var String[] $actions */
+    /** @var String[] */
     private $actions = [];
     protected abstract function setActions();
 
-    /** @var String $clickAction */
+    /** @var String */
     private $clickAction;
     protected abstract function setClickAction();
 
-    /** @var \stdClass $payload */
+    /** @var stdClass */
     private $payload;
     protected abstract function setPayload();
 

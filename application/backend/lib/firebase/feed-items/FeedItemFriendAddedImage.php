@@ -9,11 +9,11 @@ use stdClass;
 
 final class FeedItemFriendAddedImage extends FeedItemBuilder {
 
-    public function __construct(User $currentUser,
+    public function __construct(User $authUser,
                                 Location $location,
                                 LocationImage $locationImage) {
         parent::__construct();
-        $this->currentUser = $currentUser;
+        $this->currentUser = $authUser;
         $this->location = $location;
         $this->locationImage = $locationImage;
     }
@@ -59,9 +59,9 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
     }
 
     public function setPayload() {
-        $class = new \stdClass();
-        $class->locationId = $this->location->getId();
-        return $class;
+        return classFromArray([
+            'locationId' => $this->location->getId()
+        ]);
     }
 
 }

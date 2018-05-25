@@ -7,9 +7,9 @@ use Location;
 
 final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
 
-    public function __construct(User $currentUser, Location $location) {
+    public function __construct(User $authUser, Location $location) {
         parent::__construct();
-        $this->currentUser = $currentUser;
+        $this->currentUser = $authUser;
         $this->location = $location;
     }
 
@@ -52,9 +52,9 @@ final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
     }
 
     public function setPayload() {
-        $class = new \stdClass();
-        $class->locationId = $this->location->getId();
-        return $class;
+        return classFromArray([
+            'locationId' => $this->location->getId()
+        ]);
     }
     
 }

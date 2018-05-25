@@ -25,7 +25,7 @@ use Api\UserLocationStatus as ApiUserLocationStatus;
 use R;
 
 class ControllerUser {
-    
+
     public function __construct(DbUser $authUser) {
         $this->authUser = $authUser;
     }
@@ -49,7 +49,7 @@ class ControllerUser {
         return FirebaseHelper::getUserFirebaseJWT($this->authUser->getId());
     }
 
-    
+
     /** @return ApiUser */
     public function getProfile() {
         $userModel = UserModel::fromUser($this->authUser);
@@ -116,18 +116,13 @@ class ControllerUser {
 
 
     public function connectionsAddUid($uid) {
-        $manager = new UserManagerConnections($this->authUser->getId(), $uid);
+        $manager = new UserManagerConnections($this->authUser, $uid);
         $manager->add();
-
-        // Add the notification item to firebase
-        FeedManager::build($this->authUser)
-            ->postSingleFeed(new FeedItemFriendshipRequest($this->authUser), $uid);
-
         return R::return_ok;
     }
 
     public function connectionsRemoveUid($uid) {
-        $manager = new UserManagerConnections($this->authUser->getId(), $uid);
+        $manager = new UserManagerConnections($this->authUser, $uid);
         $manager->del();
         return R::return_ok;
     }

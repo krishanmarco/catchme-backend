@@ -5,19 +5,23 @@ namespace Models\User\Accounts;
 use UserConnection;
 use UserConnectionQuery;
 use EConnectionState;
+use User as DbUser;
+use Firebase\FeedManager;
+use Firebase\FeedItems\FeedItemFriendshipAccept;
+use Firebase\FeedItems\FeedItemFriendshipRequest;
 
 class UserManagerConnections {
 
-    public function __construct($authUid, $connectionUid) {
-        $this->authUid = $authUid;
+    public function __construct(DbUser $authUser, $connectionUid) {
+        $this->authUser = $authUser;
         $this->connectionUid = $connectionUid;
         $this->userConnection = UserConnectionQuery::create()
-            ->filterByConnectionIds($authUid, $connectionUid)
+            ->filterByConnectionIds($this->authUser->getId(), $connectionUid)
             ->findOne();
     }
 
-    /** @var int */
-    private $authUid;
+    /** @var DbUser */
+    private $authUser;
 
     /** @var int */
     private $connectionUid;
@@ -31,13 +35,13 @@ class UserManagerConnections {
         // If the connection doesn't exist and
         // authUid is trying to add it, create
         if (is_null($this->userConnection)) {
-            $this->create(EConnectionState::PENDING)
-                ->save();
+            $this->create(EConnectionState::PENDING)->save();
+            $this->onFriendRequest();
             return;
         }
 
         // If the current user is the left user
-        if ($this->userConnection->getUserId() == $this->authUid) {
+        if ($this->userConnection->getUserId() == $this->authUser->getId()) {
 
             // This user is the reference frame for this connection
             if ($this->userConnection->getState() == EConnectionState::BLOCKED) {
@@ -56,8 +60,8 @@ class UserManagerConnections {
 
             // $leftUser had previously requested a friendship from $rightUser (This user)
             // Accept the friendship
-            $this->userConnection->setState(EConnectionState::CONFIRMED);
-            $this->userConnection->save();
+            $this->userConnection->setState(EConnectionState::CONFIRMED)->save();
+            $this->onRequestAccept();
             return;
         }
     }
@@ -67,13 +71,12 @@ class UserManagerConnections {
         // If the connection doesn't exist and $authId is
         // trying to delete it, create it in a blocked state
         if (is_null($this->userConnection)) {
-            $this->create(EConnectionState::BLOCKED)
-                ->save();
+            $this->create(EConnectionState::BLOCKED)->save();
             return;
         }
 
         // If the current user is the left user
-        if ($this->userConnection->getUserId() == $this->authUid) {
+        if ($this->userConnection->getUserId() == $this->authUser->getId()) {
 
             // This user is the reference frame for this connection
             if ($this->userConnection->getState() != EConnectionState::BLOCKED) {
@@ -95,11 +98,7 @@ class UserManagerConnections {
             // $connectionUid (left) previously requested a friendship to $authUser (right)
             // $authUser (right) is now blocking, so the reference frame has to be swapped
             $this->userConnection->delete();
-            $this->create(EConnectionState::BLOCKED);
-//            $this->userConnection->setUserId($this->authUid);
-//            $this->userConnection->setConnectionId($this->connectionUid);
-//            $this->userConnection->setState(EConnectionState::BLOCKED);
-            $this->userConnection->save();
+            $this->create(EConnectionState::BLOCKED)->save();
             return;
         }
 
@@ -115,10 +114,21 @@ class UserManagerConnections {
 
     private function create($connectionState) {
         $this->userConnection = new UserConnection();
-        $this->userConnection->setUserId($this->authUid);
+        $this->userConnection->setUserId($this->authUser->getId());
         $this->userConnection->setConnectionId($this->connectionUid);
         $this->userConnection->setState($connectionState);
         return $this->userConnection;
     }
 
+    private function onFriendRequest() {
+        // Add the notification item to firebase
+        FeedManager::build($this->authUser)
+            ->postSingleFeed(new FeedItemFriendshipRequest($this->authUser), $this->connectionUid);
+    }
+
+    private function onRequestAccept() {
+        // Add the notification item to firebase
+        FeedManager::build($this->authUser)
+            ->postSingleFeed(new FeedItemFriendshipAccept($this->authUser), $this->connectionUid);
+    }
 }

@@ -4,27 +4,25 @@ namespace Slim\Middleware;
 use Security\Validator;
 use Slim\Exception\Api400;
 use Slim\SlimAttrGet;
-use Slim\SlimOutput;
 use R;
 
 
 class MiddlewareValidator {
 
-    public function __construct($apiDefInputClass, $apiDefOutputClass = null) {
+    public function __construct($apiDefInputClass, $apiDefOutputClass = null, $removeNulls = true) {
         $this->apiDefInputClass = $apiDefInputClass;
         $this->apiDefOutputClass = $apiDefOutputClass;
+        $this->removeNulls = $removeNulls;
     }
 
-
-
-    /** @var string $apiDefInputClass */
+    /** @var string */
     private $apiDefInputClass;
 
-    /** @var string $apiDefOutputClass */
+    /** @var string */
     private $apiDefOutputClass = null;
-
-
-
+    
+    /** @var boolean */
+    private $removeNulls;
 
     /**
      * @param  \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
@@ -42,7 +40,7 @@ class MiddlewareValidator {
 
         $validator = new Validator($inputData, $this->apiDefInputClass);
 
-        if (!$validator->validateObject()) {
+        if (!$validator->validateObject($this->removeNulls)) {
             // Input data is not valid
 
             $errorResult = $validator->getResult();

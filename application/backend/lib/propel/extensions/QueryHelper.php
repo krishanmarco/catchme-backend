@@ -6,9 +6,13 @@ use Propel\Runtime\ActiveQuery\ModelCriteria;
 
 abstract class QueryHelper {
 
-    public static function fullTextSearch(ModelCriteria $critiera, $columnName, $searchString) {
-        return $critiera->where('MATCH(' . $columnName . ') AGAINST(? IN BOOLEAN MODE)', $searchString)
-            ->find();
+    public static function fullTextSearch(ModelCriteria $critiera, $columnName, $searchString, $groupByCol = null) {
+        $query = $critiera->where('MATCH(' . $columnName . ') AGAINST(? IN BOOLEAN MODE)', $searchString);
+
+        if (!is_null($groupByCol))
+            $query = $query->groupBy($groupByCol);
+
+        return $query->find();
     }
 
 }

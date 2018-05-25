@@ -40,7 +40,8 @@ class LocationSearch {
         $indexedLocations = QueryHelper::fullTextSearch(
             SearchLocationQuery::create(),
             SearchLocationTableMap::COL_QUERY,
-            $this->searchQuery
+            $this->searchQuery,
+            SearchLocationTableMap::COL_LOCATION_ID
         );
 
         // Get all location ids from the SearchLocation

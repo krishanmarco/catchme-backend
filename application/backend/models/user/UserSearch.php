@@ -7,8 +7,7 @@ use Map\SearchUserTableMap;
 use SearchUserQuery;
 use SearchUser;
 use UserQuery;
-use User;
-
+use User as DbUser;
 
 class UserSearch {
 
@@ -17,29 +16,26 @@ class UserSearch {
         $this->searchQuerys = array_map('strtoupper', $this->searchQuerys);
     }
 
-
-    /** @var String[] $searchQuerys */
+    /** @var String[] */
     private $searchQuerys;
 
-
-
-    /** @var array $userResults : [User-Id => User] */
+    /** @var array */
     private $userResults = [];
 
     public function getResults() {
         return array_values($this->userResults);
     }
 
-
     public function search() {
-        foreach ($this->searchQuerys as $searchQuery) {
-            $result = $this->searchOne($searchQuery);
-            $this->userResults = array_merge($this->userResults, $result);
-        }
+        $this->userResults = $this->searchOne(implode(' ', $this->searchQuerys));
         return $this->userResults;
     }
 
-    private function searchOne($searchString) {
+    /**
+     * @param string $searchString
+     * @return DbUser[]
+     */
+    private function searchOne($searchString) { // todo can be optimized (i.e. join with user...)
 
         // Use a FullTextSearch to match the search query
         // to the query column on the SearchUser table
@@ -47,14 +43,15 @@ class UserSearch {
         $indexedUsers = QueryHelper::fullTextSearch(
             SearchUserQuery::create(),
             SearchUserTableMap::COL_QUERY,
-            $searchString
+            $searchString,
+            SearchUserTableMap::COL_USER_ID
         );
 
         // Get all user ids from the SearchUser
         // rows that matched the search query
         $userIds = [];
-        foreach ($indexedUsers as $il)
-            $userIds[] = $il->getUserId();
+        foreach ($indexedUsers as $iu)
+            $userIds[] = $iu->getUserId();
 
 
         // Select all found ids into the result holder
@@ -62,7 +59,6 @@ class UserSearch {
             ->findPks($userIds)
             ->getData();
     }
-
 
 }
 

@@ -5,9 +5,7 @@ use Api\ApiRules;
 use R;
 
 class Validator {
-    
     const NO_ERROR = R::return_ok;
-        
 
     public function __construct(array $inputData, $apiDefInputClass) {
         $this->inputData = $inputData;
@@ -15,42 +13,31 @@ class Validator {
         $this->validationParams = new $this->apiDefInputClass;
     }
 
-
-    /** @var array $inputData */
+    /** @var array */
     private $inputData;
 
-    /** @var string $apiDefInputClass */
+    /** @var string */
     private $apiDefInputClass;
 
-
-
-
-    /** @var object $validationParams */
+    /** @var object */
     private $validationParams;
 
-    /** @var array $errors */
+    /** @var array */
     private $errors = [];
 
-    public function getResult() {
+    /** @var boolean */
+    private $hasError = false;
 
+    public function getResult() {
         if ($this->hasError)
             return $this->errors;
 
         return $this->validationParams;
     }
 
-
-
-
-    /** @var boolean $hasError */
-    private $hasError = false;
-
     public function getHasError() {
         return $this->hasError;
     }
-
-
-
 
     private function resetValidationErrors() {
 
@@ -64,8 +51,6 @@ class Validator {
             $this->errors[$fieldKey] = self::NO_ERROR;
 
     }
-
-
 
     public function validateObject($removeNulls = true) {
 
@@ -89,7 +74,7 @@ class Validator {
             }
 
             // The result is valid, get the value
-            if ($removeNulls && $fieldValue == null) {
+            if ($removeNulls && $fieldValue === null) {
                 unset($this->validationParams->{$key});
                 continue;
             }
@@ -102,9 +87,7 @@ class Validator {
         return !$this->hasError;
     }
 
-
-
-    public function validateField($fieldValue, $validators) {
+    private function validateField($fieldValue, $validators) {
 
         foreach ($validators as $method => $args) {
 
@@ -125,7 +108,6 @@ class Validator {
             // Check for sub validator failure
             if ($result != self::NO_ERROR)
                 return $result;
-
         }
 
         return self::NO_ERROR;

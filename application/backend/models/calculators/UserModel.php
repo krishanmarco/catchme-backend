@@ -20,21 +20,19 @@ class UserModel {
 
     /** @return UserModel */
     public static function fromId($uid) {
-        if (array_key_exists($uid, self::$UserModels))
-            return self::$UserModels[$uid];
-
-        $user = UserQuery::create()->findPk(intval($uid));
-        self::$UserModels[$uid] = new UserModel($user);
+        if (!array_key_exists($uid, self::$UserModels)) {
+            $user = UserQuery::create()->findPk(intval($uid));
+            self::$UserModels[$uid] = new UserModel($user);
+        }
 
         return self::$UserModels[$uid];
     }
 
     /** @return UserModel */
     public static function fromUser(DbUser $user) {
-        if (array_key_exists($user->getId(), self::$UserModels))
-            return self::$UserModels[$user->getId()];
-
-        self::$UserModels[$user->getId()] = new UserModel($user);
+        if (!array_key_exists($user->getId(), self::$UserModels)) {
+            self::$UserModels[$user->getId()] = new UserModel($user);
+        }
 
         return self::$UserModels[$user->getId()];
     }

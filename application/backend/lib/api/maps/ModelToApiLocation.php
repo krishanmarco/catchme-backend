@@ -126,10 +126,10 @@ class ModelToApiLocation {
         $apiLocationConnections->past = [];
 
         $apiLocationConnections->future = $this->modelToApiUsers
-            ->users($locationFriends->getFuture());
+            ->users($locationFriends->future);
 
         $apiLocationConnections->now = $this->modelToApiUsers
-            ->users($locationFriends->n);
+            ->users($locationFriends->now);
 
         $this->apiLocation->connections = $apiLocationConnections;
         return $this;

@@ -16,14 +16,13 @@ class JoinedLocationUserModel {
     public static function fromIds($lid, $uid) {
         $id = "$lid-$uid";
 
-        if (array_key_exists($id, self::$JoinedLocationUserModel))
-            return self::$JoinedLocationUserModel[$id];
+        if (!array_key_exists($id, self::$JoinedLocationUserModel)) {
+            $location = LocationModel::fromId($lid)->getLocation();
+            $user = UserModel::fromId($uid)->getUser();
+            self::$JoinedLocationUserModel[$id] = new JoinedLocationUserModel($location, $user);
+        }
 
-        $location = LocationModel::fromId($lid)->getLocation();
-        $user = UserModel::fromId($uid)->getUser();
-        self::$JoinedLocationUserModel[$id] = new JoinedLocationUserModel($location, $user);
-
-        return self::$JoinedLocationUserModel[$lid];
+        return self::$JoinedLocationUserModel[$id];
     }
 
     public function __construct(DbLocation $location, DbUser $user) {

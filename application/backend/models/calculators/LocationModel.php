@@ -17,21 +17,19 @@ class LocationModel {
 
     /** @return LocationModel */
     public static function fromId($lid) {
-        if (array_key_exists($lid, self::$LocationModel))
-            return self::$LocationModel[$lid];
-
-        $location = LocationQuery::create()->findPk(intval($lid));
-        self::$LocationModel[$lid] = new LocationModel($location);
+        if (!array_key_exists($lid, self::$LocationModel)) {
+            $location = LocationQuery::create()->findPk(intval($lid));
+            self::$LocationModel[$lid] = new LocationModel($location);
+        }
 
         return self::$LocationModel[$lid];
     }
 
     /** @return LocationModel */
     public static function fromLocation(DbLocation $location) {
-        if (array_key_exists($location->getId(), self::$LocationModel))
-            return self::$LocationModel[$location->getId()];
-
-        self::$LocationModel[$location->getId()] = new LocationModel($location);
+        if (!array_key_exists($location->getId(), self::$LocationModel)) {
+            self::$LocationModel[$location->getId()] = new LocationModel($location);
+        }
 
         return self::$LocationModel[$location->getId()];
     }

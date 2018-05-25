@@ -7,6 +7,7 @@ use LocationImage;
 use LocationImageQuery;
 use Location as DbLocation;
 use Models\LocationImagesResult;
+use EMediaType;
 
 class LocationImages {
 
@@ -41,12 +42,12 @@ class LocationImages {
             array_push($locationImagesResult, new LocationImagesResult(
                 $li->getId(),
                 $li->getLocationId(),
-                \EMediaType::LOCATION_IMAGE,
+                EMediaType::LOCATION_IMAGE,
                 $li->getUrl()
             ));
         }
 
-        $this->result = $locationImages;
+        $this->result = $locationImagesResult;
     }
 
     /**

@@ -19,11 +19,11 @@ class UserSearch {
     /** @var String[] */
     private $searchQuerys;
 
-    /** @var array */
+    /** @var DbUser[] */
     private $userResults = [];
 
     public function getResults() {
-        return array_values($this->userResults);
+        return $this->userResults;
     }
 
     public function search() {
@@ -35,29 +35,20 @@ class UserSearch {
      * @param string $searchString
      * @return DbUser[]
      */
-    private function searchOne($searchString) { // todo can be optimized (i.e. join with user...)
-
+    private function searchOne($searchString) {
         // Use a FullTextSearch to match the search query
         // to the query column on the SearchUser table
         /** @var SearchUser[] $indexedUsers */
-        $indexedUsers = QueryHelper::fullTextSearch(
-            SearchUserQuery::create(),
-            SearchUserTableMap::COL_QUERY,
-            $searchString,
-            SearchUserTableMap::COL_USER_ID
-        );
-
-        // Get all user ids from the SearchUser
-        // rows that matched the search query
-        $userIds = [];
-        foreach ($indexedUsers as $iu)
-            $userIds[] = $iu->getUserId();
-
+        $indexedUsers = SearchUserQuery::create()
+            ->fullTextSearch($searchString)
+            ->joinWithUser()
+            ->find()
+            ->getData();
 
         // Select all found ids into the result holder
-        return UserQuery::create()
-            ->findPks($userIds)
-            ->getData();
+        return array_map(function(SearchUser $searchUser) {
+            return $searchUser->getUser();
+        }, $indexedUsers);
     }
 
 }

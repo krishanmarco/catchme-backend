@@ -7,13 +7,13 @@ use Location as DbLocation;
 
 class LocationSearch {
 
-    public function __construct($searchQuery) {
-        $this->searchString = strtoupper(trim($searchQuery));
+    public function __construct(array $searchQueries) {
+        $this->searchQueries = array_map('trim', $searchQueries);
+        $this->searchQueries = array_map('strtoupper', $this->searchQueries);
     }
 
-    /** @var String */
-    private $searchString;
-
+    /** @var String[] */
+    private $searchQueries;
 
     /** @var DbLocation[] */
     private $locationResults = [];
@@ -21,13 +21,17 @@ class LocationSearch {
     public function getResults() {
         return $this->locationResults;
     }
+    
+    public function search() {
+        $this->locationResults = $this->searchOne(implode(' ', $this->searchQueries));
+    }
 
-    public function searchOne() {
+    private function searchOne($searchString) {
         // Use a FullTextSearch to match the search query
         // to the query column on the SearchLocation table
         /** @var SearchLocation[] $indexedLocations */
         $indexLocations = SearchLocationQuery::create()
-            ->fullTextSearch($this->searchString)
+            ->fullTextSearch($searchString)
             ->joinWithLocation()
             ->find()
             ->getData();

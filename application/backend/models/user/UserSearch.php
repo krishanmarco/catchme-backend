@@ -11,13 +11,13 @@ use User as DbUser;
 
 class UserSearch {
 
-    public function __construct(array $searchQuerys) {
-        $this->searchQuerys = array_map('trim', $searchQuerys);
-        $this->searchQuerys = array_map('strtoupper', $this->searchQuerys);
+    public function __construct(array $searchQueries) {
+        $this->searchQueries = array_map('trim', $searchQueries);
+        $this->searchQueries = array_map('strtoupper', $this->searchQueries);
     }
 
     /** @var String[] */
-    private $searchQuerys;
+    private $searchQueries;
 
     /** @var DbUser[] */
     private $userResults = [];
@@ -27,7 +27,7 @@ class UserSearch {
     }
 
     public function search() {
-        $this->userResults = $this->searchOne(implode(' ', $this->searchQuerys));
+        $this->userResults = $this->searchOne(implode(' ', $this->searchQueries));
         return $this->userResults;
     }
 

@@ -24,8 +24,8 @@ class ControllerSearch {
 
     /** @return ApiLocation[] */
     public function locationsSearch($query) {
-        $searchLocations = new LocationSearch($query);
-        $searchLocations->searchOne();
+        $searchLocations = new LocationSearch([$query]);
+        $searchLocations->search();
         return ModelToApiLocations::multiple()->locations($searchLocations->getResults());
     }
 

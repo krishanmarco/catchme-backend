@@ -67,11 +67,13 @@ class LocationImages {
             $locationImageQuery->filterByInsertedTs(
                 time() - $this->imageTTLSeconds,
                 Criteria::GREATER_EQUAL
-
             );
         }
 
-        return $locationImageQuery->find()->getData();
+        return $locationImageQuery
+            ->orderByInsertedTs(Criteria::DESC)
+            ->find()
+            ->getData();
     }
 
 }

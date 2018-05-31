@@ -1,0 +1,843 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Catch me API - Built by Krishan Marco Madan [krishanmarco@outlook.com]",
+    "version": "1.0.0",
+    "title": "Catch me API",
+    "contact": {
+      "email": "krishanmarco@outlook.com",
+      "name": "Krishan Marco Madan",
+      "url": "http://www.krishanmadan.com/web/#contact"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "www.catchme.krishanmadan.website",
+  "basePath": "/api",
+  "schemes": ["http", "https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "parameters": {
+    "token": {
+      "name": "Authorization",
+      "required": true,
+      "in": "header",
+      "type": "string"
+    },
+    "fbToken": {
+      "name": "fbToken",
+      "required": true,
+      "in": "path",
+      "type": "string"
+    },
+    "uid": {
+      "name": "uid",
+      "required": true,
+      "in": "path",
+      "type": "integer"
+    },
+    "email": {
+      "name": "email",
+      "required": true,
+      "in": "path",
+      "type": "string"
+    },
+    "lid": {
+      "name": "lid",
+      "required": true,
+      "in": "path",
+      "type": "integer"
+    },
+    "tid": {
+      "name": "tid",
+      "required": true,
+      "in": "path",
+      "type": "integer"
+    },
+    "query": {
+      "name": "query",
+      "required": true,
+      "in": "path",
+      "type": "string"
+    },
+    "seed": {
+      "name": "seed",
+      "required": true,
+      "in": "path",
+      "type": "string"
+    },
+    "recoveryToken": {
+      "name": "recoveryToken",
+      "required": true,
+      "in": "path",
+      "type": "string"
+    }
+  },
+  "paths": {
+
+
+    "/meta/time": {
+      "get": {
+        "tags": ["Meta"],
+        "responses": {"200": {}}
+      }
+    },
+
+
+    "/meta/token/{uid}/{key}": {
+      "get": {
+        "tags": ["Meta"],
+        "parameters": [
+          {"name": "uid", "required": true, "default": -1, "in": "path", "type": "integer"},
+          {"name": "key", "in": "path", "type": "string"}
+        ],
+        "responses": {"200": {}, "401": {}}
+      }
+    },
+
+
+    "/accounts/login": {
+      "post": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormUserLogin"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/accounts/login/facebook": {
+      "post": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormUserSocialLogin"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/accounts/login/google": {
+      "post": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormUserSocialLogin"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/accounts/register": {
+      "post": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormUserRegister"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/accounts/user/{uid}/password/change": {
+      "post": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "uid", "required": true, "default": -1, "in": "path", "type": "integer"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormChangePassword"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/accounts/user/{email}/password/recover": {
+      "get": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "email", "required": true, "default": -1, "in": "path", "type": "string"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/accounts/user/{uid}/password/reset?token={recoveryToken}": {
+      "get": {
+        "tags": ["Accounts"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "uid", "required": true, "default": -1, "in": "path", "type": "integer"},
+          {"name": "recoveryToken", "required": true, "default": -1, "in": "path", "type": "string"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/locations/{lid}": {
+      "get": {
+        "tags": ["Locations"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/lid"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/Location"}}
+        }
+      }
+    },
+
+
+    "/locations/{lid}/profile": {
+      "get": {
+        "tags": ["Locations"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/lid"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/Location"}}
+        }
+      }
+    },
+
+
+    "/users/{uid}": {
+      "get": {
+        "tags": ["Users"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/uid"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/users/{uid}/profile": {
+      "get": {
+        "tags": ["Users"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/uid"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/search/{query}/locations": {
+      "get": {
+        "tags": ["Search"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/query"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"type": "array", "items": {"$ref": "#/definitions/Location"}}}
+        }
+      }
+    },
+
+
+    "/search/{query}/users": {
+      "get": {
+        "tags": ["Search"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/query"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"type": "array", "items": {"$ref": "#/definitions/User"}}}
+        }
+      }
+    },
+
+
+    "/search/users": {
+      "post": {
+        "tags": ["Search"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/SearchStrings"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"type": "array", "items": {"$ref": "#/definitions/User"}}}
+        }
+      }
+    },
+
+
+    "/suggest/{seed}/locations": {
+      "get": {
+        "tags": ["Search"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/seed"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"type": "array", "items": {"$ref": "#/definitions/Location"}}}
+        }
+      }
+    },
+
+
+    "/suggest/{seed}/users": {
+      "get": {
+        "tags": ["Search"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/seed"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"type": "array", "items": {"$ref": "#/definitions/User"}}}
+        }
+      }
+    },
+
+
+    "/user": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/user/firebase-jwt": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [{"$ref": "#/parameters/token"}],
+        "responses": {"401": {}, "400": {}, "200": {}}
+      }
+    },
+
+
+    "/user/profile": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/user/profile/edit": {
+      "post": {
+        "tags": ["User"],
+        "consumes": ["multipart/form-data"],
+        "supportHeaderParams": true,
+        "headers": { "Content-Type": "multipart/form-data" },
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "phone", "in": "formData", "required": false, "type": "string"},
+          {"name": "publicMessage", "in": "formData", "required": false, "type": "string"},
+          {"name": "pictureUrl", "in": "formData", "required": false, "type": "string"},
+          {"name": "settingPrivacy", "in": "formData", "required": false, "type": "string"},
+          {"name": "settingNotifications", "in": "formData", "required": false, "type": "string"},
+          {"name": "file", "in": "formData", "required": false, "type": "file"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/User"}}
+        }
+      }
+    },
+
+
+    "/user/profile/edit/firebase-fcm/{fbToken}": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/fbToken"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/user/connections/add/{uid}": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/uid"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+
+    "/user/connections/remove/{uid}": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/uid"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/user/status": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"type": "array", "items": {"$ref": "#/definitions/UserLocationStatus"}}}
+        }
+      }
+    },
+
+
+    "/user/status/add": {
+      "post": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/UserLocationStatus"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/UserLocationStatus"}}
+        }
+      }
+    },
+
+
+    "/user/status/del/{tid}": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/tid"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/user/locations/favorites/add/{lid}": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/lid"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/user/locations/favorites/del/{lid}": {
+      "get": {
+        "tags": ["User"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/lid"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/user/locations/administrating/edit/-1": {
+      "post": {
+        "tags": ["User"],
+        "consumes": ["multipart/form-data"],
+        "supportHeaderParams": true,
+        "headers": { "Content-Type": "multipart/form-data" },
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormLocationRegister"}},
+          {"name": "file", "in": "formData", "required": true, "type": "file"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/Location"}}
+        }
+      }
+    },
+
+
+    "/user/locations/administrating/edit/{lid}": {
+      "post": {
+        "tags": ["User"],
+        "consumes": ["multipart/form-data"],
+        "supportHeaderParams": true,
+        "headers": { "Content-Type": "multipart/form-data" },
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/lid"},
+          {"name": "file", "in": "formData", "required": false, "type": "file"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"$ref": "#/definitions/Location"}}
+        }
+      }
+    },
+
+
+    "/media/get/{typeId}/{itemId}/{imageId}": {
+      "get": {
+        "tags": ["Media"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "typeId", "required": true, "in": "path", "type": "integer"},
+          {"name": "itemId", "required": true, "in": "path", "type": "integer"},
+          {"name": "imageId", "required": true, "in": "path", "type": "string"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {"schema": {"type": "file"}}
+        }
+      }
+    },
+
+
+    "/media/add/{typeId}/{itemId}": {
+      "post": {
+        "tags": ["Media"],
+        "consumes": ["multipart/form-data"],
+        "supportHeaderParams": true,
+        "headers": { "Content-Type": "multipart/form-data" },
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "typeId", "required": true, "in": "path", "type": "integer"},
+          {"name": "itemId", "required": true, "in": "path", "type": "integer"},
+          {"name": "file", "in": "formData", "required": true, "type": "file"}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    },
+
+
+    "/admin/featuredAds/sendAttendanceRequest": {
+      "post": {
+        "tags": ["Admin"],
+        "parameters": [
+          {"$ref": "#/parameters/token"},
+          {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormFeaturedAdAdd"}}
+        ],
+        "responses": {
+          "401": {},
+          "400": {"schema": {"$ref": "#/definitions/ExceptionResponse"}},
+          "200": {}
+        }
+      }
+    }
+
+
+  },
+
+
+  "definitions": {
+
+    "FormFeaturedAdAdd": {
+      "type": "object",
+      "properties": {
+        "title":          {"type": "string"},
+        "subTitle":       {"type": "string"},
+        "locationId":     {"type": "integer"},
+        "image":          {"type": "string"},
+        "expiry":         {"type": "integer"}
+      }
+    },
+
+    "FormUserLogin": {
+      "type": "object",
+      "properties": {
+        "email":          {"type": "string"},
+        "password":       {"type": "string"}
+      }
+    },
+
+    "FormUserSocialLogin": {
+      "type": "object",
+      "properties": {
+        "token":          {"type": "string"}
+      }
+    },
+
+    "FormUserRegister": {
+      "type": "object",
+      "properties": {
+        "name":           {"type": "string"},
+        "email":          {"type": "string"},
+        "password":       {"type": "string"}
+      }
+    },
+
+    "FormChangePassword": {
+      "type": "object",
+      "properties": {
+        "passwordPrevious":      {"type": "string"},
+        "passwordNext":          {"type": "string"},
+        "passwordConfirmNext":   {"type": "string"}
+      }
+    },
+
+    "FormLocationRegister": {
+      "type": "object",
+      "properties": {
+        "name":           {"type": "string"},
+        "description":    {"type": "string"},
+        "email":          {"type": "string"},
+        "capacity":       {"type": "integer"},
+        "phone":          {"type": "string"},
+        "timings":        {"type": "string"},
+        "address":        {"$ref": "#/definitions/LocationAddress"}
+      }
+    },
+
+    "SearchStrings": {
+      "type": "object",
+      "properties": {
+        "queries":      {"type": "array", "items": {"type": "string"}}
+      }
+    },
+
+    "UserLocationStatus": {
+      "type": "object",
+      "properties": {
+        "id":             {"type": "integer"},
+        "locationId":     {"type": "integer"},
+        "fromTs":         {"type": "integer"},
+        "untilTs":        {"type": "integer"}
+      }
+    },
+
+
+
+
+    "Location": {
+      "type": "object",
+      "properties": {
+        "id":             {"type": "integer"},
+        "adminId":        {"type": "integer"},
+        "signupTs":       {"type": "integer"},
+        "verified":       {"type": "integer"},
+        "name":           {"type": "string"},
+        "description":    {"type": "string"},
+        "capacity":       {"type": "integer"},
+        "pictureUrl":     {"type": "string"},
+        "reputation":     {"type": "integer"},
+        "email":          {"type": "string"},
+        "phone":          {"type": "string"},
+        "timings":        {"type": "string"},
+        "address":        {"$ref": "#/definitions/LocationAddress"},
+
+        "imageUrls":      {"type": "array", "items": {"type": "string"}},
+        "connections":    {"$ref": "#/definitions/LocationConnections"},
+        "people":         {"$ref": "#/definitions/LocationPeople"}
+      }
+    },
+
+    "LocationAddress": {
+      "type": "object",
+      "properties": {
+        "country":        {"type": "string"},
+        "state":          {"type": "string"},
+        "city":           {"type": "string"},
+        "town":           {"type": "string"},
+        "postcode":       {"type": "string"},
+        "address":        {"type": "string"},
+        "latLng":         {"type": "string"},
+        "googlePlaceId":  {"type": "string"}
+      }
+    },
+
+    "LocationPeople": {
+      "type": "object",
+      "properties": {
+        "men":            {"type": "integer"},
+        "women":          {"type": "integer"},
+        "total":          {"type": "integer"}
+      }
+    },
+
+    "LocationConnections": {
+      "type": "object",
+      "properties": {
+        "past":           {"type": "array", "items": {"$ref": "#/definitions/User"}},
+        "now":            {"type": "array", "items": {"$ref": "#/definitions/User"}},
+        "future":         {"type": "array", "items": {"$ref": "#/definitions/User"}}
+      }
+    },
+
+
+
+
+    "User": {
+      "type": "object",
+      "properties": {
+        "id":                     {"type": "integer"},
+        "name":                   {"type": "string"},
+        "email":                  {"type": "string"},
+        "apiKey":                 {"type": "string"},
+        "ban":                    {"type": "integer"},
+        "signupTs":               {"type": "integer"},
+        "gender":                 {"type": "integer"},
+        "reputation":             {"type": "integer"},
+        "phone":                  {"type": "string"},
+        "publicMessage":          {"type": "string"},
+        "pictureUrl":             {"type": "string"},
+        "settingPrivacy":         {"type": "string"},
+        "settingNotifications":   {"type": "string"},
+
+        "adminLocations":         {"type": "array", "items": {"$ref": "#/definitions/Location"}},
+        "locations":              {"$ref": "#/definitions/UserLocations"},
+        "connections":            {"$ref": "#/definitions/UserConnections"}
+      }
+    },
+
+    "UserLocations": {
+      "type": "object",
+      "properties": {
+        "favorites":      {"type": "array", "items": {"$ref": "#/definitions/Location"}},
+        "top":            {"type": "array", "items": {"$ref": "#/definitions/Location"}},
+        "past":           {"type": "array", "items": {"$ref": "#/definitions/Location"}},
+        "now":            {"type": "array", "items": {"$ref": "#/definitions/Location"}},
+        "future":         {"type": "array", "items": {"$ref": "#/definitions/Location"}}
+      }
+    },
+
+    "UserConnections": {
+      "type": "object",
+      "properties": {
+        "friends":        {"type": "array", "items": {"$ref": "#/definitions/User"}},
+        "pending":        {"type": "array", "items": {"$ref": "#/definitions/User"}},
+        "requests":       {"type": "array", "items": {"$ref": "#/definitions/User"}},
+        "blocked":        {"type": "array", "items": {"$ref": "#/definitions/User"}}
+      }
+    },
+
+
+
+
+    "ExceptionResponse": {
+      "type": "object",
+      "properties": {
+        "errorCode":      {"type": "integer"},
+        "logMessage":     {"type": "string"},
+        "errors":         {"type": "string"}
+      }
+    }
+
+
+  }
+}

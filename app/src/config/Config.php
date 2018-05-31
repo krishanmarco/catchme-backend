@@ -90,10 +90,10 @@ define("FACEBOOK_CLIENT_ID", '371102913345579');
 define("FACEBOOK_CLIENT_APPLICATION_NAME", 'Catchme');
 
 
-define("__APPLICATION__", __DIR__ . '/../../../../applications/catchme');
+define("___APP___", __DIR__ . '/../..');
 define("__PRIVATE_DATA__", __DIR__ . '/../../data');
-define("__PUBLIC_DATA__", __DIR__ . '/../../../../public_html/catchme.top/data');
-
+define("__PUBLIC_DATA__", __DIR__ . '/../../../public/data');
+define("__TEMP__", __DIR__ . '/../../temp');
 
 
 // Location constants

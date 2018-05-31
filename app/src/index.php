@@ -26,9 +26,9 @@ $app = new \Slim\App([
     'settings' => ['displayErrorDetails' => true]
 ]);
 
-//$app->getContainer()['errorHandler'] = function ($c) {
-//    return new ApiExceptionHandler();
-//};
+$app->getContainer()['errorHandler'] = function ($c) {
+    return new ApiExceptionHandler();
+};
 
 
 

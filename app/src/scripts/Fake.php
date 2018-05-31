@@ -15,6 +15,7 @@ if (!array_key_exists('pw', $_GET) || $_GET['pw'] !== 'S()KD2dk290kdLksK()')
 // Initialize the script
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 set_time_limit(240);
+const tempFile = __TEMP__ . '/fake-temp';
 const gender = [0, 1, 2];
 const privacy = [0, 1, 2];
 const notifications = [0, 1];
@@ -185,7 +186,7 @@ function generateFakeUserConnections($start, $end) {
     $start = intval($start);
     $end = intval($end);
 
-    $globalConnections = $start == 0 ? [] : json_decode(file_get_contents(__DIR__ . '/temp'), true);
+    $globalConnections = $start == 0 ? [] : json_decode(file_get_contents(tempFile), true);
 
     for ($i = $start; $i < $end; $i++) {
         $nc = rand(MIN_CONNECTIONS_PER_USER, MAX_CONNECTIONS_PER_USER);
@@ -212,10 +213,10 @@ function generateFakeUserConnections($start, $end) {
             $connection->save();
         }
     }
-    file_put_contents(__DIR__ . '/temp', json_encode($globalConnections));
+    file_put_contents(tempFile, json_encode($globalConnections));
 
     if ($end == NUMBER_OF_USERS)
-        unlink(__DIR__ . '/temp');
+        unlink(tempFile);
 }
 
 

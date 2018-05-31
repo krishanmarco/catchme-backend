@@ -12,7 +12,16 @@ use Base\SearchLocationQuery as BaseSearchLocationQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class SearchLocationQuery extends BaseSearchLocationQuery
-{
+class SearchLocationQuery extends BaseSearchLocationQuery {
+
+    public function fullTextSearch($searchString) {
+        $matchQuery = strtr('MATCH({col_name}) AGAINST(? IN BOOLEAN MODE)', [
+            '{col_name}' => \Map\SearchLocationTableMap::COL_QUERY
+        ]);
+
+        return $this
+            ->where($matchQuery, $searchString)
+            ->groupBy(\Map\SearchLocationTableMap::COL_LOCATION_ID);
+    }
 
 }

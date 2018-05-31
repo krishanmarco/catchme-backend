@@ -106,3 +106,8 @@ function deleteDirectory($dir) {
 
     return rmdir($dir);
 }
+
+function classFromArray(array $data) {
+    return json_decode(json_encode($data));
+}
+

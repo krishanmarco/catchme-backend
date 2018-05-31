@@ -1,26 +1,33 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
 
 namespace Models\Calculators\Locations;
+
+use Location as DbLocation;
 use Models\Calculators\LocationModel;
-use UserQuery as UserQuery;
+use UserQuery;
 use EGender;
 use Map\UserTableMap as UserTableMap;
-
+use Models\LocationCountResult;
 
 class LocationCount {
 
-    public function __construct(LocationModel $LocationModel) {
-        $this->LocationModel = $LocationModel;
+    public function __construct(DbLocation $location) {
+        $this->location = $location;
+        $this->calculateLocationCount();
     }
 
+    /** @var DbLocation */
+    private $location;
 
-    /** @var LocationModel $LocationModel */
-    private $LocationModel;
-    public function getLocation() { return $this->LocationModel->getLocation(); }
+    /** @var LocationCountResult */
+    private $result;
 
+    /** @return LocationCountResult */
+    public function getResult() {
+        return $this->result;
+    }
 
-
-    public function execute() {
+    private function calculateLocationCount() {
         $menCount = 0;
         $womenCount = 0;
         $totalCount = 0;
@@ -30,67 +37,38 @@ class LocationCount {
         foreach ($genderVector as $genderInt) {
 
             switch ($genderInt) {
-                case EGender::FEMALE: $womenCount++; break;
-                case EGender::MALE: $menCount++; break;
-                default: $totalCount++;
+                case EGender::FEMALE:
+                    $womenCount++;
+                    break;
+                case EGender::MALE:
+                    $menCount++;
+                    break;
+                default:
+                    $totalCount++;
             }
         }
+
         $totalCount += $menCount + $womenCount;
 
-        return new LocationCountResult($menCount, $womenCount, $totalCount);
+        $this->result = new LocationCountResult($menCount, $womenCount, $totalCount);
     }
 
-
-
-
+    /** @return int[] */
     private function calcGenderVector() {
-
         // Get all Ids from $calcResultLocationUsers->getUserId();
         $idsNow = [];
-        $locationUsersResult = $this->LocationModel->getLocationUsersResult();
-        foreach ($locationUsersResult->getUsersNow() as $userLocation)
-            array_push($idsNow, $userLocation->getUserId());
 
+        $locationModel = LocationModel::fromLocation($this->location);
+        $locationUsersResult = $locationModel->getLocationUsers()->getResult();
+        foreach ($locationUsersResult->usersNow as $userLocation)
+            array_push($idsNow, $userLocation->getUserId());
 
         // For each id as key, select its gender
         return UserQuery::create()
             ->select([UserTableMap::COL_GENDER])
             ->findPks($idsNow)
             ->getData();
-
     }
-
-
-}
-
-
-
-
-class LocationCountResult {
-
-    /**
-     * CalcResultLocationCount constructor.
-     * @param Integer $men
-     * @param Integer $women
-     * @param Integer $total
-     */
-    public function __construct($men, $women, $total) {
-        $this->men = $men;
-        $this->women = $women;
-        $this->total = $total;
-    }
-
-    /** @var Integer $men */
-    private $men;
-    public function getMenCount() { return $this->men; }
-
-    /** @var Integer $women */
-    private $women;
-    public function getWomenCount() { return $this->women; }
-
-    /** @var Integer $total */
-    private $total;
-    public function getTotalCount() { return $this->total; }
 
 
 }

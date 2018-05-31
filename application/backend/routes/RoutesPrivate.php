@@ -178,19 +178,12 @@ class RoutesPrivate {
 
 
 
-    const userConnectionsAcceptUid = RoutesPrivate::class . ':userConnectionsAcceptUid';
-
-    public function userConnectionsAcceptUid(ServerRequestInterface $request, ResponseInterface $response, $args) {
-        $res = $this->controller->user()->connectionsAcceptUid($args['uid']);
-        return SlimOutput::buildAndWrite($response, $res);
-    }
 
 
+    const userConnectionsRemoveUid = RoutesPrivate::class . ':userConnectionsRemoveUid';
 
-    const userConnectionsBlockUid = RoutesPrivate::class . ':userConnectionsBlockUid';
-
-    public function userConnectionsBlockUid(ServerRequestInterface $request, ResponseInterface $response, $args) {
-        $res = $this->controller->user()->connectionsBlockUid($args['uid']);
+    public function userConnectionsRemoveUid(ServerRequestInterface $request, ResponseInterface $response, $args) {
+        $res = $this->controller->user()->connectionsRemoveUid($args['uid']);
         return SlimOutput::buildAndWrite($response, $res);
     }
 

@@ -44,9 +44,13 @@ class User extends BaseUser {
     public function getFriendIds() {
 
         if (is_null($this->friendIds)) {
-            $this->friendIds = \Models\Calculators\UserModel::fromUser($this)
-                ->getUserConnectionsResult()
-                ->getFriendIds();
+
+            $friends = \Models\Calculators\UserModel::fromUser($this)
+                ->getUserConnections()->getResult()->friends;
+
+            $this->friendIds = [];
+            foreach ($friends as $user)
+                array_push($this->friendIds, $user->getId());
         }
 
         return $this->friendIds;

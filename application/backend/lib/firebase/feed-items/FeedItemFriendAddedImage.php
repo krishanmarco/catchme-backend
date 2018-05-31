@@ -5,14 +5,15 @@ namespace Firebase\FeedItems;
 use User;
 use Location;
 use LocationImage;
+use stdClass;
 
 final class FeedItemFriendAddedImage extends FeedItemBuilder {
 
-    public function __construct(User $currentUser,
+    public function __construct(User $authUser,
                                 Location $location,
                                 LocationImage $locationImage) {
         parent::__construct();
-        $this->currentUser = $currentUser;
+        $this->currentUser = $authUser;
         $this->location = $location;
         $this->locationImage = $locationImage;
     }
@@ -35,7 +36,10 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
     }
 
     public function setContent() {
-        return "<b>{$this->currentUser->getName()}</b> posted a picture at {$this->location->getName()}.<br>Tap to check it out!";
+        return [
+            ["{$this->currentUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
+            ["posted a picture at {$this->location->getName()}"]
+        ];
     }
 
     protected function setLeftAvatar() {
@@ -55,9 +59,9 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
     }
 
     public function setPayload() {
-        $class = new \stdClass();
-        $class->locationId = $this->location->getId();
-        return $class;
+        return classFromArray([
+            'locationId' => $this->location->getId()
+        ]);
     }
 
 }

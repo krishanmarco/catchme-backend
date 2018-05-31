@@ -7,62 +7,49 @@ use Map\SearchUserTableMap;
 use SearchUserQuery;
 use SearchUser;
 use UserQuery;
-use User;
-
+use User as DbUser;
 
 class UserSearch {
 
-    public function __construct(array $searchQuerys) {
-        $this->searchQuerys = array_map('trim', $searchQuerys);
-        $this->searchQuerys = array_map('strtoupper', $this->searchQuerys);
+    public function __construct(array $searchQueries) {
+        $this->searchQueries = array_map('trim', $searchQueries);
+        $this->searchQueries = array_map('strtoupper', $this->searchQueries);
     }
 
+    /** @var String[] */
+    private $searchQueries;
 
-    /** @var String[] $searchQuerys */
-    private $searchQuerys;
-
-
-
-    /** @var array $userResults : [User-Id => User] */
+    /** @var DbUser[] */
     private $userResults = [];
 
     public function getResults() {
-        return array_values($this->userResults);
-    }
-
-
-    public function search() {
-        foreach ($this->searchQuerys as $searchQuery) {
-            $result = $this->searchOne($searchQuery);
-            $this->userResults = array_merge($this->userResults, $result);
-        }
         return $this->userResults;
     }
 
-    private function searchOne($searchString) {
+    public function search() {
+        $this->userResults = $this->searchOne(implode(' ', $this->searchQueries));
+        return $this->userResults;
+    }
 
+    /**
+     * @param string $searchString
+     * @return DbUser[]
+     */
+    private function searchOne($searchString) {
         // Use a FullTextSearch to match the search query
         // to the query column on the SearchUser table
         /** @var SearchUser[] $indexedUsers */
-        $indexedUsers = QueryHelper::fullTextSearch(
-            SearchUserQuery::create(),
-            SearchUserTableMap::COL_QUERY,
-            $searchString
-        );
-
-        // Get all user ids from the SearchUser
-        // rows that matched the search query
-        $userIds = [];
-        foreach ($indexedUsers as $il)
-            $userIds[] = $il->getUserId();
-
+        $indexedUsers = SearchUserQuery::create()
+            ->fullTextSearch($searchString)
+            ->joinWithUser()
+            ->find()
+            ->getData();
 
         // Select all found ids into the result holder
-        return UserQuery::create()
-            ->findPks($userIds)
-            ->getData();
+        return array_map(function(SearchUser $searchUser) {
+            return $searchUser->getUser();
+        }, $indexedUsers);
     }
-
 
 }
 

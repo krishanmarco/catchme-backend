@@ -1,15 +1,8 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
 
 namespace Api\Map;
-use Api\LocationAddress;
-use Api\LocationConnections;
-use Api\LocationPeople;
 use UserLocation as DbUserLocation;
-use User as DbUser;
 use Api\UserLocationStatus as ApiUserLocationStatus;
-use Models\Calculators\JoinedLocationUser\LocationFriendsResult;
-use Models\Calculators\Locations\LocationCountResult;
-use Models\Calculators\Locations\LocationImagesResult;
 
 
 class ModelToApiUserLocation {

@@ -2,33 +2,37 @@
 
 namespace Models\Calculators\Users;
 
-use Models\Calculators\UserModel;
-use User as User;
-use UserConnectionQuery as UserConnectionQuery;
+use User as DbUser;
+use UserConnectionQuery;
 use EConnectionState;
+use Models\UserConnectionsResult;
 
 class UserConnections {
 
-    public function __construct(UserModel $UserModel) {
-        $this->userModel = $UserModel;
+    public function __construct(DbUser $user) {
+        $this->user = $user;
+        $this->calculateUserConnections();
     }
 
-    /** @var UserModel $userModel */
-    private $userModel;
-    public function getUser() { return $this->userModel->getUser(); }
+    /** @var DbUser $user */
+    private $user;
 
+    /** @var UserConnectionsResult $result */
+    private $result;
 
+    /** @return UserConnectionsResult */
+    public function getResult() {
+        return $this->result;
+    }
 
-
-    public function execute() {
+    private function calculateUserConnections() {
         $friends = [];
         $pending = [];
         $requests = [];
         $blocked = [];
 
-
         $leftAssoc = UserConnectionQuery::create()
-            ->filterByUserId($this->getUser()->getId())
+            ->filterByUserId($this->user->getId())
             ->joinWithConnectionTo()
             ->find();
 
@@ -46,13 +50,11 @@ class UserConnections {
                 case EConnectionState::PENDING:
                     array_push($pending, $uf->getConnectionTo());
                     break;
-
             }
         }
 
-
         $rightAssoc = UserConnectionQuery::create()
-            ->filterByConnectionId($this->getUser()->getId())
+            ->filterByConnectionId($this->user->getId())
             ->joinWithUser()
             ->find();
 
@@ -73,71 +75,10 @@ class UserConnections {
                     // {connectionId} user and the {connectionId} user denied it
                     // This user shouldn't have the possibility 'unblock'
                     break;
-
             }
         }
 
-        return new UserConnectionsResult($friends, $pending, $requests, $blocked);
+        $this->result = new UserConnectionsResult($friends, $pending, $requests, $blocked);
     }
-
-
-
-
-
-}
-
-
-
-
-class UserConnectionsResult {
-
-    /**
-     * UserConnectionsResult constructor.
-     * @param User[] $friends
-     * @param User[] $requests
-     * @param User[] $blocked
-     */
-    public function __construct(array $friends, array $pending, array $requests, array $blocked) {
-        $this->friends = $friends;
-        $this->pending = $pending;
-        $this->requests = $requests;
-        $this->blocked = $blocked;
-    }
-
-
-    /** @var User[] $friends */
-    private $friends;
-    public function getFriends() { return $this->friends; }
-
-    /** @var User[] $requests */
-    private $pending;
-    public function getPending() { return $this->pending; }
-
-    /** @var User[] $requests */
-    private $requests;
-    public function getRequests() { return $this->requests; }
-
-    /** @var User[] $blocked */
-    private $blocked;
-    public function getBlocked() { return $this->blocked; }
-
-
-
-
-    /** @var int[] $friendIds */
-    private $friendIds;
-
-    public function getFriendIds() {
-        if (is_null($this->friendIds)) {
-
-            $this->friendIds = [];
-
-            foreach ($this->friends as $user)
-                array_push($this->friendIds, $user->getId());
-        }
-
-        return $this->friendIds;
-    }
-
 
 }

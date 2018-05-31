@@ -2,38 +2,39 @@
 
 namespace Models\Calculators\Locations;
 
-use Models\Calculators\LocationModel;
-use UserLocationQuery as UserLocationQuery;
-use UserLocation as UserLocation;
-
+use UserLocationQuery;
+use Models\LocationUsersResult;
+use Location as DbLocation;
 
 class LocationUsers {
 
-    public function __construct(LocationModel $LocationModel) {
-        $this->LocationModel = $LocationModel;
+    public function __construct(DbLocation $location) {
+        $this->location = $location;
+        $this->calculateLocationUsers();
     }
 
+    /** @var DbLocation */
+    private $location;
 
-    /** @var LocationModel $LocationModel */
-    private $LocationModel;
-    public function getLocation() { return $this->LocationModel->getLocation(); }
+    /** @var LocationUsersResult */
+    private $result;
 
+    /** @return LocationUsersResult */
+    public function getResult() {
+        return $this->result;
+    }
 
-
-
-    public function execute() {
+    private function calculateLocationUsers() {
         $userLocations = UserLocationQuery::create()
-            ->filterByLocationId($this->getLocation()->getId())
+            ->filterByLocationId($this->location->getId())
             ->joinWithUser()
             ->find();
-
 
         // Initialize result fields
         $usersNow = [];
         $usersFuture = [];
 
         foreach ($userLocations as $ul) {
-
             // Check if $ul user is at this
             // location now or in the future
 
@@ -42,36 +43,9 @@ class LocationUsers {
 
             else if ($ul->getFromTs() >= time())
                 array_push($usersFuture, $ul);
-
         }
 
-        return new LocationUsersResult($usersNow, $usersFuture);
+        $this->result = new LocationUsersResult($usersNow, $usersFuture);
     }
-
-}
-
-
-
-
-class LocationUsersResult {
-
-    /**
-     * CalcResultLocationUsers constructor.
-     * @param UserLocation[] $usersNow
-     * @param UserLocation[] $usersFuture
-     */
-    public function __construct(array $usersNow, array $usersFuture) {
-        $this->usersNow = $usersNow;
-        $this->usersFuture = $usersFuture;
-    }
-
-
-    /** @var UserLocation[] $usersNow */
-    private $usersNow;
-    public function getUsersNow() { return $this->usersNow; }
-
-    /** @var UserLocation[] $usersFuture */
-    private $usersFuture;
-    public function getUsersFuture() { return $this->usersFuture; }
 
 }

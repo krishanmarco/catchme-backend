@@ -3,50 +3,43 @@
 namespace Models\Calculators\Users;
 
 use Map\LocationTableMap;
-
 use Models\Queries\User\UserQueriesWrapper;
 use SFCriteria;
-use Models\Calculators\UserModel;
-
-use Location;
+use Models\UserSuggestedLocationsResult;
+use User as DbUser;
 use LocationQuery;
-
-
-
-
 
 class UserSuggestedLocations {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
 
-
-
-
-    public function __construct(UserModel $userModel, $seed) {
-        $this->userModel = $userModel;
+    public function __construct(DbUser $user, $seed) {
+        $this->user = $user;
         $this->seed = intval($seed);
+        $this->calculateSuggestedLocations();
     }
 
-
-    /** @var UserModel $userModel */
-    private $userModel;
-    public function getUser() { return $this->userModel->getUser(); }
-
+    /** @var DbUser $user */
+    private $user;
 
     /** @var int $seed */
     private $seed = 0;
 
-
-
+    /** @var UserSuggestedLocationsResult */
+    private $result;
 
     /** @return UserSuggestedLocationsResult */
-    public function execute() {
+    public function getResult() {
+        return $this->result;
+    }
+
+    private function calculateSuggestedLocations() {
 
         // Select all this users location ids, count
         // will always be 1 so do not use orderByCount
-        $favoriteLocIds = UserQueriesWrapper::getUsersLocationIds([$this->getUser()->getId()]);
+        $favoriteLocIds = UserQueriesWrapper::getUsersLocationIds([$this->user->getId()]);
 
         // Select all this users confirmed friends, only the ids are needed
-        $friendIds = UserQueriesWrapper::getUsersFriendIds([$this->getUser()->getId()]);
+        $friendIds = UserQueriesWrapper::getUsersFriendIds([$this->user->getId()]);
 
         // Select all the location ids the users friends are subscribed to
         // We use user count as a ranking parameter, set $orderByCount to true
@@ -58,7 +51,8 @@ class UserSuggestedLocations {
 
         // If there are no suggested locations return a list of locations closest to this user
         if (sizeof($suggestedLocIds) <= 0) {
-            return $this->getLocationsByPosition();
+            $this->getLocationsByPosition();
+            return;
         }
 
         // Start from (seed * self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS)
@@ -89,37 +83,17 @@ class UserSuggestedLocations {
             ->getData();
 
 
-        return new UserSuggestedLocationsResult($suggestedLocations);
+        $this->result = new UserSuggestedLocationsResult($suggestedLocations);
     }
 
-    /** @return UserSuggestedLocationsResult */
     private function getLocationsByPosition($maxLocations = SUGGEST_LOCATIONS_MAX_RANDOM) {
         // todo:
         // Use town most common town in the users other favorite locations
         // If the result is not as long as $maxLocations merge with random
-        // locations positioned near the requests ip address
+        // locations positioned near the request ip address
 
-        return new UserSuggestedLocationsResult([]);
+        $this->result = new UserSuggestedLocationsResult([]);
     }
-
-
-}
-
-
-class UserSuggestedLocationsResult {
-
-    /**
-     * LocationSuggestedResult constructor.
-     * @param Location[] $suggestedLocations
-     */
-    public function __construct(array $suggestedLocations) {
-        $this->suggestedLocations = $suggestedLocations;
-    }
-
-
-    /** @var Location[] $suggestedLocations */
-    private $suggestedLocations;
-    public function getSuggestedLocations() { return $this->suggestedLocations; }
 
 
 }

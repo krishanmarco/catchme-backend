@@ -1,54 +1,43 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 - Fithancer © */
 
 namespace Controllers;
+
 use Api\Map\ModelToApiUsers;
 use Models\Calculators\UserModel;
 use User as DbUser;
 use Api\User as ApiUser;
 
-
 class ControllerUsers {
-    
-    public function __construct(DbUser $authenticatedUser, $userId) {
-        $this->authenticatedUser = $authenticatedUser;
-        $this->userModel = UserModel::fromId($userId);
+
+    public function __construct(DbUser $authUser, $userId) {
+        $this->authUser = $authUser;
+        $this->userId = $userId;
     }
 
+    /** @var DbUser */
+    private $authUser;
 
-    /** @var DbUser $authenticatedUser */
-    private $authenticatedUser;
-
-
-
-    /** @var UserModel $userModel */
-    private $userModel;
-
-    private function getUser() {
-        return $this->userModel->getUser();
-    }
-
-
-
-
+    /** @var int */
+    private $userId;
 
     /** @return ApiUser */
     public function get() {
-        return ModelToApiUsers::single($this->getUser())
-            ->applyPrivacyPolicy($this->authenticatedUser)
+        $userModel = UserModel::fromId($this->userId);
+        return ModelToApiUsers::single($userModel->getUser())
+            ->applyPrivacyPolicy($this->authUser)
             ->get();
     }
 
 
-
-
     /** @return ApiUser */
     public function getProfile() {
-        return ModelToApiUsers::single($this->getUser())
+        $userModel = UserModel::fromId($this->userId);
+        return ModelToApiUsers::single($userModel->getUser())
             ->withEmail()
             ->withPhone()
-            ->withLocations($this->userModel->getUserLocationsResult())
-            ->withConnections($this->userModel->getUserConnectionsResult())
-            ->applyPrivacyPolicy($this->authenticatedUser)
+            ->withLocations($userModel->getUserLocations()->getResult())
+            ->withConnections($userModel->getUserConnections()->getResult())
+            ->applyPrivacyPolicy($this->authUser)
             ->get();
     }
 

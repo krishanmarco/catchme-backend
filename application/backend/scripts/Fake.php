@@ -16,11 +16,33 @@ if (!array_key_exists('pw', $_GET) || $_GET['pw'] !== 'S()KD2dk290kdLksK()')
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 set_time_limit(240);
 const gender = [0, 1, 2];
-const privacy = [
-    000, 001, 002, 010, 011, 012, 020, 021, 022,
-    100, 101, 102, 110, 111, 112, 120, 121, 122,
-    200, 201, 202, 210, 211, 212, 220, 221, 222
-];
+const privacy = [0, 1, 2];
+const notifications = [0, 1];
+const lenNotifications = 3;
+const lenPrivacy = 5;
+
+function randomPrivacy() {
+    $str = [];
+
+    for ($i = 0; $i < lenPrivacy; $i++)
+        array_push($str, privacy[random_int(0, sizeof(privacy) - 1)]);
+
+    return implode('', $str);
+}
+
+function randomNotifications() {
+    $str = [];
+
+    for ($i = 0; $i < lenNotifications; $i++)
+        array_push($str, notifications[random_int(0, sizeof(notifications) - 1)]);
+
+    return implode('', $str);
+}
+
+function randomPhone() {
+    return '+3349828293';
+}
+
 const connectionState = [0, 1, 2];
 const NUMBER_OF_USERS = 5000;
 const NUMBER_OF_LOCATIONS = 50;
@@ -51,11 +73,11 @@ function generateFakeUsers() {
     for ($i = 0; $i < NUMBER_OF_USERS; $i++) {
         $user = new User();
         $user->setName($faker->name);
-        $user->setPhone($faker->phoneNumber);
+        $user->setPhone(randomPhone());
         $user->setEmail($faker->unique()->email);
         $user->setGender($faker->randomElement(gender));
-        $user->setSettingPrivacy($faker->randomElement(privacy));
-        $user->setSettingNotifications($faker->randomElement(privacy));
+        $user->setSettingPrivacy(randomPrivacy());
+        $user->setSettingNotifications(randomNotifications());
         $user->setApiKey('15639419858cff22741882717879297');
         $user->setPassSha256('d701d919533ccae2c7bda1750a005802ef8f67a0464e092b8bbaf31e3a09c1a5');
         $user->setPassSalt('339426');
@@ -82,7 +104,7 @@ function generateFakeLocations() {
         $location->setDescription($faker->realText(rand(30, 100)));
         $location->setVerified(true);
         $location->setSignupTs(time());
-        $location->setPhone($faker->phoneNumber);
+        $location->setPhone(randomPhone());
         $location->setCapacity(rand(50, 2000));
         $location->setPictureUrl($faker->imageUrl());
         $location->setReputation(rand(345, 19999));

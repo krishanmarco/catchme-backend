@@ -2,45 +2,38 @@
 
 namespace Models\Calculators\Locations;
 
-use Models\Calculators\LocationModel;
-use \Propel\Runtime\ActiveQuery\Criteria as Criteria;
-use LocationImage as LocationImage;
-use LocationImageQuery as LocationImageQuery;
-
+use Propel\Runtime\ActiveQuery\Criteria;
+use LocationImage;
+use LocationImageQuery;
+use Location as DbLocation;
+use Models\LocationImagesResult;
+use EMediaType;
 
 class LocationImages {
 
-    public function __construct(LocationModel $LocationModel) {
-        $this->LocationModel = $LocationModel;
+    public function __construct(DbLocation $location) {
+        $this->location = $location;
+        $this->calculateLocationImages();
     }
 
+    /** @var DbLocation */
+    private $location;
 
-    /** @var LocationModel $LocationModel */
-    private $LocationModel;
-
-    public function getLocation() {
-        return $this->LocationModel->getLocation();
-    }
-
-
+    /** @var bool */
     private $approvedImages = true;
 
-    public function overrideApprovedImages($approved) {
-        $this->approvedImages = $approved;
-        return $this;
-    }
-
-
+    /** @var int */
     private $imageTTLSeconds = LOCATION_MEDIA_TTL;
 
-    public function overrideValiditySeconds($seconds) {
-        $this->imageTTLSeconds = $seconds;
-        return $this;
+    /** @var LocationImagesResult[] */
+    private $result;
+
+    /** @return LocationImagesResult[] */
+    public function getResult() {
+        return $this->result;
     }
 
-
-    public function execute() {
-
+    private function calculateLocationImages() {
         // Get LocationImages from the database
         $locationImages = $this->getDbLocationImages();
 
@@ -49,55 +42,38 @@ class LocationImages {
             array_push($locationImagesResult, new LocationImagesResult(
                 $li->getId(),
                 $li->getLocationId(),
-                \EMediaType::LOCATION_IMAGE,
+                EMediaType::LOCATION_IMAGE,
                 $li->getUrl()
             ));
         }
 
-        return $locationImagesResult;
+        $this->result = $locationImagesResult;
     }
 
-
-
-
-    // Get the location images, where the inserted timestamp is
-    // smaller than $this->imageValidityHours (int) hours ago
-    // and the approved state is $this->approvedImages (bool)
-    /** @return LocationImage[] */
+    /**
+     * Get the location images, where the inserted timestamp is
+     * smaller than $this->imageValidityHours (int) hours ago
+     * and the approved state is $this->approvedImages (bool)
+     *
+     * @return LocationImage[]
+     */
     private function getDbLocationImages() {
 
         $locationImageQuery = LocationImageQuery::create()
-            ->filterByLocationId($this->getLocation()->getId())
+            ->filterByLocationId($this->location->getId())
             ->filterByApproved($this->approvedImages);
 
         if (LOCATION_MEDIA_APPLY_TTL) {
             $locationImageQuery->filterByInsertedTs(
                 time() - $this->imageTTLSeconds,
                 Criteria::GREATER_EQUAL
-
             );
         }
 
-        return $locationImageQuery->find()->getData();
-
+        return $locationImageQuery
+            ->orderByInsertedTs(Criteria::DESC)
+            ->find()
+            ->getData();
     }
-
-
-}
-
-
-class LocationImagesResult {
-
-    public function __construct($id, $itemId, $typeId, $url) {
-        $this->id = $id;
-        $this->itemId = $itemId;
-        $this->typeId = $typeId;
-        $this->url = $url;
-    }
-
-    public $id;
-    public $itemId;
-    public $typeId;
-    public $url;
 
 }

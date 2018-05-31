@@ -1,7 +1,7 @@
 <?php /** Created by Krishan Marco Madan on 15-May-18. */
 
 namespace Models\Calculators\Users;
-use Models\Calculators\UserModel;
+
 use User as DbUser;
 use Models\Queries\User\UserQueriesWrapper;
 
@@ -24,30 +24,25 @@ use Models\Queries\User\UserQueriesWrapper;
 class UserConnectionManager {
 
     public function __construct(DbUser $user) {
-        $this->userModel = UserModel::fromUser($user);
-        $this->calculateConnections();
+        $this->user = $user;
+        $this->calculateConnectionStrengths();
     }
 
-    /** @var UserModel $userModel */
-    private $userModel;
+    /** @var DbUser $user */
+    private $user;
 
-    private function getUser() {
-        return $this->userModel->getUser();
-    }
-
-    /** @var array(User => float) $connectionStrength */
-    private $connectionStrengths = [];
+    /** @var array(User => float) $connStrs */
+    private $connStrs = [];
 
     /** @return array(User => float) $connectionStrength */
     public function getConnectionStrengths() {
-        return $this->connectionStrengths;
+        return $this->connStrs;
     }
 
-
-    private function calculateConnections() {
+    private function calculateConnectionStrengths() {
 
         // Given the current user, get all his friends ids
-        $usersFriendIds = UserQueriesWrapper::getUsersFriendIds([$this->getUser()->getId()]);
+        $usersFriendIds = UserQueriesWrapper::getUsersFriendIds([$this->user->getId()]);
 
         // Foreach friend, get that friends friends
         // array(friendId => [friendsFriendId, friendsFriendsId, ...])
@@ -64,12 +59,11 @@ class UserConnectionManager {
                     $sum -= 1;          // This friends friend is not in common
             }
 
-            $this->connectionStrengths[$friendId] = $sum / sizeof($usersFriendIds);
+            $this->connStrs[$friendId] = $sum / sizeof($usersFriendIds);
         }
 
         // Order the $connectionStrength array by strength
-        arsort($this->connectionStrengths);
-        return $this->connectionStrengths;
+        arsort($this->connStrs);
     }
 
 }

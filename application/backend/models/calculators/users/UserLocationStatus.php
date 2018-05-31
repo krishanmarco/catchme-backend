@@ -2,55 +2,34 @@
 
 namespace Models\Calculators\Users;
 
-use Models\Calculators\UserModel;
-use UserLocation;
 use UserLocationQuery;
-
+use User as DbUser;
+use Models\UserLocationStatusResult;
 
 class UserLocationStatus {
 
-
-    public function __construct(UserModel $userModel) {
-        $this->userModel = $userModel;
+    public function __construct(DbUser $user) {
+        $this->user = $user;
+        $this->calculateUserLocationStatus();
     }
 
+    /** @var DbUser */
+    private $user;
 
-    /** @var UserModel $userModel */
-    private $userModel;
-    public function getUser() { return $this->userModel->getUser(); }
+    /** @var UserLocationStatusResult */
+    private $result;
 
+    /** @return UserLocationStatusResult */
+    public function getResult() {
+        return $this->result;
+    }
 
-
-    public function execute() {
+    private function calculateUserLocationStatus() {
         $userLocationStatus = UserLocationQuery::create()
-            ->findByUserId($this->getUser()->getId())
+            ->findByUserId($this->user->getId())
             ->getData();
 
-        return new UserLocationStatusResult($userLocationStatus);
+        $this->result = new UserLocationStatusResult($userLocationStatus);
     }
-
-
-}
-
-
-class UserLocationStatusResult {
-
-    /**
-     * UserLocationStatusResult constructor.
-     * @param UserLocation[] $userLocationStatus
-     */
-    public function __construct(array $userLocationStatus) {
-        $this->userLocationStatus = $userLocationStatus;
-    }
-
-
-    /** @var UserLocation[] $userLocationStatus */
-    private $userLocationStatus;
-
-    public function getUserLocationStatusList() {
-        return $this->userLocationStatus;
-    }
-
-
 }
 

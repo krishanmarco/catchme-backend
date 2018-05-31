@@ -7,9 +7,9 @@ use Location;
 
 final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
 
-    public function __construct(User $currentUser, Location $location) {
+    public function __construct(User $authUser, Location $location) {
         parent::__construct();
-        $this->currentUser = $currentUser;
+        $this->currentUser = $authUser;
         $this->location = $location;
     }
 
@@ -29,7 +29,10 @@ final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
     }
 
     public function setContent() {
-        return "<b>{$this->currentUser->getName()}</b> will be at <b>{$this->location->getName()}</b>, will you be there too?";
+        return [
+            ["{$this->currentUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
+            ["will be at {$this->location->getName()}, will you be there too?"],
+        ];
     }
 
     protected function setLeftAvatar() {
@@ -49,9 +52,9 @@ final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
     }
 
     public function setPayload() {
-        $class = new \stdClass();
-        $class->locationId = $this->location->getId();
-        return $class;
+        return classFromArray([
+            'locationId' => $this->location->getId()
+        ]);
     }
     
 }

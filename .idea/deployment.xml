@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="Catchme-backend">
+  <component name="PublishConfigData" autoUpload="Always">
     <serverData>
-      <paths name="Catchme-backend">
+      <paths name="catchme.krishanmadan.website">
         <serverdata>
           <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$/application" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="Catchme-public">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$/public" web="/" />
+            <mapping deploy="/" local="$PROJECT_DIR$/catchme" web="/" />
           </mappings>
           <excludedPaths>
             <excludedPath path="/wp" />

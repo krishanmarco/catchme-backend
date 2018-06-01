@@ -30,7 +30,6 @@ export default function authorize ( { auth, authActions, errActions, configs, au
 
   let redirectUrl = configs.oauth2RedirectUrl
 
-  // todo move to parser
   if (typeof redirectUrl === "undefined") {
     errActions.newAuthErr( {
       authId: name,

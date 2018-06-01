@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
 
 namespace Api\Map;
+
 use UserLocation as DbUserLocation;
 use Api\UserLocationStatus as ApiUserLocationStatus;
 
@@ -13,16 +14,15 @@ class ModelToApiUserLocation {
         $this->withBasicParameters();
     }
 
-
     /** @var DbUserLocation $dbUserLocation */
     private $dbUserLocation;
 
-
-
     /** @var ApiUserLocationStatus */
     private $apiUserLocationStatus;
-    public function get() { return $this->apiUserLocationStatus; }
 
+    public function get() {
+        return $this->apiUserLocationStatus;
+    }
 
     /** @return ModelToApiUserLocation */
     private function withBasicParameters() {

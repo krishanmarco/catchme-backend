@@ -104,7 +104,6 @@ class UserLocations {
         return $topLocations;
     }
 
-    // todo: this is also duplicated in the UserLocationStatus calculator...
     private function calcUserLocationStatuses() {
         $userLocationStatuses = [];
 

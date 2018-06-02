@@ -111,3 +111,15 @@ function classFromArray(array $data) {
     return json_decode(json_encode($data));
 }
 
+function removeFromArrayWhere(array $array, Closure $deleteItems) {
+    $indexesToRemove = [];
+
+    for ($i = 0; $i < sizeof($array); $i++)
+        if ($deleteItems($array[$i]))
+            $indexesToRemove[] = $i;
+
+    foreach ($indexesToRemove as $idx)
+        unset($array[$idx]);
+
+    return array_values($array);
+}

@@ -8,21 +8,29 @@ use SFCriteria;
 use Models\UserSuggestedLocationsResult;
 use User as DbUser;
 use LocationQuery;
+use DbLatLng;
+use WeightedCalculator\WeightedGroupCalculator;
+use WeightedCalculator\IWeightCalculator;
+use WeightedCalculator\WeightedUnit;
+use WeightedCalculator\WeightCalculator;
 
 class UserSuggestedLocations {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
 
-    public function __construct(DbUser $user, $seed) {
+    public function __construct(DbUser $user, $seed, DbLatLng $userLatLng) {
         $this->user = $user;
         $this->seed = intval($seed);
-        $this->calculateSuggestedLocations();
+        $this->userLatLng = $userLatLng;
     }
 
-    /** @var DbUser $user */
+    /** @var DbUser */
     private $user;
 
-    /** @var int $seed */
+    /** @var int */
     private $seed = 0;
+
+    /** @var DbLatLng */
+    private $userLatLng;
 
     /** @var UserSuggestedLocationsResult */
     private $result;
@@ -32,29 +40,8 @@ class UserSuggestedLocations {
         return $this->result;
     }
 
-    private function calculateSuggestedLocations() {
 
-        // Select all this users location ids, count
-        // will always be 1 so do not use orderByCount
-        $favoriteLocIds = UserQueriesWrapper::getUsersLocationIds([$this->user->getId()]);
-
-        // Select all this users confirmed friends, only the ids are needed
-        $friendIds = UserQueriesWrapper::getUsersFriendIds([$this->user->getId()]);
-
-        // Select all the location ids the users friends are subscribed to
-        // We use user count as a ranking parameter, set $orderByCount to true
-        $suggestedLocIds = UserQueriesWrapper::getUsersLocationIds($friendIds);
-
-        // Delete all the favoriteLocIds from the suggestedLocIds
-        // We do not want to suggest locations that the user already has
-        $suggestedLocIds = array_values(array_diff($suggestedLocIds, $favoriteLocIds));
-
-        // If there are no suggested locations return a list of locations closest to this user
-        if (sizeof($suggestedLocIds) <= 0) {
-            $this->getLocationsByPosition();
-            return;
-        }
-
+    public function suggestLocations() {
         // Start from (seed * self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS)
         // and add self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS number
         // of ids to the $suggestedIdsSubset array, if you reach the end
@@ -62,37 +49,114 @@ class UserSuggestedLocations {
         $suggestedIdsSubset = [];
         $startIdx = $this->seed * self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS;
 
+        $orderedUniqueLocationIds = $this->calculate();
         for ($i = 0; $i < self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS; $i++) {
-            $realIndex = ($startIdx + $i) % sizeof($suggestedLocIds);
-            array_push($suggestedIdsSubset, $suggestedLocIds[$realIndex]);
+            $realIndex = ($startIdx + $i) % sizeof($orderedUniqueLocationIds);
+            array_push($suggestedIdsSubset, $orderedUniqueLocationIds[$realIndex]);
         }
-
-        // We cannot be sure that the same index from $suggestedLocIds
-        // was not selected more than once
-        $suggestedIdsSubset = array_values(array_unique($suggestedIdsSubset));
 
         // Map the $suggestedIdsSubset to locations ordering by $suggestedIdsSubset,
         // we need to maintain the original order because it is ranked
         $criteria = new SFCriteria();
-        $criteria->addOrderByField(LocationTableMap::COL_ID, $suggestedIdsSubset);
+        $criteria->addOrderByField(LocationTableMap::COL_ID, $orderedUniqueLocationIds);
 
         $suggestedLocations = LocationQuery::create(null, $criteria)
             ->filterByVerified(true)
-            ->orderById()
             ->findPks($suggestedIdsSubset)
             ->getData();
-
 
         $this->result = new UserSuggestedLocationsResult($suggestedLocations);
     }
 
-    private function getLocationsByPosition($maxLocations = SUGGEST_LOCATIONS_MAX_RANDOM) {
-        // todo:
-        // Use town most common town in the users other favorite locations
-        // If the result is not as long as $maxLocations merge with random
-        // locations positioned near the request ip address
 
-        $this->result = new UserSuggestedLocationsResult([]);
+    private function calculate() {
+        // Get the locations accumulated from favorites
+        // Calculate the center coordinates (Cluster by cluster)
+        // and get the distance from $userLatLng
+        $favWeightedUnits = $this->getLocationsAccumulatedFromFavorites();
+        $favCenterToUserDist = 0;
+        $locFavWeight = 0;
+
+        // Get the locations accumulated from friends
+        // Calculate the center coordinates (Cluster by cluster)
+        // and get the distance from $userLatLng
+        $friWeightedUnits = $this->getLocationsAccumulatedFromFriends();
+        $friCenterToUserDist = 0;
+        $locFriWeight = 0;
+
+        // The $locPosWeight is based on if the positioning data is precise or not
+        $posWeightedUnits = $this->getLocationsAccumulatedFromPosition();
+        $locPosWeight = $this->userLatLng->isPrecise ? 0.8 : 0.2;
+
+        $wgc = new WeightedGroupCalculator([
+            new WeightCalculator($locPosWeight, function() use ($posWeightedUnits) { return $posWeightedUnits; }),
+            new WeightCalculator($locFriWeight, function() use ($friWeightedUnits) { return $friWeightedUnits; }),
+            new WeightCalculator($locFavWeight, function() use ($favWeightedUnits) { return $favWeightedUnits; })
+        ]);
+
+        // Calculate the unique locations
+        $orderedUniqueWeightedUnits = $wgc->calculateUniqueAccumulatedSimple();
+
+        // Map each WeightedUnit to its location id
+        return array_map(
+            function(WeightedUnit $wu) { return $wu->data; },
+            $orderedUniqueWeightedUnits
+        );
+    }
+
+    /**
+     * Gets locations close to this user where the sorting criteria
+     * Is the distance from this user, the search area is a class constant
+     * @param $weight float: Weight of this parameter
+     * @return WeightedUnit[]
+     */
+    private function getLocationsAccumulatedFromPosition() {
+        // todo
+
+        // Get all locations
+
+        // Sort by distance from user DESC
+
+        // Build WeightUnits[] with weights based on index
+
+        return [];
+    }
+
+    /**
+     * Gets locations of this users friends where the sorting criteria
+     * Is the number of times a location appears in the list
+     * Eg. if two friends have as favorite, location X and only one friend
+     * has as favorite location Y then X > Y.
+     * @param $weight float: Weight of this parameter
+     * @return WeightedUnit[]
+     */
+    private function getLocationsAccumulatedFromFriends() {
+        // Select all this users confirmed friend ids
+        $friendIds = UserQueriesWrapper::getUsersFriendIds([$this->user->getId()]);
+
+        // Select all the location ids the users friends are subscribed to
+        // Use the location count as a ranking parameter
+        return UserQueriesWrapper::getUsersLocationIdsWeightedUnits($friendIds);
+    }
+
+    /**
+     * Gets locations close to the other favorites of this user where
+     * the sorting criteria si based on the size of the cluster in which
+     * that location is.
+     * Eg: If the user has 3 favorites [1, 2, 3] and they are clusterized by
+     * position as [[1, 2], [3]], then (weight(1) == weight(2)) > weight(3)
+     * @param $weight float: Weight of this parameter
+     * @return WeightedUnit[]
+     */
+    private function getLocationsAccumulatedFromFavorites() {
+        // todo:
+
+        // Get this users favorites
+
+        // Clusterize and order clusters by size DESC
+
+        // Build WeightUnits[] with weights based on cluster index
+        return [];
     }
 
 

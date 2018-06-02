@@ -7,12 +7,14 @@ class DbLatLng {
     }
 
 
-    public function __construct($lat, $lng) {
+    public function __construct($lat, $lng, $isPrecise = true) {
         $this->lat = $lat;
         $this->lng = $lng;
+        $this->isPrecise = $isPrecise;
     }
 
     public $lat;
     public $lng;
+    public $isPrecise;
 
 }

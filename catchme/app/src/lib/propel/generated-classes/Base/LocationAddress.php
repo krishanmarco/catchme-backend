@@ -111,11 +111,18 @@ abstract class LocationAddress implements ActiveRecordInterface
     protected $address;
 
     /**
-     * The value for the lat_lng_json field.
+     * The value for the lat field.
      *
-     * @var        string
+     * @var        double
      */
-    protected $lat_lng_json;
+    protected $lat;
+
+    /**
+     * The value for the lng field.
+     *
+     * @var        double
+     */
+    protected $lng;
 
     /**
      * The value for the google_place_id field.
@@ -433,13 +440,23 @@ abstract class LocationAddress implements ActiveRecordInterface
     }
 
     /**
-     * Get the [lat_lng_json] column value.
+     * Get the [lat] column value.
      *
-     * @return string
+     * @return double
      */
-    public function getLatLngJson()
+    public function getLat()
     {
-        return $this->lat_lng_json;
+        return $this->lat;
+    }
+
+    /**
+     * Get the [lng] column value.
+     *
+     * @return double
+     */
+    public function getLng()
+    {
+        return $this->lng;
     }
 
     /**
@@ -597,24 +614,44 @@ abstract class LocationAddress implements ActiveRecordInterface
     } // setAddress()
 
     /**
-     * Set the value of [lat_lng_json] column.
+     * Set the value of [lat] column.
      *
-     * @param string $v new value
+     * @param double $v new value
      * @return $this|\LocationAddress The current object (for fluent API support)
      */
-    public function setLatLngJson($v)
+    public function setLat($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (double) $v;
         }
 
-        if ($this->lat_lng_json !== $v) {
-            $this->lat_lng_json = $v;
-            $this->modifiedColumns[LocationAddressTableMap::COL_LAT_LNG_JSON] = true;
+        if ($this->lat !== $v) {
+            $this->lat = $v;
+            $this->modifiedColumns[LocationAddressTableMap::COL_LAT] = true;
         }
 
         return $this;
-    } // setLatLngJson()
+    } // setLat()
+
+    /**
+     * Set the value of [lng] column.
+     *
+     * @param double $v new value
+     * @return $this|\LocationAddress The current object (for fluent API support)
+     */
+    public function setLng($v)
+    {
+        if ($v !== null) {
+            $v = (double) $v;
+        }
+
+        if ($this->lng !== $v) {
+            $this->lng = $v;
+            $this->modifiedColumns[LocationAddressTableMap::COL_LNG] = true;
+        }
+
+        return $this;
+    } // setLng()
 
     /**
      * Set the value of [google_place_id] column.
@@ -693,10 +730,13 @@ abstract class LocationAddress implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : LocationAddressTableMap::translateFieldName('Address', TableMap::TYPE_PHPNAME, $indexType)];
             $this->address = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : LocationAddressTableMap::translateFieldName('LatLngJson', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->lat_lng_json = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : LocationAddressTableMap::translateFieldName('Lat', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->lat = (null !== $col) ? (double) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : LocationAddressTableMap::translateFieldName('GooglePlaceId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : LocationAddressTableMap::translateFieldName('Lng', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->lng = (null !== $col) ? (double) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : LocationAddressTableMap::translateFieldName('GooglePlaceId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->google_place_id = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -706,7 +746,7 @@ abstract class LocationAddress implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 9; // 9 = LocationAddressTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 10; // 10 = LocationAddressTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\LocationAddress'), 0, $e);
@@ -940,8 +980,11 @@ abstract class LocationAddress implements ActiveRecordInterface
         if ($this->isColumnModified(LocationAddressTableMap::COL_ADDRESS)) {
             $modifiedColumns[':p' . $index++]  = 'address';
         }
-        if ($this->isColumnModified(LocationAddressTableMap::COL_LAT_LNG_JSON)) {
-            $modifiedColumns[':p' . $index++]  = 'lat_lng_json';
+        if ($this->isColumnModified(LocationAddressTableMap::COL_LAT)) {
+            $modifiedColumns[':p' . $index++]  = 'lat';
+        }
+        if ($this->isColumnModified(LocationAddressTableMap::COL_LNG)) {
+            $modifiedColumns[':p' . $index++]  = 'lng';
         }
         if ($this->isColumnModified(LocationAddressTableMap::COL_GOOGLE_PLACE_ID)) {
             $modifiedColumns[':p' . $index++]  = 'google_place_id';
@@ -978,8 +1021,11 @@ abstract class LocationAddress implements ActiveRecordInterface
                     case 'address':
                         $stmt->bindValue($identifier, $this->address, PDO::PARAM_STR);
                         break;
-                    case 'lat_lng_json':
-                        $stmt->bindValue($identifier, $this->lat_lng_json, PDO::PARAM_STR);
+                    case 'lat':
+                        $stmt->bindValue($identifier, $this->lat, PDO::PARAM_STR);
+                        break;
+                    case 'lng':
+                        $stmt->bindValue($identifier, $this->lng, PDO::PARAM_STR);
                         break;
                     case 'google_place_id':
                         $stmt->bindValue($identifier, $this->google_place_id, PDO::PARAM_STR);
@@ -1061,9 +1107,12 @@ abstract class LocationAddress implements ActiveRecordInterface
                 return $this->getAddress();
                 break;
             case 7:
-                return $this->getLatLngJson();
+                return $this->getLat();
                 break;
             case 8:
+                return $this->getLng();
+                break;
+            case 9:
                 return $this->getGooglePlaceId();
                 break;
             default:
@@ -1103,8 +1152,9 @@ abstract class LocationAddress implements ActiveRecordInterface
             $keys[4] => $this->getTown(),
             $keys[5] => $this->getPostcode(),
             $keys[6] => $this->getAddress(),
-            $keys[7] => $this->getLatLngJson(),
-            $keys[8] => $this->getGooglePlaceId(),
+            $keys[7] => $this->getLat(),
+            $keys[8] => $this->getLng(),
+            $keys[9] => $this->getGooglePlaceId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1183,9 +1233,12 @@ abstract class LocationAddress implements ActiveRecordInterface
                 $this->setAddress($value);
                 break;
             case 7:
-                $this->setLatLngJson($value);
+                $this->setLat($value);
                 break;
             case 8:
+                $this->setLng($value);
+                break;
+            case 9:
                 $this->setGooglePlaceId($value);
                 break;
         } // switch()
@@ -1236,10 +1289,13 @@ abstract class LocationAddress implements ActiveRecordInterface
             $this->setAddress($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setLatLngJson($arr[$keys[7]]);
+            $this->setLat($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setGooglePlaceId($arr[$keys[8]]);
+            $this->setLng($arr[$keys[8]]);
+        }
+        if (array_key_exists($keys[9], $arr)) {
+            $this->setGooglePlaceId($arr[$keys[9]]);
         }
     }
 
@@ -1303,8 +1359,11 @@ abstract class LocationAddress implements ActiveRecordInterface
         if ($this->isColumnModified(LocationAddressTableMap::COL_ADDRESS)) {
             $criteria->add(LocationAddressTableMap::COL_ADDRESS, $this->address);
         }
-        if ($this->isColumnModified(LocationAddressTableMap::COL_LAT_LNG_JSON)) {
-            $criteria->add(LocationAddressTableMap::COL_LAT_LNG_JSON, $this->lat_lng_json);
+        if ($this->isColumnModified(LocationAddressTableMap::COL_LAT)) {
+            $criteria->add(LocationAddressTableMap::COL_LAT, $this->lat);
+        }
+        if ($this->isColumnModified(LocationAddressTableMap::COL_LNG)) {
+            $criteria->add(LocationAddressTableMap::COL_LNG, $this->lng);
         }
         if ($this->isColumnModified(LocationAddressTableMap::COL_GOOGLE_PLACE_ID)) {
             $criteria->add(LocationAddressTableMap::COL_GOOGLE_PLACE_ID, $this->google_place_id);
@@ -1409,7 +1468,8 @@ abstract class LocationAddress implements ActiveRecordInterface
         $copyObj->setTown($this->getTown());
         $copyObj->setPostcode($this->getPostcode());
         $copyObj->setAddress($this->getAddress());
-        $copyObj->setLatLngJson($this->getLatLngJson());
+        $copyObj->setLat($this->getLat());
+        $copyObj->setLng($this->getLng());
         $copyObj->setGooglePlaceId($this->getGooglePlaceId());
         if ($makeNew) {
             $copyObj->setNew(true);
@@ -1500,7 +1560,8 @@ abstract class LocationAddress implements ActiveRecordInterface
         $this->town = null;
         $this->postcode = null;
         $this->address = null;
-        $this->lat_lng_json = null;
+        $this->lat = null;
+        $this->lng = null;
         $this->google_place_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();

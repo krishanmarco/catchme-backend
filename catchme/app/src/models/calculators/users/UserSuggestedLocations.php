@@ -2,12 +2,18 @@
 
 namespace Models\Calculators\Users;
 
+use KMeans\Clusterizer;
+use KMeans\ClusterPoint;
+use Map\LocationAddressTableMap;
 use Map\LocationTableMap;
+use Map\UserLocationFavoriteTableMap;
 use Models\Queries\User\UserQueriesWrapper;
 use SFCriteria;
 use Models\UserSuggestedLocationsResult;
 use User as DbUser;
 use LocationQuery;
+use LocationAddressQuery;
+use UserLocationFavoriteQuery;
 use DbLatLng;
 use WeightedCalculator\WeightedGroupCalculator;
 use WeightedCalculator\IWeightCalculator;
@@ -16,6 +22,7 @@ use WeightedCalculator\WeightCalculator;
 
 class UserSuggestedLocations {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
+    const CONFIG_POSITION_SEARCH_AREA_KM = 30;
 
     public function __construct(DbUser $user, $seed, DbLatLng $userLatLng) {
         $this->user = $user;
@@ -85,7 +92,7 @@ class UserSuggestedLocations {
         $locFriWeight = 0;
 
         // The $locPosWeight is based on if the positioning data is precise or not
-        $posWeightedUnits = $this->getLocationsAccumulatedFromPosition();
+        $posWeightedUnits = $this->getLocationsAccumulatedFromPosition(self::CONFIG_POSITION_SEARCH_AREA_KM);
         $locPosWeight = $this->userLatLng->isPrecise ? 0.8 : 0.2;
 
         $wgc = new WeightedGroupCalculator([
@@ -110,16 +117,32 @@ class UserSuggestedLocations {
      * @param $weight float: Weight of this parameter
      * @return WeightedUnit[]
      */
-    private function getLocationsAccumulatedFromPosition() {
-        // todo
+    private function getLocationsAccumulatedFromPosition($areaKm) {
+        $areaDeg = kmToDeg($areaKm) / 2;
+        $userPos = [$this->userLatLng->lat, $this->userLatLng->lng];
 
-        // Get all locations
+        // Get all location ids in the users area
+        $locations = LocationAddressQuery::create()
+            ->select([
+                LocationAddressTableMap::COL_LOCATION_ID,
+                LocationAddressTableMap::COL_LAT,
+                LocationAddressTableMap::COL_LNG
+            ])
+            ->filterByLat(['min' => degToKm($userPos[0]) - $areaDeg, 'max' => degToKm($userPos[0]) + $areaDeg])
+            ->filterByLng(['min' => degToKm($userPos[1]) - $areaDeg, 'max' => degToKm($userPos[1]) + $areaDeg])
+            ->find()
+            ->getData();
 
-        // Sort by distance from user DESC
+        // Build WeightUnits[] with weights based on $areaDeg - distance (Closer locations -> higher weight)
+        $result = [];
+        foreach ($locations as $loc) {
+            $lid = $loc[LocationAddressTableMap::COL_LOCATION_ID];
+            $locPos = [$loc[LocationAddressTableMap::COL_LAT], $loc[LocationAddressTableMap::COL_LNG]];
+            $weight = areaDeg - DbLatLng::getDist($locPos, $userPos);
+            array_push($result, new WeightedUnit($lid, $weight));
+        }
 
-        // Build WeightUnits[] with weights based on index
-
-        return [];
+        return $result;
     }
 
     /**
@@ -149,14 +172,36 @@ class UserSuggestedLocations {
      * @return WeightedUnit[]
      */
     private function getLocationsAccumulatedFromFavorites() {
-        // todo:
-
         // Get this users favorites
+        $locations = UserLocationFavoriteQuery::create()
+            ->select([
+                UserLocationFavoriteTableMap::COL_LOCATION_ID,
+                LocationAddressTableMap::COL_LAT,
+                LocationAddressTableMap::COL_LNG
+            ])
+            ->joinWith(LocationAddressTableMap::COL_LOCATION_ID)
+            ->filterByUserId($this->user->getId())
+            ->find()
+            ->getData();
 
         // Clusterize and order clusters by size DESC
+        // Map the location id to cluster points
+        $clusterPoints = array_map(function($locData) {
+            $lid = $locData[UserLocationFavoriteTableMap::COL_LOCATION_ID];
+            $lat = $locData[LocationAddressTableMap::COL_LAT];
+            $lng = $locData[LocationAddressTableMap::COL_LNG];
+            return new ClusterPoint([$lat, $lng], $lid);
+        }, $locations);
 
-        // Build WeightUnits[] with weights based on cluster index
-        return [];
+        $clusterizer = new Clusterizer($clusterPoints);
+        $clusterPoints = $clusterizer->clusterizeOrderedBySize();
+
+        // Build WeightUnits[] with weights based on the cluster index
+        $result = [];
+        foreach ($clusterPoints as $cp)
+            array_push($result, new WeightedUnit($cp->data, $cp->clusterIndex));
+
+        return $result;
     }
 
 

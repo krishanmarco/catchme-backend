@@ -27,7 +27,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationAddressQuery orderByTown($order = Criteria::ASC) Order by the town column
  * @method     ChildLocationAddressQuery orderByPostcode($order = Criteria::ASC) Order by the postcode column
  * @method     ChildLocationAddressQuery orderByAddress($order = Criteria::ASC) Order by the address column
- * @method     ChildLocationAddressQuery orderByLatLngJson($order = Criteria::ASC) Order by the lat_lng_json column
+ * @method     ChildLocationAddressQuery orderByLat($order = Criteria::ASC) Order by the lat column
+ * @method     ChildLocationAddressQuery orderByLng($order = Criteria::ASC) Order by the lng column
  * @method     ChildLocationAddressQuery orderByGooglePlaceId($order = Criteria::ASC) Order by the google_place_id column
  *
  * @method     ChildLocationAddressQuery groupByLocationId() Group by the location_id column
@@ -37,7 +38,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationAddressQuery groupByTown() Group by the town column
  * @method     ChildLocationAddressQuery groupByPostcode() Group by the postcode column
  * @method     ChildLocationAddressQuery groupByAddress() Group by the address column
- * @method     ChildLocationAddressQuery groupByLatLngJson() Group by the lat_lng_json column
+ * @method     ChildLocationAddressQuery groupByLat() Group by the lat column
+ * @method     ChildLocationAddressQuery groupByLng() Group by the lng column
  * @method     ChildLocationAddressQuery groupByGooglePlaceId() Group by the google_place_id column
  *
  * @method     ChildLocationAddressQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -70,7 +72,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationAddress findOneByTown(string $town) Return the first ChildLocationAddress filtered by the town column
  * @method     ChildLocationAddress findOneByPostcode(string $postcode) Return the first ChildLocationAddress filtered by the postcode column
  * @method     ChildLocationAddress findOneByAddress(string $address) Return the first ChildLocationAddress filtered by the address column
- * @method     ChildLocationAddress findOneByLatLngJson(string $lat_lng_json) Return the first ChildLocationAddress filtered by the lat_lng_json column
+ * @method     ChildLocationAddress findOneByLat(double $lat) Return the first ChildLocationAddress filtered by the lat column
+ * @method     ChildLocationAddress findOneByLng(double $lng) Return the first ChildLocationAddress filtered by the lng column
  * @method     ChildLocationAddress findOneByGooglePlaceId(string $google_place_id) Return the first ChildLocationAddress filtered by the google_place_id column *
 
  * @method     ChildLocationAddress requirePk($key, ConnectionInterface $con = null) Return the ChildLocationAddress by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -83,7 +86,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationAddress requireOneByTown(string $town) Return the first ChildLocationAddress filtered by the town column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocationAddress requireOneByPostcode(string $postcode) Return the first ChildLocationAddress filtered by the postcode column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocationAddress requireOneByAddress(string $address) Return the first ChildLocationAddress filtered by the address column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildLocationAddress requireOneByLatLngJson(string $lat_lng_json) Return the first ChildLocationAddress filtered by the lat_lng_json column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLocationAddress requireOneByLat(double $lat) Return the first ChildLocationAddress filtered by the lat column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLocationAddress requireOneByLng(double $lng) Return the first ChildLocationAddress filtered by the lng column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocationAddress requireOneByGooglePlaceId(string $google_place_id) Return the first ChildLocationAddress filtered by the google_place_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildLocationAddress[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildLocationAddress objects based on current ModelCriteria
@@ -94,7 +98,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationAddress[]|ObjectCollection findByTown(string $town) Return ChildLocationAddress objects filtered by the town column
  * @method     ChildLocationAddress[]|ObjectCollection findByPostcode(string $postcode) Return ChildLocationAddress objects filtered by the postcode column
  * @method     ChildLocationAddress[]|ObjectCollection findByAddress(string $address) Return ChildLocationAddress objects filtered by the address column
- * @method     ChildLocationAddress[]|ObjectCollection findByLatLngJson(string $lat_lng_json) Return ChildLocationAddress objects filtered by the lat_lng_json column
+ * @method     ChildLocationAddress[]|ObjectCollection findByLat(double $lat) Return ChildLocationAddress objects filtered by the lat column
+ * @method     ChildLocationAddress[]|ObjectCollection findByLng(double $lng) Return ChildLocationAddress objects filtered by the lng column
  * @method     ChildLocationAddress[]|ObjectCollection findByGooglePlaceId(string $google_place_id) Return ChildLocationAddress objects filtered by the google_place_id column
  * @method     ChildLocationAddress[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -194,7 +199,7 @@ abstract class LocationAddressQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT location_id, country, state, city, town, postcode, address, lat_lng_json, google_place_id FROM location_address WHERE location_id = :p0';
+        $sql = 'SELECT location_id, country, state, city, town, postcode, address, lat, lng, google_place_id FROM location_address WHERE location_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -478,28 +483,85 @@ abstract class LocationAddressQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the lat_lng_json column
+     * Filter the query on the lat column
      *
      * Example usage:
      * <code>
-     * $query->filterByLatLngJson('fooValue');   // WHERE lat_lng_json = 'fooValue'
-     * $query->filterByLatLngJson('%fooValue%', Criteria::LIKE); // WHERE lat_lng_json LIKE '%fooValue%'
+     * $query->filterByLat(1234); // WHERE lat = 1234
+     * $query->filterByLat(array(12, 34)); // WHERE lat IN (12, 34)
+     * $query->filterByLat(array('min' => 12)); // WHERE lat > 12
      * </code>
      *
-     * @param     string $latLngJson The value to use as filter.
+     * @param     mixed $lat The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildLocationAddressQuery The current query, for fluid interface
      */
-    public function filterByLatLngJson($latLngJson = null, $comparison = null)
+    public function filterByLat($lat = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($latLngJson)) {
+        if (is_array($lat)) {
+            $useMinMax = false;
+            if (isset($lat['min'])) {
+                $this->addUsingAlias(LocationAddressTableMap::COL_LAT, $lat['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($lat['max'])) {
+                $this->addUsingAlias(LocationAddressTableMap::COL_LAT, $lat['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
         }
 
-        return $this->addUsingAlias(LocationAddressTableMap::COL_LAT_LNG_JSON, $latLngJson, $comparison);
+        return $this->addUsingAlias(LocationAddressTableMap::COL_LAT, $lat, $comparison);
+    }
+
+    /**
+     * Filter the query on the lng column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByLng(1234); // WHERE lng = 1234
+     * $query->filterByLng(array(12, 34)); // WHERE lng IN (12, 34)
+     * $query->filterByLng(array('min' => 12)); // WHERE lng > 12
+     * </code>
+     *
+     * @param     mixed $lng The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildLocationAddressQuery The current query, for fluid interface
+     */
+    public function filterByLng($lng = null, $comparison = null)
+    {
+        if (is_array($lng)) {
+            $useMinMax = false;
+            if (isset($lng['min'])) {
+                $this->addUsingAlias(LocationAddressTableMap::COL_LNG, $lng['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($lng['max'])) {
+                $this->addUsingAlias(LocationAddressTableMap::COL_LNG, $lng['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(LocationAddressTableMap::COL_LNG, $lng, $comparison);
     }
 
     /**

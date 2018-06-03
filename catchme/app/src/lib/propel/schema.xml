@@ -101,7 +101,8 @@
     <column       name="town"               type="VARCHAR"      required="false"                                                                                      />
     <column       name="postcode"           type="VARCHAR"      required="false"                                                                                      />
     <column       name="address"            type="VARCHAR"      required="true"                                                                                       />
-    <column       name="lat_lng_json"       type="VARCHAR"      required="false"      size="128"                                                                      />
+    <column       name="lat"                type="DOUBLE"       required="false"                                                                                      />
+    <column       name="lng"                type="DOUBLE"       required="false"                                                                                      />
     <column       name="google_place_id"    type="VARCHAR"      required="false"                                                                                      />
 
 

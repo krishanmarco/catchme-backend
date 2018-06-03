@@ -50,7 +50,7 @@ class LocationPositionSorter {
      * this means that the clusters are ordered by number of points in them
      */
     public function clusterizeByPopularity() {
-        $clusterPoints = $this->clusterizer->clusterizeByPopularity();
+        $clusterPoints = $this->clusterizer->clusterizeOrderedBySize();
         return array_map([$this, 'mapClusterPointToLocation'], $clusterPoints);
     }
 

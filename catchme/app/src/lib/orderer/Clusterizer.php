@@ -2,6 +2,7 @@
 
 namespace KMeans;
 use Closure;
+use DbLatLng;
 
 /**
  * Wrapper around the KMeans library
@@ -36,9 +37,9 @@ class Clusterizer {
     public function getSortedByDistanceFromPoint(array $distFrom) {
 
         usort($this->points, function($p1, $p2) use ($distFrom) {
-            $distP1 = sqrt(($distFrom[0] - $p1[0])^2 + ($distFrom[1] - $p1[1])^2);
-            $distP2 = sqrt(($distFrom[0] - $p2[0])^2 + ($distFrom[1] - $p2[1])^2);
-           return $distP1 < $distP2 ? -1 : 1;
+            return DbLatLng::getDist($distFrom, $p1) < DbLatLng::getDist($distFrom, $p2)
+                ? -1    // Do not swap
+                : 1;    // Swap
         });
 
         return $this->points;
@@ -47,8 +48,9 @@ class Clusterizer {
     /**
      * Calculates the clusters with the popularity criteria
      * this means that the clusters are ordered by number of points in them
+     * @return ClusterPoint[]
      */
-    public function clusterizeByPopularity() {
+    public function clusterizeOrderedBySize() {// todo no need to sort
         return $this->calculateFlatClusterizedPoints($this->points, function(Cluster $c1, Cluster $c2) {
             // Given 2 clusters, the one with the higher number of points
             // is considered more compatible
@@ -63,11 +65,15 @@ class Clusterizer {
 
         // The clusters are already ordered by clusterCriteria (not internally)
         // Flatten the elements
-        foreach ($clusters as $cluster) {
+        for ($i = 0; $i < sizeof($clusters); $i++) {
 
             /** @var Point $point */
-            foreach ($cluster as $point) {
-                $clusterPoints[] = new ClusterPoint($point->getCoordinates(), $this->space[$point]);
+            foreach ($clusters[$i] as $point) {
+                $clusterPoints[] = new ClusterPoint(
+                    $point->getCoordinates(),
+                    $this->space[$point],
+                    $i
+                );
             }
         }
 
@@ -98,7 +104,7 @@ class Clusterizer {
 
 class ClusterPoint {
 
-    public function __construct(array $coordinates, $data = null) {
+    public function __construct(array $coordinates, $data = null, $clusterIndex = -1) {
         $this->coordinates = $coordinates;
         $this->data = $data;
     }
@@ -108,4 +114,7 @@ class ClusterPoint {
 
     /** @var mixed */
     public $data;
+
+    /** @var int */
+    public $clusterIndex;
 }

@@ -85,7 +85,8 @@ CREATE TABLE `location_address`
     `town` VARCHAR(255),
     `postcode` VARCHAR(255),
     `address` VARCHAR(255) NOT NULL,
-    `lat_lng_json` VARCHAR(128),
+    `lat` DOUBLE,
+    `lng` DOUBLE,
     `google_place_id` VARCHAR(255),
     PRIMARY KEY (`location_id`),
     INDEX `location_address_i_5d8314` (`location_id`)

@@ -123,3 +123,11 @@ function removeFromArrayWhere(array $array, Closure $deleteItems) {
 
     return array_values($array);
 }
+
+function degToKm($deg) {
+    return $deg * 111.32;
+}
+
+function kmToDeg($km) {
+    return $km / 111.32;
+}

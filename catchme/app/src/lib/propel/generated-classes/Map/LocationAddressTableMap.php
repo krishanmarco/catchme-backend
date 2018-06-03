@@ -59,7 +59,7 @@ class LocationAddressTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 9;
+    const NUM_COLUMNS = 10;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class LocationAddressTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 9;
+    const NUM_HYDRATE_COLUMNS = 10;
 
     /**
      * the column name for the location_id field
@@ -107,9 +107,14 @@ class LocationAddressTableMap extends TableMap
     const COL_ADDRESS = 'location_address.address';
 
     /**
-     * the column name for the lat_lng_json field
+     * the column name for the lat field
      */
-    const COL_LAT_LNG_JSON = 'location_address.lat_lng_json';
+    const COL_LAT = 'location_address.lat';
+
+    /**
+     * the column name for the lng field
+     */
+    const COL_LNG = 'location_address.lng';
 
     /**
      * the column name for the google_place_id field
@@ -128,11 +133,11 @@ class LocationAddressTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('LocationId', 'Country', 'State', 'City', 'Town', 'Postcode', 'Address', 'LatLngJson', 'GooglePlaceId', ),
-        self::TYPE_CAMELNAME     => array('locationId', 'country', 'state', 'city', 'town', 'postcode', 'address', 'latLngJson', 'googlePlaceId', ),
-        self::TYPE_COLNAME       => array(LocationAddressTableMap::COL_LOCATION_ID, LocationAddressTableMap::COL_COUNTRY, LocationAddressTableMap::COL_STATE, LocationAddressTableMap::COL_CITY, LocationAddressTableMap::COL_TOWN, LocationAddressTableMap::COL_POSTCODE, LocationAddressTableMap::COL_ADDRESS, LocationAddressTableMap::COL_LAT_LNG_JSON, LocationAddressTableMap::COL_GOOGLE_PLACE_ID, ),
-        self::TYPE_FIELDNAME     => array('location_id', 'country', 'state', 'city', 'town', 'postcode', 'address', 'lat_lng_json', 'google_place_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('LocationId', 'Country', 'State', 'City', 'Town', 'Postcode', 'Address', 'Lat', 'Lng', 'GooglePlaceId', ),
+        self::TYPE_CAMELNAME     => array('locationId', 'country', 'state', 'city', 'town', 'postcode', 'address', 'lat', 'lng', 'googlePlaceId', ),
+        self::TYPE_COLNAME       => array(LocationAddressTableMap::COL_LOCATION_ID, LocationAddressTableMap::COL_COUNTRY, LocationAddressTableMap::COL_STATE, LocationAddressTableMap::COL_CITY, LocationAddressTableMap::COL_TOWN, LocationAddressTableMap::COL_POSTCODE, LocationAddressTableMap::COL_ADDRESS, LocationAddressTableMap::COL_LAT, LocationAddressTableMap::COL_LNG, LocationAddressTableMap::COL_GOOGLE_PLACE_ID, ),
+        self::TYPE_FIELDNAME     => array('location_id', 'country', 'state', 'city', 'town', 'postcode', 'address', 'lat', 'lng', 'google_place_id', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -142,11 +147,11 @@ class LocationAddressTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('LocationId' => 0, 'Country' => 1, 'State' => 2, 'City' => 3, 'Town' => 4, 'Postcode' => 5, 'Address' => 6, 'LatLngJson' => 7, 'GooglePlaceId' => 8, ),
-        self::TYPE_CAMELNAME     => array('locationId' => 0, 'country' => 1, 'state' => 2, 'city' => 3, 'town' => 4, 'postcode' => 5, 'address' => 6, 'latLngJson' => 7, 'googlePlaceId' => 8, ),
-        self::TYPE_COLNAME       => array(LocationAddressTableMap::COL_LOCATION_ID => 0, LocationAddressTableMap::COL_COUNTRY => 1, LocationAddressTableMap::COL_STATE => 2, LocationAddressTableMap::COL_CITY => 3, LocationAddressTableMap::COL_TOWN => 4, LocationAddressTableMap::COL_POSTCODE => 5, LocationAddressTableMap::COL_ADDRESS => 6, LocationAddressTableMap::COL_LAT_LNG_JSON => 7, LocationAddressTableMap::COL_GOOGLE_PLACE_ID => 8, ),
-        self::TYPE_FIELDNAME     => array('location_id' => 0, 'country' => 1, 'state' => 2, 'city' => 3, 'town' => 4, 'postcode' => 5, 'address' => 6, 'lat_lng_json' => 7, 'google_place_id' => 8, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, )
+        self::TYPE_PHPNAME       => array('LocationId' => 0, 'Country' => 1, 'State' => 2, 'City' => 3, 'Town' => 4, 'Postcode' => 5, 'Address' => 6, 'Lat' => 7, 'Lng' => 8, 'GooglePlaceId' => 9, ),
+        self::TYPE_CAMELNAME     => array('locationId' => 0, 'country' => 1, 'state' => 2, 'city' => 3, 'town' => 4, 'postcode' => 5, 'address' => 6, 'lat' => 7, 'lng' => 8, 'googlePlaceId' => 9, ),
+        self::TYPE_COLNAME       => array(LocationAddressTableMap::COL_LOCATION_ID => 0, LocationAddressTableMap::COL_COUNTRY => 1, LocationAddressTableMap::COL_STATE => 2, LocationAddressTableMap::COL_CITY => 3, LocationAddressTableMap::COL_TOWN => 4, LocationAddressTableMap::COL_POSTCODE => 5, LocationAddressTableMap::COL_ADDRESS => 6, LocationAddressTableMap::COL_LAT => 7, LocationAddressTableMap::COL_LNG => 8, LocationAddressTableMap::COL_GOOGLE_PLACE_ID => 9, ),
+        self::TYPE_FIELDNAME     => array('location_id' => 0, 'country' => 1, 'state' => 2, 'city' => 3, 'town' => 4, 'postcode' => 5, 'address' => 6, 'lat' => 7, 'lng' => 8, 'google_place_id' => 9, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
     );
 
     /**
@@ -173,7 +178,8 @@ class LocationAddressTableMap extends TableMap
         $this->addColumn('town', 'Town', 'VARCHAR', false, 255, null);
         $this->addColumn('postcode', 'Postcode', 'VARCHAR', false, 255, null);
         $this->addColumn('address', 'Address', 'VARCHAR', true, 255, null);
-        $this->addColumn('lat_lng_json', 'LatLngJson', 'VARCHAR', false, 128, null);
+        $this->addColumn('lat', 'Lat', 'DOUBLE', false, null, null);
+        $this->addColumn('lng', 'Lng', 'DOUBLE', false, null, null);
         $this->addColumn('google_place_id', 'GooglePlaceId', 'VARCHAR', false, 255, null);
     } // initialize()
 
@@ -339,7 +345,8 @@ class LocationAddressTableMap extends TableMap
             $criteria->addSelectColumn(LocationAddressTableMap::COL_TOWN);
             $criteria->addSelectColumn(LocationAddressTableMap::COL_POSTCODE);
             $criteria->addSelectColumn(LocationAddressTableMap::COL_ADDRESS);
-            $criteria->addSelectColumn(LocationAddressTableMap::COL_LAT_LNG_JSON);
+            $criteria->addSelectColumn(LocationAddressTableMap::COL_LAT);
+            $criteria->addSelectColumn(LocationAddressTableMap::COL_LNG);
             $criteria->addSelectColumn(LocationAddressTableMap::COL_GOOGLE_PLACE_ID);
         } else {
             $criteria->addSelectColumn($alias . '.location_id');
@@ -349,7 +356,8 @@ class LocationAddressTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.town');
             $criteria->addSelectColumn($alias . '.postcode');
             $criteria->addSelectColumn($alias . '.address');
-            $criteria->addSelectColumn($alias . '.lat_lng_json');
+            $criteria->addSelectColumn($alias . '.lat');
+            $criteria->addSelectColumn($alias . '.lng');
             $criteria->addSelectColumn($alias . '.google_place_id');
         }
     }

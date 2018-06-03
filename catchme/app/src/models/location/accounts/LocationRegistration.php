@@ -10,7 +10,7 @@ use Slim\Http\UploadedFile;
 use User as DbUser;
 use Api\FormLocationRegister as ApiFormLocationRegister;
 use Api\LocationAddress as ApiLocationAddress;
-use DbLatLng;
+use LatLng;
 use R;
 
 class LocationRegistration {
@@ -49,7 +49,7 @@ class LocationRegistration {
         $dbLocationAddress->setTown($apiLocationAddress->town);
         $dbLocationAddress->setPostcode($apiLocationAddress->postcode);
         $dbLocationAddress->setAddress($apiLocationAddress->address);
-        $dbLocationAddress->setLatLng(DbLatLng::fromObject($apiLocationAddress->latLng));
+        $dbLocationAddress->setLatLng(LatLng::fromObject($apiLocationAddress->latLng));
         $dbLocationAddress->setGooglePlaceId($apiLocationAddress->googlePlaceId);
         $this->location->setAddress($dbLocationAddress);
 

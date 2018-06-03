@@ -2,7 +2,7 @@
 
 namespace KMeans;
 use Closure;
-use DbLatLng;
+use WeightedCalculator\WeightedUnit;
 
 /**
  * Wrapper around the KMeans library
@@ -15,89 +15,69 @@ class Clusterizer {
      * @param ClusterPoint[] $clusterPoints
      */
     public function __construct(array $clusterPoints) {
-        $this->points = $clusterPoints;
-        $this->space = new Space(2);
+        $this->flatClusterPoints = $clusterPoints;
+        $this->clusterize();
     }
 
     /**
      * Array used as a data set to form the clusters
-     * @var array ([lat, lng], ...)
+     * @var ClusterPoint[]
      */
-    private $points;
+    private $flatClusterPoints;
 
-    /** @var Space */
-    private $space;
+    /** @var Cluster[] */
+    private $clusters;
 
-    /**
-     * Calculates the clusters with the distance-from-point criteria
-     * This means that the clusters are ordered by the distance they
-     * have from bindToPoint
-     * @param array (lat, lng) $bindToPoint
-     */
-    public function getSortedByDistanceFromPoint(array $distFrom) {
-
-        usort($this->points, function($p1, $p2) use ($distFrom) {
-            return DbLatLng::getDist($distFrom, $p1) < DbLatLng::getDist($distFrom, $p2)
-                ? -1    // Do not swap
-                : 1;    // Swap
-        });
-
-        return $this->points;
+    /** @var ClusterPoint[] */
+    public function getFlatPoints() {
+        return $this->flatClusterPoints;
     }
 
-    /**
-     * Calculates the clusters with the popularity criteria
-     * this means that the clusters are ordered by number of points in them
-     * @return ClusterPoint[]
-     */
-    public function clusterizeOrderedBySize() {// todo no need to sort
-        return $this->calculateFlatClusterizedPoints($this->points, function(Cluster $c1, Cluster $c2) {
-            // Given 2 clusters, the one with the higher number of points
-            // is considered more compatible
-            return $c1->count() > $c2->count() ? -1 : 1;
-        });
-    }
+    /** @return array */
+    public function getCenterOfBiggestCluster() {
+        $biggestCluster = $this->clusters[0];
 
-    private function calculateFlatClusterizedPoints(array $clusterData, Closure $clusterCritieria) {
-        $clusterPoints = [];
+        for ($i = 1; $i < sizeof($this->clusters); $i++)
+            if (count($this->clusters[$i]) > count($biggestCluster))
+                $biggestCluster = $this->clusters[$i];
 
-        $clusters = $this->calculateClusters($clusterData, $clusterCritieria);
-
-        // The clusters are already ordered by clusterCriteria (not internally)
-        // Flatten the elements
-        for ($i = 0; $i < sizeof($clusters); $i++) {
-
-            /** @var Point $point */
-            foreach ($clusters[$i] as $point) {
-                $clusterPoints[] = new ClusterPoint(
-                    $point->getCoordinates(),
-                    $this->space[$point],
-                    $i
-                );
-            }
-        }
-
-        return $clusterPoints;
+        return [$biggestCluster[0], $biggestCluster[1]];
     }
 
     /**
      * @param array $clusterData
-     * @param Closure $clusterCritieria Closure that orders two clusters (usort)
-     * @return Cluster[]
+     * @param Closure $clusterCritieria
      */
-    private function calculateClusters(array $clusterData, Closure $clusterCritieria) {
+    private function clusterize() {
+        $space = new Space(2);
+
         // Fill this Clusterizer space
+        foreach ($this->flatClusterPoints as $clusterPoint)
+            $space->addPoint($clusterPoint->coordinates, $clusterPoint);
 
-        foreach ($clusterData as $point)
-            $this->space->addPoint($point);
+        // Calculate clusters
+        $this->clusters = $space->solve(self::nClusters, Space::SEED_DASV);
 
-        // Resolve as nClusters
-        $clusters = $this->space->solve(self::nClusters, Space::SEED_DASV);
+        // Flatten the elements
+        $newClusterPoints = [];
 
-        // Order the clusters based on the input criteria
-        usort($clusters, $clusterCritieria);
+        /** @var Cluster $cluster */
+        /** @var Point $clusterPoint */
+        /** @var ClusterPoint $pointData */
+        for ($i = 0; $i < sizeof($this->clusters); $i++) {
+            $cluster = $this->clusters[$i];
+            $clusterIndex = $i;
+            $clusterSize = count($cluster);
 
-        return $clusters;
+            foreach ($cluster as $clusterPoint) {
+                $pointData = $space[$clusterPoint];
+                $pointData->inClusterWithIndex = $clusterIndex;
+                $pointData->inClusterWithSize = $clusterSize;
+                array_push($newClusterPoints, $pointData);
+            }
+        }
+
+        $this->flatClusterPoints = $newClusterPoints;
     }
 
 }
@@ -116,5 +96,8 @@ class ClusterPoint {
     public $data;
 
     /** @var int */
-    public $clusterIndex;
+    public $inClusterWithIndex;
+
+    /** @var int */
+    public $inClusterWithSize;
 }

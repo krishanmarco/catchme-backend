@@ -15,13 +15,13 @@ use Base\LocationAddress as BaseLocationAddress;
 class LocationAddress extends BaseLocationAddress {
 
 
-    public function setLatLng(DbLatLng $latLng) {
+    public function setLatLng(LatLng $latLng) {
         parent::setLatLngJson(json_encode($latLng));
     }
 
-    /** @return DbLatLng */
+    /** @return LatLng */
     public function getLatLng() {
-        return DbLatLng::fromObject(json_decode($this->getLatLngJson()));
+        return LatLng::fromObject(json_decode($this->getLatLngJson()));
     }
 
 }

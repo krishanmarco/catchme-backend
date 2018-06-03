@@ -1,13 +1,13 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 10/09/2017 - Fithancer © */
 
-class DbLatLng {
+class LatLng {
 
     public static function getDist(array $xy1, array $xy2) {
         return sqrt(($xy1[0] - $xy2[0])^2 + ($xy1[1] - $xy2[1])^2);
     }
 
     public static function fromObject($data) {
-        return new DbLatLng($data->lat, $data->lng);
+        return new LatLng($data->lat, $data->lng);
     }
 
 

@@ -117,7 +117,7 @@ function generateFakeLocations() {
         $locationAddress->setTown($faker->city);
         $locationAddress->setPostcode($faker->postcode);
         $locationAddress->setAddress($faker->address);
-        $locationAddress->setLatLng(new DbLatLng($faker->latitude, $faker->longitude));
+        $locationAddress->setLatLng(new LatLng($faker->latitude, $faker->longitude));
         $locationAddress->setGooglePlaceId($faker->randomAscii);
         $location->setAddress($locationAddress);
 

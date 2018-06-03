@@ -1,9 +1,11 @@
 <?php /** Created by Krishan Marco Madan on 17-May-18. */
 
 namespace Models;
+use KMeans\Clusterizer;
 use User as DbUser;
 use Location as DbLocation;
 use UserLocation as DbUserLocation;
+use WeightedCalculator\WeightedUnit;
 
 class LocationFriendsResult {
 
@@ -196,4 +198,27 @@ class UserConnectionsResult {
     public $requests;
     /** @var DbUser[] */
     public $blocked;
+}
+
+class LocIdCoord {
+
+    public function __construct($lid, $lat, $lng) {
+        $this->lid = $lid;
+        $this->lat = $lat;
+        $this->lng = $lng;
+    }
+
+    /** @var int */
+    public $lid;
+    /** @var double */
+    public $lat;
+    /** @var double */
+    public $lng;
+}
+
+class UserSuggestedLocationsResWrapper {
+    /** @var Clusterizer */
+    public $clusterizer;
+    /** @var WeightedUnit[] */
+    public $weightedUnits;
 }

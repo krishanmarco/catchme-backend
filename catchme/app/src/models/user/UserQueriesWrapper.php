@@ -41,41 +41,6 @@ class UserQueriesWrapper {
         return $locationIds;
     }
 
-    /**
-     * Returns un unordered array of WeightedUnit locations
-     * based on the favorites of all the users in $uids
-     *
-     * @param int[] $uids        Array of user ids
-     * @return WeightedUnit[]    Array of WeightedUnit(locationId, locationWeight)
-     */
-    public static function getUsersLocationIdsWeightedUnits(array $uids) {
-        $result = [];
-
-        if (sizeof($uids) <= 0)
-            return $result;
-
-        $connection = Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME);
-        $statement = $connection->prepare(strtr(
-            "SELECT {location_id} as lid, COUNT(*) as cnt" .
-            "FROM {table} " .
-            "WHERE {user_id} IN ({ids}) " .
-            "GROUP BY {location_id}",
-            [
-                '{table}' => UserLocationFavoriteTableMap::TABLE_NAME,
-                '{location_id}' => UserLocationFavoriteTableMap::COL_LOCATION_ID,
-                '{user_id}' => UserLocationFavoriteTableMap::COL_USER_ID,
-                '{ids}' => implode(',', $uids)
-            ]
-        ));
-        $statement->execute();
-
-        $fetch = $statement->fetchAll(\PDO::FETCH_ASSOC);
-
-        foreach ($fetch as $row)
-            $result[] = new WeightedUnit(intval($row['lid']), (intval($row['cnt']) / sizeof($fetch)));
-
-        return $result;
-    }
 
     /**
      * This method returns all the friends of ${userIds} unique

@@ -2,7 +2,6 @@
 
 namespace KMeans;
 use Closure;
-use WeightedCalculator\WeightedUnit;
 
 /**
  * Wrapper around the KMeans library
@@ -12,7 +11,7 @@ class Clusterizer {
 
     /**
      * Clusterizer constructor.
-     * @param ClusterPoint[] $clusterPoints
+     * @param IClusterPoint[] $clusterPoints
      */
     public function __construct(array $clusterPoints) {
         $this->flatClusterPoints = $clusterPoints;
@@ -21,14 +20,14 @@ class Clusterizer {
 
     /**
      * Array used as a data set to form the clusters
-     * @var ClusterPoint[]
+     * @var IClusterPoint[]
      */
     private $flatClusterPoints;
 
     /** @var Cluster[] */
     private $clusters;
 
-    /** @var ClusterPoint[] */
+    /** @var IClusterPoint[] */
     public function getFlatPoints() {
         return $this->flatClusterPoints;
     }
@@ -53,7 +52,7 @@ class Clusterizer {
 
         // Fill this Clusterizer space
         foreach ($this->flatClusterPoints as $clusterPoint)
-            $space->addPoint($clusterPoint->coordinates, $clusterPoint);
+            $space->addPoint($clusterPoint->getCoordinates(), $clusterPoint);
 
         // Calculate clusters
         $this->clusters = $space->solve(self::nClusters, Space::SEED_DASV);
@@ -63,7 +62,7 @@ class Clusterizer {
 
         /** @var Cluster $cluster */
         /** @var Point $clusterPoint */
-        /** @var ClusterPoint $pointData */
+        /** @var IClusterPoint $pointData */
         for ($i = 0; $i < sizeof($this->clusters); $i++) {
             $cluster = $this->clusters[$i];
             $clusterIndex = $i;
@@ -71,8 +70,7 @@ class Clusterizer {
 
             foreach ($cluster as $clusterPoint) {
                 $pointData = $space[$clusterPoint];
-                $pointData->inClusterWithIndex = $clusterIndex;
-                $pointData->inClusterWithSize = $clusterSize;
+                $pointData->setClusterData(new ClusterData($clusterIndex, $clusterSize));
                 array_push($newClusterPoints, $pointData);
             }
         }
@@ -82,22 +80,21 @@ class Clusterizer {
 
 }
 
-class ClusterPoint {
+interface IClusterPoint {
+    public function getCoordinates();
+    public function setClusterData(ClusterData $clusterData);
+}
 
-    public function __construct(array $coordinates, $data = null, $clusterIndex = -1) {
-        $this->coordinates = $coordinates;
-        $this->data = $data;
+class ClusterData {
+
+    public function __construct($index, $size) {
+        $this->index = $index;
+        $this->size = $size;
     }
 
-    /** @var array */
-    public $coordinates;
-
-    /** @var mixed */
-    public $data;
+    /** @var int */
+    public $index;
 
     /** @var int */
-    public $inClusterWithIndex;
-
-    /** @var int */
-    public $inClusterWithSize;
+    public $size;
 }

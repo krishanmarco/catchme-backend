@@ -32,7 +32,7 @@ class ControllerSearch {
     /** @return ApiLocation[] */
     public function locationsSuggested($seed) {
         $userModel = UserModel::fromUser($this->authUser);
-        $locations = $userModel->getUserSuggestedLocations($seed)->getResult()->suggestedLocations;
+        $locations = $userModel->getUserSuggestedLocations($seed, null)->getResult()->suggestedLocations;
         return ModelToApiLocations::multiple()->locations($locations);
     }
 

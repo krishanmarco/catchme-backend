@@ -2,6 +2,9 @@
 
 namespace Models\Calculators\Users;
 
+use cache\Cacheable;
+use cache\CacheableConstants;
+use cache\CacheableHelper;
 use Map\LocationAddressTableMap;
 use Map\LocationTableMap;
 use Map\UserLocationFavoriteTableMap;
@@ -19,11 +22,17 @@ use WeightedCalculator\WeightedUnit;
 use Models\Calculators\Helpers\UserSuggestedLocationsCalc;
 use Models\Calculators\Helpers\LocIdCoord;
 
-class UserSuggestedLocations {
+class UserSuggestedLocations extends Cacheable {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
     const CONFIG_POSITION_SEARCH_AREA_KM = 30;
 
     public function __construct(DbUser $user, $seed, LatLng $userLatLng) {
+        parent::__construct(
+            CacheableConstants::CACHE_TABLE_USER_SUGGESTED_LOCATION,
+            $user->getId(),
+            function () { return $this->getSuggestedLocationIds(); }
+        );
+
         $this->user = $user;
         $this->seed = intval($seed);
         $this->userLatLng = $userLatLng;
@@ -46,7 +55,6 @@ class UserSuggestedLocations {
         return $this->result;
     }
 
-
     public function suggestLocations() {
         // Start from (seed * self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS)
         // and add self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS number
@@ -55,7 +63,7 @@ class UserSuggestedLocations {
         $suggestedIdsSubset = [];
         $startIdx = $this->seed * self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS;
 
-        $orderedUniqueLocationIds = $this->calculate();
+        $orderedUniqueLocationIds = $this->getCachedData();
         for ($i = 0; $i < self::CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS; $i++) {
             $realIndex = ($startIdx + $i) % sizeof($orderedUniqueLocationIds);
             array_push($suggestedIdsSubset, $orderedUniqueLocationIds[$realIndex]);
@@ -75,7 +83,7 @@ class UserSuggestedLocations {
     }
 
 
-    private function calculate() {
+    private function getSuggestedLocationIds() {
         // Get the locations accumulated from favorites
         // Calculate the center coordinates of the biggest cluster
         // and get the distance from $userLatLng
@@ -98,11 +106,9 @@ class UserSuggestedLocations {
             $uslcPosition->getWeightCalculator(),
         ]);
 
-        // Extract data from the weighted units
+        // Extract data (locationId) from the weighted units
         return array_map(
-            function (WeightedUnit $wu) {
-                return $wu->data;
-            },
+            function (WeightedUnit $wu) { return $wu->data; },
             $wgc->calculateUniqueAccumulatedSimple()
         );
     }
@@ -159,7 +165,7 @@ class UserSuggestedLocations {
     private function getLocationsAccumulatedFromFriends() {
         return new UserSuggestedLocationsCalc(
 
-            // Define function to get locations
+        // Define function to get locations
             function () {
                 // Select all this users confirmed friend ids
                 $friendIds = UserQueriesWrapper::getUsersFriendIds([$this->user->getId()]);

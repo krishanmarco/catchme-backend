@@ -4,7 +4,6 @@ namespace I18n;
 
 class L {
 
-    // todo these app_ lang constants should be replaced on app side
     const app_feed_friend_added_image = '{app_feed_friend_added_image}';
     const app_feed_friendship_accept = '{app_feed_friendship_accept}';
     const app_feed_friendship_request = '{app_feed_friendship_request}';

@@ -15,8 +15,7 @@ class I18n {
     }
 
     /** @return array Array<String => String> */
-    private static function getLangStrings($langId) {
-        $langId = 'en';
+    private static function getLangStrings($langId = 'en') {
         $file = __DIR__ . "/lang/$langId.json";
 
         if (!file_exists($file))

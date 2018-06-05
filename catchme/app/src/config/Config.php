@@ -6,9 +6,8 @@
 
 
 // Development
-define("SERVER_URL", "http://www.catchme.krishanmadan.website");
-define("API_URL", SERVER_URL . "/api");
 define("DEVELOPMENT_MODE", true);
+define("SERVER_URL", "http://www.catchme.krishanmadan.website");
 
 // Development
 define("DB_NAME", "krisaxcv_catchme_app");
@@ -18,6 +17,18 @@ define("DB_USER", "krisaxcv_chm_app");
 
 // Development
 define("DB_PASS", "w.kc5M!Q&J}f");
+
+define("URL_API", SERVER_URL . "/api");
+define("URL_IMAGES", SERVER_URL . "/img");
+define("URL_LOGO_WHITE", URL_IMAGES . "/white-me.png");
+define("CATCHME_CONTACT_PHONE", "+39 334 701 49 35");
+define("CATCHME_CONTACT_EMAIL", "catchme@catchme.com");
+define("URL_FACEBOOK", "https://www.facebook.com");
+define("URL_TWITTER", "https://www.twitter.com");
+define("URL_GOOGLE_PLUS", "https://www.google.com");
+define("URL_TERMS", SERVER_URL);
+define("URL_PRIVACY", SERVER_URL);
+define("URL_UNSUBSCRIBE", SERVER_URL);
 
 define("AUTH_TOKEN_TIME_TO_LIVE_SECONDS", 24 * 60 * 60);
 
@@ -116,3 +127,4 @@ define('USER_PASSWORD_RECO_TTL', 30 * 60);
 
 define('USER_LOCATIONS_MAX_TOP_ITEMS', 5);
 define('SUGGEST_LOCATIONS_MAX_RANDOM', 20);
+

@@ -27,6 +27,7 @@
     <column       name="phone"                      type="VARCHAR"      required="false"                                                                               />
     <column       name="public_message"             type="VARCHAR"      required="false"                                                                               />
     <column       name="picture_url"                type="VARCHAR"      required="false"                                                                               />
+    <column       name="lang"                       type="VARCHAR"      required="false"      size="8"                                                                 />
 
 
     <index>

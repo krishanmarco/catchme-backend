@@ -1,6 +1,7 @@
 <?php
 
 namespace Models\User\Accounts;
+use Models\Email\EmailPasswordRecovered;
 use Slim\Exception\Api400;
 use R;
 use \Propel\Runtime\Exception\PropelException;
@@ -11,10 +12,10 @@ use SystemTempVar as DbSystemTempVar;
 use SystemTempVarQuery;
 use ESystemTempVar;
 use Security\DataEncrypter;
-use EmailSender;
+use Models\Email\EmailPasswordRecovery;
 
 class UserManagerPassword {
-    const RECOVERY_LINK_URL_TEMPLATE = API_URL . '/accounts/user/{uid}/password/reset?token={token}';
+    const RECOVERY_LINK_URL_TEMPLATE = URL_API . '/accounts/user/{uid}/password/reset?token={token}';
 
     public static function change($uid, ApiFormChangePassword $form) {
         $pm = new UserManagerPassword(UserQuery::create()->findPk($uid));
@@ -73,7 +74,7 @@ class UserManagerPassword {
             ]
         );
 
-        EmailSender::sendPasswordRecoveryEmail($this->user, $recoLink);
+        (new EmailPasswordRecovery($this->user->getEmail(), $recoLink))->send();
 
         return R::return_ok;
     }
@@ -107,7 +108,7 @@ class UserManagerPassword {
         $tempVar->delete();
 
         // Send the new password to the user
-        EmailSender::sendPasswordRecoveredEmail($this->user, $randomPassword);
+        (new EmailPasswordRecovered($this->user->getEmail(), $randomPassword))->send();
 
         return R::return_ok;
     }

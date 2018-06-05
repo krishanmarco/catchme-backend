@@ -25,5 +25,6 @@ class R {
     const return_error_passwords_not_equal = -19;
     const return_error_incorrect_recovery_key = -20;
 
+    const return_error_failed_email_send = -21;
 
 }

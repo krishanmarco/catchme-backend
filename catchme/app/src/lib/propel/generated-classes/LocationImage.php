@@ -16,7 +16,7 @@ class LocationImage extends BaseLocationImage {
 
     /** @return String */
     public function getUrl() {
-        return API_URL . '/media/get/' . EMediaType::LOCATION_IMAGE . "/{$this->getLocationId()}/{$this->getId()}";
+        return URL_API . '/media/get/' . EMediaType::LOCATION_IMAGE . "/{$this->getLocationId()}/{$this->getId()}";
     }
 
 }

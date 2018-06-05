@@ -3,6 +3,7 @@
 namespace Firebase\FeedItems;
 
 use User;
+use I18n\L;
 
 final class FeedItemFriendshipAccept extends FeedItemBuilder {
 
@@ -25,7 +26,7 @@ final class FeedItemFriendshipAccept extends FeedItemBuilder {
     public function setContent() {
         return [
             ["{$this->authUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
-            ["accepted your friend request!"]
+            [L::app_feed_friendship_accept]
         ];
     }
 
@@ -46,9 +47,7 @@ final class FeedItemFriendshipAccept extends FeedItemBuilder {
     }
 
     public function setPayload() {
-        return classFromArray([
-            'connectionId' => $this->authUser->getId()
-        ]);
+        return classFromArray(['connectionId' => $this->authUser->getId()]);
     }
 
 }

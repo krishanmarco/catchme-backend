@@ -6,14 +6,18 @@ use R;
 
 abstract class EmailTemplate {
 
-    public function __construct($to, $cannotFail = false, $isHtml = true) {
+    public function __construct($to, $langId, $cannotFail = false, $isHtml = true) {
         $this->to = $to;
+        $this->langId = $langId;
         $this->isHtml = $isHtml;
         $this->cannotFail = $cannotFail;
     }
 
     /** @var string */
     private $to;
+
+    /** @var string */
+    private $langId;
 
     /** @var boolean */
     private $isHtml;
@@ -29,6 +33,16 @@ abstract class EmailTemplate {
 
     /** @return string */
     protected abstract function getMessage();
+
+    /** @return string */
+    protected function getEmailStr($subPath) {
+        return file_get_contents(__DIR__ . "/../emails/types/$subPath.html");
+    }
+
+    /** @return string */
+    protected function getLangId() {
+        return $this->langId;
+    }
 
     public function send() {
         $headers = [];

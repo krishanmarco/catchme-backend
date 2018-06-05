@@ -1,0 +1,15 @@
+{
+  "{global_app_name}": "Catch me",
+  "{lang_contact_info}": "Contact Info",
+  "{lang_phone}": "Phone",
+  "{lang_email}": "Email",
+  "{lang_terms}": "Terms",
+  "{lang_privacy}": "Privacy",
+  "{lang_unsubscribe}": "Unsubscribe",
+  "{lang_connect_with_us}": "Connect with us",
+  "{lang_hi_user}": "Hi",
+  "{lang_pass_recovered_title}": "Password Recovered",
+  "{lang_pass_recovered_text}": "Your new password has been recovered",
+  "{lang_pass_recovery_title}": "Password Recovery",
+  "{lang_pass_recovery_text}": "You requested a new password"
+}

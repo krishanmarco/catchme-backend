@@ -203,6 +203,13 @@ abstract class User implements ActiveRecordInterface
     protected $picture_url;
 
     /**
+     * The value for the lang field.
+     *
+     * @var        string
+     */
+    protected $lang;
+
+    /**
      * @var        ChildUserSocial one-to-one related ChildUserSocial object
      */
     protected $singleSocial;
@@ -719,6 +726,16 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
+     * Get the [lang] column value.
+     *
+     * @return string
+     */
+    public function getLang()
+    {
+        return $this->lang;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -1047,6 +1064,26 @@ abstract class User implements ActiveRecordInterface
     } // setPictureUrl()
 
     /**
+     * Set the value of [lang] column.
+     *
+     * @param string $v new value
+     * @return $this|\User The current object (for fluent API support)
+     */
+    public function setLang($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->lang !== $v) {
+            $this->lang = $v;
+            $this->modifiedColumns[UserTableMap::COL_LANG] = true;
+        }
+
+        return $this;
+    } // setLang()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -1157,6 +1194,9 @@ abstract class User implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : UserTableMap::translateFieldName('PictureUrl', TableMap::TYPE_PHPNAME, $indexType)];
             $this->picture_url = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : UserTableMap::translateFieldName('Lang', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->lang = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1165,7 +1205,7 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 16; // 16 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 17; // 17 = UserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\User'), 0, $e);
@@ -1563,6 +1603,9 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_PICTURE_URL)) {
             $modifiedColumns[':p' . $index++]  = 'picture_url';
         }
+        if ($this->isColumnModified(UserTableMap::COL_LANG)) {
+            $modifiedColumns[':p' . $index++]  = 'lang';
+        }
 
         $sql = sprintf(
             'INSERT INTO user (%s) VALUES (%s)',
@@ -1621,6 +1664,9 @@ abstract class User implements ActiveRecordInterface
                         break;
                     case 'picture_url':
                         $stmt->bindValue($identifier, $this->picture_url, PDO::PARAM_STR);
+                        break;
+                    case 'lang':
+                        $stmt->bindValue($identifier, $this->lang, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1732,6 +1778,9 @@ abstract class User implements ActiveRecordInterface
             case 15:
                 return $this->getPictureUrl();
                 break;
+            case 16:
+                return $this->getLang();
+                break;
             default:
                 return null;
                 break;
@@ -1778,6 +1827,7 @@ abstract class User implements ActiveRecordInterface
             $keys[13] => $this->getPhone(),
             $keys[14] => $this->getPublicMessage(),
             $keys[15] => $this->getPictureUrl(),
+            $keys[16] => $this->getLang(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -2002,6 +2052,9 @@ abstract class User implements ActiveRecordInterface
             case 15:
                 $this->setPictureUrl($value);
                 break;
+            case 16:
+                $this->setLang($value);
+                break;
         } // switch()
 
         return $this;
@@ -2075,6 +2128,9 @@ abstract class User implements ActiveRecordInterface
         }
         if (array_key_exists($keys[15], $arr)) {
             $this->setPictureUrl($arr[$keys[15]]);
+        }
+        if (array_key_exists($keys[16], $arr)) {
+            $this->setLang($arr[$keys[16]]);
         }
     }
 
@@ -2164,6 +2220,9 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_PICTURE_URL)) {
             $criteria->add(UserTableMap::COL_PICTURE_URL, $this->picture_url);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_LANG)) {
+            $criteria->add(UserTableMap::COL_LANG, $this->lang);
         }
 
         return $criteria;
@@ -2266,6 +2325,7 @@ abstract class User implements ActiveRecordInterface
         $copyObj->setPhone($this->getPhone());
         $copyObj->setPublicMessage($this->getPublicMessage());
         $copyObj->setPictureUrl($this->getPictureUrl());
+        $copyObj->setLang($this->getLang());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -4174,6 +4234,7 @@ abstract class User implements ActiveRecordInterface
         $this->phone = null;
         $this->public_message = null;
         $this->picture_url = null;
+        $this->lang = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

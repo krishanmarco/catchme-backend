@@ -36,6 +36,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery orderByPhone($order = Criteria::ASC) Order by the phone column
  * @method     ChildUserQuery orderByPublicMessage($order = Criteria::ASC) Order by the public_message column
  * @method     ChildUserQuery orderByPictureUrl($order = Criteria::ASC) Order by the picture_url column
+ * @method     ChildUserQuery orderByLang($order = Criteria::ASC) Order by the lang column
  *
  * @method     ChildUserQuery groupById() Group by the id column
  * @method     ChildUserQuery groupByName() Group by the name column
@@ -53,6 +54,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery groupByPhone() Group by the phone column
  * @method     ChildUserQuery groupByPublicMessage() Group by the public_message column
  * @method     ChildUserQuery groupByPictureUrl() Group by the picture_url column
+ * @method     ChildUserQuery groupByLang() Group by the lang column
  *
  * @method     ChildUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -172,7 +174,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneByAccessLevel(int $access_level) Return the first ChildUser filtered by the access_level column
  * @method     ChildUser findOneByPhone(string $phone) Return the first ChildUser filtered by the phone column
  * @method     ChildUser findOneByPublicMessage(string $public_message) Return the first ChildUser filtered by the public_message column
- * @method     ChildUser findOneByPictureUrl(string $picture_url) Return the first ChildUser filtered by the picture_url column *
+ * @method     ChildUser findOneByPictureUrl(string $picture_url) Return the first ChildUser filtered by the picture_url column
+ * @method     ChildUser findOneByLang(string $lang) Return the first ChildUser filtered by the lang column *
 
  * @method     ChildUser requirePk($key, ConnectionInterface $con = null) Return the ChildUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOne(ConnectionInterface $con = null) Return the first ChildUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -193,6 +196,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser requireOneByPhone(string $phone) Return the first ChildUser filtered by the phone column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPublicMessage(string $public_message) Return the first ChildUser filtered by the public_message column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPictureUrl(string $picture_url) Return the first ChildUser filtered by the picture_url column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByLang(string $lang) Return the first ChildUser filtered by the lang column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUser objects based on current ModelCriteria
  * @method     ChildUser[]|ObjectCollection findById(int $id) Return ChildUser objects filtered by the id column
@@ -211,6 +215,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser[]|ObjectCollection findByPhone(string $phone) Return ChildUser objects filtered by the phone column
  * @method     ChildUser[]|ObjectCollection findByPublicMessage(string $public_message) Return ChildUser objects filtered by the public_message column
  * @method     ChildUser[]|ObjectCollection findByPictureUrl(string $picture_url) Return ChildUser objects filtered by the picture_url column
+ * @method     ChildUser[]|ObjectCollection findByLang(string $lang) Return ChildUser objects filtered by the lang column
  * @method     ChildUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -309,7 +314,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, email, api_key, pass_sha256, pass_salt, ban, signup_ts, gender, reputation, setting_privacy, setting_notifications, access_level, phone, public_message, picture_url FROM user WHERE id = :p0';
+        $sql = 'SELECT id, name, email, api_key, pass_sha256, pass_salt, ban, signup_ts, gender, reputation, setting_privacy, setting_notifications, access_level, phone, public_message, picture_url, lang FROM user WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -879,6 +884,31 @@ abstract class UserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserTableMap::COL_PICTURE_URL, $pictureUrl, $comparison);
+    }
+
+    /**
+     * Filter the query on the lang column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByLang('fooValue');   // WHERE lang = 'fooValue'
+     * $query->filterByLang('%fooValue%', Criteria::LIKE); // WHERE lang LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $lang The value to use as filter.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByLang($lang = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($lang)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_LANG, $lang, $comparison);
     }
 
     /**

@@ -27,6 +27,7 @@ CREATE TABLE `user`
     `phone` VARCHAR(255),
     `public_message` VARCHAR(255),
     `picture_url` VARCHAR(255),
+    `lang` VARCHAR(8),
     PRIMARY KEY (`id`),
     UNIQUE INDEX `user_u_ce4c89` (`email`),
     INDEX `user_i_db2f7c` (`id`)

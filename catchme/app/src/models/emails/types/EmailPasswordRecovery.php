@@ -1,12 +1,15 @@
 <?php /** Created by Krishan Marco Madan on 05-Jun-18. */
 
 namespace Models\Email;
-use User as DbUser;
 
-class EmailPasswordRecovery extends EmailBase { // todo lang
+use I18n\L;
+use User as DbUser;
+use I18n\I18n;
+
+class EmailPasswordRecovery extends EmailBase {
 
     public function __construct(DbUser $dbUser, $recoveryLink) {
-        parent::__construct($dbUser, true);
+        parent::__construct($dbUser, $dbUser->getLang(), true);
         $this->dbUser = $dbUser;
         $this->recoveryLink = $recoveryLink;
     }
@@ -22,7 +25,7 @@ class EmailPasswordRecovery extends EmailBase { // todo lang
     }
 
     protected function getSubject() {
-        return 'CATCHME PASSWORD RECOVERY';
+        return I18n::str($this->getLangId(), L::lang_pass_recovery_title);
     }
 
     protected function getEmailTitle() {
@@ -30,17 +33,20 @@ class EmailPasswordRecovery extends EmailBase { // todo lang
     }
 
     protected function getHeaderTitle() {
-        return $this->dbUser->getName();
+        return I18n::str($this->getLangId(), L::lang_hi_user) . ', ' . $this->dbUser->getName();
     }
 
     protected function getHeaderText() {
-        return 'Your new password';
+        return I18n::str($this->getLangId(), L::lang_pass_recovery_text);
     }
 
     protected function getContentHtml() {
-        return strtr(file_get_contents(__DIR__ . '/../../../html/emails/email_password_recovery/content.html'), [
-            '{recovery_link}' => $this->recoveryLink
-        ]);
+        return I18n::strReplace($this->getLangId(), strtr(
+            $this->getEmailStr('email_password_recovery/content'),
+            [
+                '{recovery_link}' => $this->recoveryLink
+            ]
+        ));
     }
 
 }

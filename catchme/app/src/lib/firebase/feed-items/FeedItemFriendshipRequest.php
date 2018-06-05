@@ -3,6 +3,7 @@
 namespace Firebase\FeedItems;
 
 use User;
+use I18n\L;
 
 final class FeedItemFriendshipRequest extends FeedItemBuilder {
 
@@ -10,7 +11,6 @@ final class FeedItemFriendshipRequest extends FeedItemBuilder {
         parent::__construct();
         $this->authUser = $authUser;
     }
-
 
     /** @var User $requestingUser */
     private $authUser;
@@ -27,7 +27,7 @@ final class FeedItemFriendshipRequest extends FeedItemBuilder {
     public function setContent() {
         return [
             ["{$this->authUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
-            ["wants to catch you!"]
+            [L::app_feed_friendship_request]
         ];
     }
 

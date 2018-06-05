@@ -5,7 +5,7 @@ namespace Firebase\FeedItems;
 use User;
 use Location;
 use LocationImage;
-use stdClass;
+use I18n\L;
 
 final class FeedItemFriendAddedImage extends FeedItemBuilder {
 
@@ -38,7 +38,7 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
     public function setContent() {
         return [
             ["{$this->currentUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
-            ["posted a picture at {$this->location->getName()}"]
+            [L::app_feed_friend_added_image . " {$this->location->getName()}"]
         ];
     }
 
@@ -59,9 +59,7 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
     }
 
     public function setPayload() {
-        return classFromArray([
-            'locationId' => $this->location->getId()
-        ]);
+        return classFromArray(['locationId' => $this->location->getId()]);
     }
 
 }

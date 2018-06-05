@@ -43,9 +43,7 @@ final class FeaturedAdItemAttendanceRequest extends FeaturedAdItemBuilder {
     }
 
     public function setPayload() {
-        $class = new \stdClass();
-        $class->locationId = $this->featuredAd->locationId;
-        return $class;
+        return classFromArray(['locationId' => $this->featuredAd->locationId]);
     }
 
 

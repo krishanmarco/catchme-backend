@@ -2,10 +2,12 @@
 
 namespace Models\Email;
 
+use I18n\I18n;
+
 abstract class EmailBase extends EmailTemplate {
 
-    public function __construct($dbUser, $cannotFail) {
-        parent::__construct($dbUser, $cannotFail, true);
+    public function __construct($to, $langId, $cannotFail) {
+        parent::__construct($to, $langId, $cannotFail, true);
     }
 
     /** @return null|string */
@@ -39,8 +41,10 @@ abstract class EmailBase extends EmailTemplate {
         if (!is_null($contentHtml))
             $params['{content_html}'] = $contentHtml;
 
-        $params = array_merge($params, $this->getBaseParams());
-        return strtr(file_get_contents(__DIR__ . '/../../../html/emails/email_base/email_base.html'), $params);
+        return I18n::strReplace($this->getLangId(), strtr(
+            $this->getEmailStr('email_base/email_base'),
+            array_merge($params, $this->getBaseParams())
+        ));
     }
 
 

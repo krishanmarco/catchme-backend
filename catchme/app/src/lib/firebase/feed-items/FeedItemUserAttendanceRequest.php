@@ -4,6 +4,7 @@ namespace Firebase\FeedItems;
 
 use User;
 use Location;
+use I18n\L;
 
 final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
 
@@ -31,7 +32,7 @@ final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
     public function setContent() {
         return [
             ["{$this->currentUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
-            ["will be at {$this->location->getName()}, will you be there too?"],
+            [L::app_feed_user_attendance_request_1 . " {$this->location->getName()}, " . L::app_feed_user_attendance_request_2]
         ];
     }
 

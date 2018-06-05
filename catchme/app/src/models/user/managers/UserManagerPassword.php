@@ -74,7 +74,7 @@ class UserManagerPassword {
             ]
         );
 
-        (new EmailPasswordRecovery($this->user->getEmail(), $recoLink))->send();
+        (new EmailPasswordRecovery($this->user, $recoLink))->send();
 
         return R::return_ok;
     }
@@ -108,7 +108,7 @@ class UserManagerPassword {
         $tempVar->delete();
 
         // Send the new password to the user
-        (new EmailPasswordRecovered($this->user->getEmail(), $randomPassword))->send();
+        (new EmailPasswordRecovered($this->user, $randomPassword))->send();
 
         return R::return_ok;
     }

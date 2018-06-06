@@ -404,7 +404,7 @@ function revertToSimpleTestingState() {
 // Bash terraform
 /*
 terraform () {
-    url="http://www.catchme.krishanmadan.website/api/fake?pw=S()KD2dk290kdLksK()&function=";
+    url="http://www.catchme-v2.krishanmadan.website/api/fake?pw=S()KD2dk290kdLksK()&function=";
 
     run () {
         echo $1;

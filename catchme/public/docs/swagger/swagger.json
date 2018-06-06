@@ -14,7 +14,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "www.catchme.krishanmadan.website",
+  "host": "www.catchme-v2.krishanmadan.website",
   "basePath": "/api",
   "schemes": ["http", "https"],
   "consumes": ["application/json"],

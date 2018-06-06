@@ -4,7 +4,7 @@ echo "Script Starting...\n\n";
 
 function call($httpGetParams) {
 	 $ch = curl_init();
-	 $url = "http://www.catchme.krishanmadan.website/api/fake?pw=S()KD2dk290kdLksK()&" . $httpGetParams;
+	 $url = "http://www.catchme-v2.krishanmadan.website/api/fake?pw=S()KD2dk290kdLksK()&" . $httpGetParams;
 	 echo "Calling " . $url . "\n";
 	 curl_setopt($ch, CURLOPT_URL, $url);
 	 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

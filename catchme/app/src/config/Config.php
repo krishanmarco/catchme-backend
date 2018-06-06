@@ -7,7 +7,7 @@
 
 // Development
 define("DEVELOPMENT_MODE", true);
-define("SERVER_URL", "http://www.catchme.krishanmadan.website");
+define("SERVER_URL", "http://www.catchme-v2.krishanmadan.website");
 
 // Development
 define("DB_NAME", "krisaxcv_catchme_app");

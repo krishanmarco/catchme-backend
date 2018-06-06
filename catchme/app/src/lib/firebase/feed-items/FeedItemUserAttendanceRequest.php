@@ -5,6 +5,7 @@ namespace Firebase\FeedItems;
 use User;
 use Location;
 use I18n\L;
+use Api\ServerTextBuilder;
 
 final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
 
@@ -30,10 +31,15 @@ final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
     }
 
     public function setContent() {
-        return [
-            ["{$this->currentUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
-            [L::app_feed_user_attendance_request_1 . " {$this->location->getName()}, " . L::app_feed_user_attendance_request_2]
-        ];
+        return ServerTextBuilder::build()
+            ->textBold($this->currentUser->getName())
+            ->space()
+            ->i18n(L::t_srv_feed_user_attendance_request_1)
+            ->space()
+            ->text($this->location->getName())
+            ->space()
+            ->i18n(L::t_srv_feed_user_attendance_request_2)
+            ->get();
     }
 
     protected function setLeftAvatar() {
@@ -53,9 +59,7 @@ final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
     }
 
     public function setPayload() {
-        return classFromArray([
-            'locationId' => $this->location->getId()
-        ]);
+        return classFromArray(['locationId' => $this->location->getId()]);
     }
-    
+
 }

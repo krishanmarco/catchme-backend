@@ -6,6 +6,7 @@ use User;
 use Location;
 use LocationImage;
 use I18n\L;
+use Api\ServerTextBuilder;
 
 final class FeedItemFriendAddedImage extends FeedItemBuilder {
 
@@ -36,10 +37,13 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
     }
 
     public function setContent() {
-        return [
-            ["{$this->currentUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
-            [L::app_feed_friend_added_image . " {$this->location->getName()}"]
-        ];
+        return ServerTextBuilder::build()
+            ->textBold($this->currentUser->getName())
+            ->space()
+            ->i18n(L::t_srv_feed_friend_added_image)
+            ->space()
+            ->text($this->location->getName())
+            ->get();
     }
 
     protected function setLeftAvatar() {

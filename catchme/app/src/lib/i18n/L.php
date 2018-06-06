@@ -4,11 +4,11 @@ namespace I18n;
 
 class L {
 
-    const app_feed_friend_added_image = '{app_feed_friend_added_image}';
-    const app_feed_friendship_accept = '{app_feed_friendship_accept}';
-    const app_feed_friendship_request = '{app_feed_friendship_request}';
-    const app_feed_user_attendance_request_1 = '{app_feed_user_attendance_request_1}';
-    const app_feed_user_attendance_request_2 = '{app_feed_user_attendance_request_2}';
+    const t_srv_feed_friend_added_image = 't_srv_feed_friend_added_image';
+    const t_srv_feed_friendship_accept = 't_srv_feed_friendship_accept';
+    const t_srv_feed_friendship_request = 't_srv_feed_friendship_request';
+    const t_srv_feed_user_attendance_request_1 = 't_srv_feed_user_attendance_request_1';
+    const t_srv_feed_user_attendance_request_2 = 't_srv_feed_user_attendance_request_2';
 
     const global_app_name = '{global_app_name}';
 

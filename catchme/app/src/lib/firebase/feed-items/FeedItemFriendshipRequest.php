@@ -4,6 +4,7 @@ namespace Firebase\FeedItems;
 
 use User;
 use I18n\L;
+use Api\ServerTextBuilder;
 
 final class FeedItemFriendshipRequest extends FeedItemBuilder {
 
@@ -25,10 +26,11 @@ final class FeedItemFriendshipRequest extends FeedItemBuilder {
     }
 
     public function setContent() {
-        return [
-            ["{$this->authUser->getName()} ", classFromArray(['fontWeight' => 'bold'])],
-            [L::app_feed_friendship_request]
-        ];
+        return ServerTextBuilder::build()
+            ->textBold($this->authUser->getName())
+            ->space()
+            ->i18n(L::t_srv_feed_friendship_request)
+            ->get();
     }
 
     protected function setLeftAvatar() {
@@ -48,9 +50,7 @@ final class FeedItemFriendshipRequest extends FeedItemBuilder {
     }
 
     public function setPayload() {
-        return classFromArray([
-            'connectionId' => $this->authUser->getId()
-        ]);
+        return classFromArray(['connectionId' => $this->authUser->getId()]);
     }
 
 }

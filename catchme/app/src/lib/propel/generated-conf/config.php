@@ -5,9 +5,9 @@ $serviceContainer->setAdapterClass('catch_me', 'mysql');
 $manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
 $manager->setConfiguration(array (
   'classname' => 'Propel\\Runtime\\Connection\\ConnectionWrapper',
-  'dsn' => 'mysql:host=localhost;dbname=krisaxcv_catchme_app',
-  'user' => 'krisaxcv_chm_app',
-  'password' => 'w.kc5M!Q&J}f',
+  'dsn' => 'mysql:host=localhost;dbname=' . DB_NAME,
+  'user' => DB_USER,
+  'password' => DB_PASS,
   'attributes' =>
   array (
     'ATTR_EMULATE_PREPARES' => false,

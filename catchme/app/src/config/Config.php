@@ -8,15 +8,10 @@
 // Development
 define("DEVELOPMENT_MODE", true);
 define("SERVER_URL", "http://www.catchme-v2.krishanmadan.website");
-
-// Development
-define("DB_NAME", "krisaxcv_catchme_app");
-
-// Development
-define("DB_USER", "krisaxcv_chm_app");
-
-// Development
+define("DB_NAME", "krisaxcv_catchme-v2");
+define("DB_USER", "krisaxcv_catchme-v2");
 define("DB_PASS", "w.kc5M!Q&J}f");
+
 
 define("URL_API", SERVER_URL . "/api");
 define("URL_IMAGES", SERVER_URL . "/img");

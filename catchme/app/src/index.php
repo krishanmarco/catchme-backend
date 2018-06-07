@@ -45,7 +45,7 @@ $app->group('/api', function () use ($app) {
      * -----------------------------------------------------------------
      */
     $app->get('/fake', function () {
-        require_once __DIR__ . '/scripts/Fake.php';
+        require_once __DIR__ . '/scripts/Fake-v2.php';
         die();
     });
 

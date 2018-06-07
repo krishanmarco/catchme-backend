@@ -41,7 +41,7 @@ abstract class EmailBase extends EmailTemplate {
         if (!is_null($contentHtml))
             $params['{content_html}'] = $contentHtml;
 
-        return I18n::strReplace($this->getLangId(), strtr(
+        return I18n::strReplace($this->getLocale(), strtr(
             $this->getEmailStr('email_base/email_base'),
             array_merge($params, $this->getBaseParams())
         ));

@@ -27,7 +27,7 @@
     <column       name="phone"                      type="VARCHAR"      required="false"                                                                               />
     <column       name="public_message"             type="VARCHAR"      required="false"                                                                               />
     <column       name="picture_url"                type="VARCHAR"      required="false"                                                                               />
-    <column       name="lang"                       type="VARCHAR"      required="false"      size="8"                                                                 />
+    <column       name="locale"                     type="VARCHAR"      required="false"      size="8"                                                                 />
 
 
     <index>
@@ -325,6 +325,7 @@
 
 
   <table name="system_temp_var" idMethod="native" >
+    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
 
     <column name="id"                     type="INTEGER"      required="true"                                primaryKey="true" autoIncrement="true" />
     <column name="type"                   type="TINYINT"      required="true"                                                                       />

@@ -9,7 +9,7 @@ use I18n\I18n;
 class EmailPasswordRecovery extends EmailBase {
 
     public function __construct(DbUser $dbUser, $recoveryLink) {
-        parent::__construct($dbUser, $dbUser->getLang(), true);
+        parent::__construct($dbUser, $dbUser->getLocale(), true);
         $this->dbUser = $dbUser;
         $this->recoveryLink = $recoveryLink;
     }
@@ -25,7 +25,7 @@ class EmailPasswordRecovery extends EmailBase {
     }
 
     protected function getSubject() {
-        return I18n::str($this->getLangId(), L::lang_pass_recovery_title);
+        return I18n::str($this->getLocale(), L::lang_pass_recovery_title);
     }
 
     protected function getEmailTitle() {
@@ -33,15 +33,15 @@ class EmailPasswordRecovery extends EmailBase {
     }
 
     protected function getHeaderTitle() {
-        return I18n::str($this->getLangId(), L::lang_hi_user) . ', ' . $this->dbUser->getName();
+        return I18n::str($this->getLocale(), L::lang_hi_user) . ', ' . $this->dbUser->getName();
     }
 
     protected function getHeaderText() {
-        return I18n::str($this->getLangId(), L::lang_pass_recovery_text);
+        return I18n::str($this->getLocale(), L::lang_pass_recovery_text);
     }
 
     protected function getContentHtml() {
-        return I18n::strReplace($this->getLangId(), strtr(
+        return I18n::strReplace($this->getLocale(), strtr(
             $this->getEmailStr('email_password_recovery/content'),
             [
                 '{recovery_link}' => $this->recoveryLink

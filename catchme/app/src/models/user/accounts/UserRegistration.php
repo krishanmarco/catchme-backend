@@ -86,13 +86,13 @@ class UserRegistration {
     }
 
 
-    private function userRegister($name, $email, $password, $lang = L::defaultLocale) {
+    private function userRegister($name, $email, $password, $locale = L::defaultLocale) {
         $this->user->setName($name);
         $this->user->setEmail($email);
         $this->user->setSettingPrivacy('222');
         $this->user->setSettingNotifications('11111');
         $this->user->setApiKey(getRandomString(32, 32));
-        $this->user->setLang($lang);
+        $this->user->setLocale($locale);
         $this->user = UserAccountUtils::setUserPassword($this->user, $password);
 
         try {

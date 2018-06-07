@@ -27,7 +27,7 @@ CREATE TABLE `user`
     `phone` VARCHAR(255),
     `public_message` VARCHAR(255),
     `picture_url` VARCHAR(255),
-    `lang` VARCHAR(8),
+    `locale` VARCHAR(8),
     PRIMARY KEY (`id`),
     UNIQUE INDEX `user_u_ce4c89` (`email`),
     INDEX `user_i_db2f7c` (`id`)
@@ -224,7 +224,7 @@ CREATE TABLE `system_temp_var`
     `expiry_ts` INTEGER(10) DEFAULT 0 NOT NULL,
     PRIMARY KEY (`id`),
     INDEX `system_temp_var_i_f36ccd` (`id`, `type`)
-) ENGINE=InnoDB;
+) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

@@ -203,11 +203,11 @@ abstract class User implements ActiveRecordInterface
     protected $picture_url;
 
     /**
-     * The value for the lang field.
+     * The value for the locale field.
      *
      * @var        string
      */
-    protected $lang;
+    protected $locale;
 
     /**
      * @var        ChildUserSocial one-to-one related ChildUserSocial object
@@ -726,13 +726,13 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [lang] column value.
+     * Get the [locale] column value.
      *
      * @return string
      */
-    public function getLang()
+    public function getLocale()
     {
-        return $this->lang;
+        return $this->locale;
     }
 
     /**
@@ -1064,24 +1064,24 @@ abstract class User implements ActiveRecordInterface
     } // setPictureUrl()
 
     /**
-     * Set the value of [lang] column.
+     * Set the value of [locale] column.
      *
      * @param string $v new value
      * @return $this|\User The current object (for fluent API support)
      */
-    public function setLang($v)
+    public function setLocale($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->lang !== $v) {
-            $this->lang = $v;
-            $this->modifiedColumns[UserTableMap::COL_LANG] = true;
+        if ($this->locale !== $v) {
+            $this->locale = $v;
+            $this->modifiedColumns[UserTableMap::COL_LOCALE] = true;
         }
 
         return $this;
-    } // setLang()
+    } // setLocale()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -1195,8 +1195,8 @@ abstract class User implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : UserTableMap::translateFieldName('PictureUrl', TableMap::TYPE_PHPNAME, $indexType)];
             $this->picture_url = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : UserTableMap::translateFieldName('Lang', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->lang = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : UserTableMap::translateFieldName('Locale', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->locale = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -1603,8 +1603,8 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_PICTURE_URL)) {
             $modifiedColumns[':p' . $index++]  = 'picture_url';
         }
-        if ($this->isColumnModified(UserTableMap::COL_LANG)) {
-            $modifiedColumns[':p' . $index++]  = 'lang';
+        if ($this->isColumnModified(UserTableMap::COL_LOCALE)) {
+            $modifiedColumns[':p' . $index++]  = 'locale';
         }
 
         $sql = sprintf(
@@ -1665,8 +1665,8 @@ abstract class User implements ActiveRecordInterface
                     case 'picture_url':
                         $stmt->bindValue($identifier, $this->picture_url, PDO::PARAM_STR);
                         break;
-                    case 'lang':
-                        $stmt->bindValue($identifier, $this->lang, PDO::PARAM_STR);
+                    case 'locale':
+                        $stmt->bindValue($identifier, $this->locale, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1779,7 +1779,7 @@ abstract class User implements ActiveRecordInterface
                 return $this->getPictureUrl();
                 break;
             case 16:
-                return $this->getLang();
+                return $this->getLocale();
                 break;
             default:
                 return null;
@@ -1827,7 +1827,7 @@ abstract class User implements ActiveRecordInterface
             $keys[13] => $this->getPhone(),
             $keys[14] => $this->getPublicMessage(),
             $keys[15] => $this->getPictureUrl(),
-            $keys[16] => $this->getLang(),
+            $keys[16] => $this->getLocale(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -2053,7 +2053,7 @@ abstract class User implements ActiveRecordInterface
                 $this->setPictureUrl($value);
                 break;
             case 16:
-                $this->setLang($value);
+                $this->setLocale($value);
                 break;
         } // switch()
 
@@ -2130,7 +2130,7 @@ abstract class User implements ActiveRecordInterface
             $this->setPictureUrl($arr[$keys[15]]);
         }
         if (array_key_exists($keys[16], $arr)) {
-            $this->setLang($arr[$keys[16]]);
+            $this->setLocale($arr[$keys[16]]);
         }
     }
 
@@ -2221,8 +2221,8 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_PICTURE_URL)) {
             $criteria->add(UserTableMap::COL_PICTURE_URL, $this->picture_url);
         }
-        if ($this->isColumnModified(UserTableMap::COL_LANG)) {
-            $criteria->add(UserTableMap::COL_LANG, $this->lang);
+        if ($this->isColumnModified(UserTableMap::COL_LOCALE)) {
+            $criteria->add(UserTableMap::COL_LOCALE, $this->locale);
         }
 
         return $criteria;
@@ -2325,7 +2325,7 @@ abstract class User implements ActiveRecordInterface
         $copyObj->setPhone($this->getPhone());
         $copyObj->setPublicMessage($this->getPublicMessage());
         $copyObj->setPictureUrl($this->getPictureUrl());
-        $copyObj->setLang($this->getLang());
+        $copyObj->setLocale($this->getLocale());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -4234,7 +4234,7 @@ abstract class User implements ActiveRecordInterface
         $this->phone = null;
         $this->public_message = null;
         $this->picture_url = null;
-        $this->lang = null;
+        $this->locale = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

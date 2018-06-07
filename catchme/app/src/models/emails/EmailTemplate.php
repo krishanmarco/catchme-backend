@@ -40,7 +40,7 @@ abstract class EmailTemplate {
     }
 
     /** @return string */
-    protected function getLangId() {
+    protected function getLocale() {
         return $this->langId;
     }
 

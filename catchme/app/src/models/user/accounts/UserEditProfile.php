@@ -54,7 +54,7 @@ class UserEditProfile {
             $this->user->trySetAvatarFromFile($uploadedFile);
 
         if (isset($locale))
-            $this->user->setLang($locale);
+            $this->user->setLocale($locale);
 
         return $this;
     }

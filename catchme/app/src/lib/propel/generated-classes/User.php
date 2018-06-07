@@ -16,7 +16,6 @@ use \Slim\Http\UploadedFile;
  */
 class User extends BaseUser {
 
-
     // When a location is saved/updated we need to automatically
     // save its search query in the LocationSearch table
     public function postInsert(\Propel\Runtime\Connection\ConnectionInterface $con = null) {
@@ -24,7 +23,6 @@ class User extends BaseUser {
         SearchUser::buildForUser($this, new SearchUser())
             ->save($con);
     }
-
 
 
     // When a location is saved/updated we need to automatically

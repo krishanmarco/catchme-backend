@@ -1,7 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
 
 namespace Models\User\Accounts;
-use \Propel\Runtime\Exception\PropelException;
+use Propel\Runtime\Exception\PropelException;
 use Slim\Exception\Api400;
 use User as DbUser;
 use R;
@@ -10,6 +10,7 @@ use GoogleToken;
 use Api\FormUserRegister as ApiFormUserRegister;
 use FacebookTokenValidator;
 use GoogleTokenValidator;
+use I18n\L;
 
 class UserRegistration {
 
@@ -85,12 +86,13 @@ class UserRegistration {
     }
 
 
-    private function userRegister($name, $email, $password) {
+    private function userRegister($name, $email, $password, $lang = L::defaultLocale) {
         $this->user->setName($name);
         $this->user->setEmail($email);
         $this->user->setSettingPrivacy('222');
         $this->user->setSettingNotifications('11111');
         $this->user->setApiKey(getRandomString(32, 32));
+        $this->user->setLang($lang);
         $this->user = UserAccountUtils::setUserPassword($this->user, $password);
 
         try {

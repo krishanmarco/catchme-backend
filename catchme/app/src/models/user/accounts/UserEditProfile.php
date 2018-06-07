@@ -1,6 +1,8 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 14/09/2017 - Fithancer © */
 
 namespace Models\User\Accounts;
+
+use Context\Context;
 use \Propel\Runtime\Exception\PropelException;
 use Slim\Exception\Api400;
 use Slim\Http\UploadedFile;
@@ -14,28 +16,27 @@ class UserEditProfile {
         $this->user = $dbUser;
     }
 
-
     /** @var DbUser $user */
     private $user;
-    public function getUser() { return $this->user; }
 
-
+    public function getUser() {
+        return $this->user;
+    }
 
     public function editFirebaseToken($firebaseToken) {
-
         try {
             $this->user->getSocial()->setFirebase($firebaseToken)->save();
 
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
-                default: throw new Api400(R::return_error_generic);
+                default:
+                    throw new Api400(R::return_error_generic);
             }
         }
     }
 
-
     /** @return UserEditProfile */
-    public function userEdit(ApiUser $apiUser, $uploadedFile = null) {
+    public function userEdit(ApiUser $apiUser, $uploadedFile = null, $locale = null) {
 
         if (isset($apiUser->settingPrivacy))
             $this->user->setSettingPrivacy($apiUser->settingPrivacy);
@@ -49,13 +50,14 @@ class UserEditProfile {
         if (isset($apiUser->publicMessage))
             $this->user->setPublicMessage($apiUser->publicMessage);
 
-        if ($uploadedFile instanceof UploadedFile) {
+        if ($uploadedFile instanceof UploadedFile)
             $this->user->trySetAvatarFromFile($uploadedFile);
-        }
+
+        if (isset($locale))
+            $this->user->setLang($locale);
 
         return $this;
     }
-
 
     /** @return UserEditProfile */
     public function superUserEdit(ApiUser $apiUser, $uploadedFile = null) {
@@ -76,7 +78,6 @@ class UserEditProfile {
 
         return $this;
     }
-
 
     /** @return UserEditProfile */
     public function save() {

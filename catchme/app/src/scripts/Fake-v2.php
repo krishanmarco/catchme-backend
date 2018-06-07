@@ -87,6 +87,7 @@ function generateFakeUsers() {
         $user->setReputation($faker->randomDigitNotNull);
         $user->setPublicMessage($faker->realText(rand(20, 100)));
         $user->setPictureUrl($faker->imageUrl());
+        $user->setLang(I18n\L::defaultLocale);
         $user->save();
     }
 }

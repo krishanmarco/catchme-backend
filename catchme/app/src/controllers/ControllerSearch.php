@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Context\Context;
 use Models\Calculators\UserModel;
 use Models\Location\Search\LocationSearch;
 use Models\Location\Search\UserSearch;
@@ -11,6 +12,7 @@ use Api\Map\ModelToApiUsers;
 use Api\Location as ApiLocation;
 use Api\User as ApiUser;
 use Api\SearchStrings as ApiSearchStrings;
+use LatLng;
 
 class ControllerSearch {
 
@@ -32,7 +34,15 @@ class ControllerSearch {
     /** @return ApiLocation[] */
     public function locationsSuggested($seed) {
         $userModel = UserModel::fromUser($this->authUser);
-        $locations = $userModel->getUserSuggestedLocations($seed, null)->getResult()->suggestedLocations;
+
+        // Get the users current location
+        $latLng = Context::getGeolocation();
+        if (!is_null($latLng))
+            $latLng = LatLng::fromHttpHeader($latLng);
+
+        $locations = $userModel->getUserSuggestedLocations($seed, $latLng)
+            ->getResult()->suggestedLocations;
+
         return ModelToApiLocations::multiple()->locations($locations);
     }
 

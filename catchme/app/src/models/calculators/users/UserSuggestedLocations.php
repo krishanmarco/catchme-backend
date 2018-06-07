@@ -26,7 +26,7 @@ class UserSuggestedLocations extends Cacheable {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
     const CONFIG_POSITION_SEARCH_AREA_KM = 30;
 
-    public function __construct(DbUser $user, $seed, LatLng $userLatLng) {
+    public function __construct(DbUser $user, $seed, $userLatLng = null) {
         parent::__construct(
             CacheableConstants::CACHE_TABLE_USER_SUGGESTED_LOCATION,
             $user->getId(),
@@ -44,7 +44,7 @@ class UserSuggestedLocations extends Cacheable {
     /** @var int */
     private $seed = 0;
 
-    /** @var LatLng */
+    /** @var null|LatLng */
     private $userLatLng;
 
     /** @var UserSuggestedLocationsResult */
@@ -98,7 +98,7 @@ class UserSuggestedLocations extends Cacheable {
 
         // The $locPosWeight is based on if the positioning data is precise or not
         $uslcPosition = $this->getLocationsAccumulatedFromPosition(self::CONFIG_POSITION_SEARCH_AREA_KM);
-        $uslcPosition->setWeight($this->userLatLng->isPrecise ? 0.8 : 0.2);
+        $uslcPosition->setWeight((int) !is_null($this->userLatLng));
 
         $wgc = new WeightedGroupCalculator([
             $uslcFavorites->getWeightCalculator(),

@@ -67,7 +67,11 @@ class WeightedGroupCalculator implements IWeightCalculator {
 
         // Calculate all the sub iWeightedCalculators and merge the results
         foreach ($this->iWeightCalculators as $iWeightCalculator) {
-            $subWeightedUnits = $iWeightCalculator->calculate();
+            $subWeightedUnits = [];
+
+            // Do not run a calculation if the weight is 0
+            if ($iWeightCalculator->getWeight() != 0)
+                $subWeightedUnits = $iWeightCalculator->calculate();
 
             // Apply the weightedUnits global weight to each item
             foreach ($subWeightedUnits as $iwu)

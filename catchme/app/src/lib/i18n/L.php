@@ -3,6 +3,8 @@
 namespace I18n;
 
 class L {
+    const defaultLocale = self::supportedLocales[0];
+    const supportedLocales = ['en-US'];
 
     const t_srv_feed_friend_added_image = 't_srv_feed_friend_added_image';
     const t_srv_feed_friendship_accept = 't_srv_feed_friendship_accept';
@@ -25,5 +27,6 @@ class L {
     const lang_pass_recovered_text = '{lang_pass_recovered_text}';
     const lang_pass_recovery_title = '{lang_pass_recovered_title}';
     const lang_pass_recovery_text = '{lang_pass_recovered_text}';
+
 
 }

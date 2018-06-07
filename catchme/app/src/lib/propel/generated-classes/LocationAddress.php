@@ -16,12 +16,13 @@ class LocationAddress extends BaseLocationAddress {
 
 
     public function setLatLng(LatLng $latLng) {
-        parent::setLatLngJson(json_encode($latLng));
+        parent::setLat($latLng->lat);
+        parent::setLng($latLng->lng);
     }
 
     /** @return LatLng */
     public function getLatLng() {
-        return LatLng::fromObject(json_decode($this->getLatLngJson()));
+        return new LatLng($this->getLng(), $this->getLng());
     }
 
 }

@@ -6,6 +6,11 @@ class LatLng {
         return sqrt(($xy1[0] - $xy2[0])^2 + ($xy1[1] - $xy2[1])^2);
     }
 
+    // eg: '{lat: 0.51, lng: 0.55}'
+    public static function fromHttpHeader($geolocationHeader) {
+        return self::fromObject(json_decode($geolocationHeader));
+    }
+
     public static function fromObject($data) {
         return new LatLng($data->lat, $data->lng);
     }

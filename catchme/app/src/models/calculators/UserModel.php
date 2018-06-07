@@ -106,7 +106,7 @@ class UserModel {
     }
 
     /** @return UserSuggestedLocations */
-    public function getUserSuggestedLocations($seed, $userPosition) {
+    public function getUserSuggestedLocations($seed, $userPosition = null) {
         if (is_null($this->userSuggestedLocations))
             $this->userSuggestedLocations = new UserSuggestedLocations($this->user, $seed, $userPosition);
         return $this->userSuggestedLocations;

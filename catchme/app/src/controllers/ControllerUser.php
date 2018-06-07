@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 - Fithancer © */
 
 namespace Controllers;
+use Context\Context;
 use Firebase\FeedItems\FeedItemUserAttendanceRequest;
 use Firebase\FirebaseHelper;
 use Api\Map\ModelToApiUserLocations;
@@ -74,7 +75,7 @@ class ControllerUser {
     /** @return ApiUser */
     public function editProfile(ApiUser $newProfile, $uploadedFile = null) {
         $userEditProfile = new UserEditProfile($this->authUser);
-        $userEditProfile->userEdit($newProfile, $uploadedFile)->save();
+        $userEditProfile->userEdit($newProfile, $uploadedFile, Context::getRequestLocale())->save();
         return ModelToApiUsers::single($this->authUser)
             ->withSecureData()
             ->withPhone()

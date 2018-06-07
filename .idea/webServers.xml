@@ -2,7 +2,7 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="45cbfaf1-800b-4808-9b81-4939dbee5107" name="catchme.krishanmadan.website" url="http://ftp.krishanmadan.website">
+      <webServer id="45cbfaf1-800b-4808-9b81-4939dbee5107" name="catchme-v2.krishanmadan.website" url="http://ftp.krishanmadan.website">
         <fileTransfer host="ftp.krishanmadan.website" port="21">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />

@@ -98,8 +98,8 @@ abstract class Cacheable {
         Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME)
             ->prepare(strtr(
                 "INSERT INTO {tbl_name} ({col_id}, {col_data}, {col_insert_ts}) " .
-                "VALUES ({col_id_val}, {col_data_val}, {col_insert_ts_val}) " .
-                "ON DUPLICATE KEY UPDATE {col_data}={col_data_val}, {col_insert_ts}={col_insert_ts_val};",
+                "VALUES ({col_id_val}, '{col_data_val}', {col_insert_ts_val}) " .
+                "ON DUPLICATE KEY UPDATE {col_data}='{col_data_val}', {col_insert_ts}={col_insert_ts_val};",
                 [
                     '{tbl_name}' => $this->cacheTableName,
                     '{col_id}' => CacheableConstants::SQL_COL_CACHE_ID,

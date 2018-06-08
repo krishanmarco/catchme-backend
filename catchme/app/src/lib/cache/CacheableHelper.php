@@ -34,7 +34,7 @@ class CacheableHelper {
             "CREATE TABLE {tbl_name} (" .
             "{col_id} INTEGER NOT NULL, " .
             "{col_data} MEDIUMTEXT NOT NULL, " .
-            "{col_insert_ts} TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " .
+            "{col_insert_ts} INTEGER(10) NOT NULL DEFAULT -1, " .
             "PRIMARY KEY ({col_id})" .
             ") ENGINE=MyISAM;",
             $params

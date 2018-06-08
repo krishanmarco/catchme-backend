@@ -40,7 +40,7 @@ class UserSuggestedLocationsCalc {
         $this->itemWeight = $weight;
     }
 
-    public function getCenterOfBiggestClusterDistanceFrom(LatLng $position) {
+    public function distFromCenterOfBiggestCluster(LatLng $position) {
         return LatLng::dist([$position->lat, $position->lng], $this->clusterizer->getCenterOfBiggestCluster());
     }
 

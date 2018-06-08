@@ -88,33 +88,32 @@ class UserSuggestedLocations extends Cacheable {
         // Get the locations accumulated from favorites
         // Calculate the center coordinates of the biggest cluster
         // and get the distance from $userLatLng
-        $uslcFavorites = $this->getLocationsAccumulatedFromFavorites();
-        $uslcFavorites->setWeight(/*1 / $uslcFavorites->getCenterOfBiggestClusterDistanceFrom($this->userLatLng)*/0.05);
+        $uslcFav = $this->getLocationsAccumulatedFromFavorites();
+        $uslcFavDist = $uslcFav->distFromCenterOfBiggestCluster($this->userLatLng);
+        $uslcFav->setWeight(1 / $uslcFavDist);
 
         // Get the locations accumulated from friends
         // Calculate the center coordinates of the biggest cluster
         // and get the distance from $userLatLng
-        $uslcFriends = $this->getLocationsAccumulatedFromFriends();
-        $uslcFriends->setWeight(/*1 / $uslcFriends->getCenterOfBiggestClusterDistanceFrom($this->userLatLng)*/0.05);
+        $uslcFri = $this->getLocationsAccumulatedFromFriends();
+        $uslcFriDist = $uslcFri->distFromCenterOfBiggestCluster($this->userLatLng);
+        $uslcFri->setWeight(1 / $uslcFriDist);
 
         // The $locPosWeight is based on if the positioning data is precise or not
-        $uslcPosition = $this->getLocationsAccumulatedFromPosition(self::CONFIG_POSITION_SEARCH_AREA_KM);
-        $uslcPosition->setWeight((int) !is_null($this->userLatLng));
+        $uslcPos = $this->getLocationsAccumulatedFromPosition(self::CONFIG_POSITION_SEARCH_AREA_KM);
+        $uslcPos->setWeight(((int)!is_null($this->userLatLng)) * $uslcFavDist * $uslcFavDist);
 
         $wgc = new WeightedGroupCalculator([
-            $uslcFavorites->getWeightCalculator(),
-            $uslcFriends->getWeightCalculator(),
-            $uslcPosition->getWeightCalculator(),
+            $uslcFav->getWeightCalculator(),
+            $uslcFri->getWeightCalculator(),
+            $uslcPos->getWeightCalculator(),
         ]);
 
         // Extract data (locationId) from the weighted units
-        $d = array_map(
+        return array_map(
             function (WeightedUnit $wu) { return $wu->data; },
             $wgc->calculateUniqueAccumulatedSimple()
         );
-
-        die(json_encode($d));
-        return $d;
     }
 
     /**

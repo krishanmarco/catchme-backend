@@ -150,15 +150,6 @@ class WeightedUnit {
     /** @var int */
     public $count = 1;
 
-    public function getWeight() {
-        return $this->weight;
-    }
-
-    public function setWeight($weight) {
-        $this->weight = $weight;
-    }
-
-
 }
 
 class WeightHelper {
@@ -182,7 +173,7 @@ class WeightHelper {
         $sumOfWeights = 0;
 
         foreach ($weightedUnits as $wu)
-            $sumOfWeights += $wu->getWeight();
+            $sumOfWeights += $wu->weight;
 
         foreach ($weightedUnits as $wu) {
             $newWeight = $wu->weight / $sumOfWeights;

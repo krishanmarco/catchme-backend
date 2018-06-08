@@ -3,16 +3,21 @@
 namespace Base;
 
 use \Location as ChildLocation;
+use \LocationAddress as ChildLocationAddress;
 use \LocationAddressQuery as ChildLocationAddressQuery;
 use \LocationQuery as ChildLocationQuery;
+use \UserLocationFavorite as ChildUserLocationFavorite;
+use \UserLocationFavoriteQuery as ChildUserLocationFavoriteQuery;
 use \Exception;
 use \PDO;
 use Map\LocationAddressTableMap;
+use Map\UserLocationFavoriteTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -137,12 +142,24 @@ abstract class LocationAddress implements ActiveRecordInterface
     protected $aLocation;
 
     /**
+     * @var        ObjectCollection|ChildUserLocationFavorite[] Collection to store aggregation of ChildUserLocationFavorite objects.
+     */
+    protected $collSubscribedUsers;
+    protected $collSubscribedUsersPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildUserLocationFavorite[]
+     */
+    protected $subscribedUsersScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\LocationAddress object.
@@ -811,6 +828,8 @@ abstract class LocationAddress implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aLocation = null;
+            $this->collSubscribedUsers = null;
+
         } // if (deep)
     }
 
@@ -935,6 +954,23 @@ abstract class LocationAddress implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->subscribedUsersScheduledForDeletion !== null) {
+                if (!$this->subscribedUsersScheduledForDeletion->isEmpty()) {
+                    \UserLocationFavoriteQuery::create()
+                        ->filterByPrimaryKeys($this->subscribedUsersScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->subscribedUsersScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collSubscribedUsers !== null) {
+                foreach ($this->collSubscribedUsers as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -1176,6 +1212,21 @@ abstract class LocationAddress implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aLocation->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collSubscribedUsers) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'userLocationFavorites';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'user_location_favorites';
+                        break;
+                    default:
+                        $key = 'SubscribedUsers';
+                }
+
+                $result[$key] = $this->collSubscribedUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1471,6 +1522,20 @@ abstract class LocationAddress implements ActiveRecordInterface
         $copyObj->setLat($this->getLat());
         $copyObj->setLng($this->getLng());
         $copyObj->setGooglePlaceId($this->getGooglePlaceId());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getSubscribedUsers() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addSubscribedUser($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1543,6 +1608,301 @@ abstract class LocationAddress implements ActiveRecordInterface
         return $this->aLocation;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('SubscribedUser' == $relationName) {
+            $this->initSubscribedUsers();
+            return;
+        }
+    }
+
+    /**
+     * Clears out the collSubscribedUsers collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addSubscribedUsers()
+     */
+    public function clearSubscribedUsers()
+    {
+        $this->collSubscribedUsers = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collSubscribedUsers collection loaded partially.
+     */
+    public function resetPartialSubscribedUsers($v = true)
+    {
+        $this->collSubscribedUsersPartial = $v;
+    }
+
+    /**
+     * Initializes the collSubscribedUsers collection.
+     *
+     * By default this just sets the collSubscribedUsers collection to an empty array (like clearcollSubscribedUsers());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initSubscribedUsers($overrideExisting = true)
+    {
+        if (null !== $this->collSubscribedUsers && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = UserLocationFavoriteTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collSubscribedUsers = new $collectionClassName;
+        $this->collSubscribedUsers->setModel('\UserLocationFavorite');
+    }
+
+    /**
+     * Gets an array of ChildUserLocationFavorite objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildLocationAddress is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildUserLocationFavorite[] List of ChildUserLocationFavorite objects
+     * @throws PropelException
+     */
+    public function getSubscribedUsers(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collSubscribedUsersPartial && !$this->isNew();
+        if (null === $this->collSubscribedUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collSubscribedUsers) {
+                // return empty collection
+                $this->initSubscribedUsers();
+            } else {
+                $collSubscribedUsers = ChildUserLocationFavoriteQuery::create(null, $criteria)
+                    ->filterByLocationAddress($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collSubscribedUsersPartial && count($collSubscribedUsers)) {
+                        $this->initSubscribedUsers(false);
+
+                        foreach ($collSubscribedUsers as $obj) {
+                            if (false == $this->collSubscribedUsers->contains($obj)) {
+                                $this->collSubscribedUsers->append($obj);
+                            }
+                        }
+
+                        $this->collSubscribedUsersPartial = true;
+                    }
+
+                    return $collSubscribedUsers;
+                }
+
+                if ($partial && $this->collSubscribedUsers) {
+                    foreach ($this->collSubscribedUsers as $obj) {
+                        if ($obj->isNew()) {
+                            $collSubscribedUsers[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collSubscribedUsers = $collSubscribedUsers;
+                $this->collSubscribedUsersPartial = false;
+            }
+        }
+
+        return $this->collSubscribedUsers;
+    }
+
+    /**
+     * Sets a collection of ChildUserLocationFavorite objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $subscribedUsers A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildLocationAddress The current object (for fluent API support)
+     */
+    public function setSubscribedUsers(Collection $subscribedUsers, ConnectionInterface $con = null)
+    {
+        /** @var ChildUserLocationFavorite[] $subscribedUsersToDelete */
+        $subscribedUsersToDelete = $this->getSubscribedUsers(new Criteria(), $con)->diff($subscribedUsers);
+
+
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->subscribedUsersScheduledForDeletion = clone $subscribedUsersToDelete;
+
+        foreach ($subscribedUsersToDelete as $subscribedUserRemoved) {
+            $subscribedUserRemoved->setLocationAddress(null);
+        }
+
+        $this->collSubscribedUsers = null;
+        foreach ($subscribedUsers as $subscribedUser) {
+            $this->addSubscribedUser($subscribedUser);
+        }
+
+        $this->collSubscribedUsers = $subscribedUsers;
+        $this->collSubscribedUsersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related UserLocationFavorite objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related UserLocationFavorite objects.
+     * @throws PropelException
+     */
+    public function countSubscribedUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collSubscribedUsersPartial && !$this->isNew();
+        if (null === $this->collSubscribedUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collSubscribedUsers) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getSubscribedUsers());
+            }
+
+            $query = ChildUserLocationFavoriteQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByLocationAddress($this)
+                ->count($con);
+        }
+
+        return count($this->collSubscribedUsers);
+    }
+
+    /**
+     * Method called to associate a ChildUserLocationFavorite object to this object
+     * through the ChildUserLocationFavorite foreign key attribute.
+     *
+     * @param  ChildUserLocationFavorite $l ChildUserLocationFavorite
+     * @return $this|\LocationAddress The current object (for fluent API support)
+     */
+    public function addSubscribedUser(ChildUserLocationFavorite $l)
+    {
+        if ($this->collSubscribedUsers === null) {
+            $this->initSubscribedUsers();
+            $this->collSubscribedUsersPartial = true;
+        }
+
+        if (!$this->collSubscribedUsers->contains($l)) {
+            $this->doAddSubscribedUser($l);
+
+            if ($this->subscribedUsersScheduledForDeletion and $this->subscribedUsersScheduledForDeletion->contains($l)) {
+                $this->subscribedUsersScheduledForDeletion->remove($this->subscribedUsersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildUserLocationFavorite $subscribedUser The ChildUserLocationFavorite object to add.
+     */
+    protected function doAddSubscribedUser(ChildUserLocationFavorite $subscribedUser)
+    {
+        $this->collSubscribedUsers[]= $subscribedUser;
+        $subscribedUser->setLocationAddress($this);
+    }
+
+    /**
+     * @param  ChildUserLocationFavorite $subscribedUser The ChildUserLocationFavorite object to remove.
+     * @return $this|ChildLocationAddress The current object (for fluent API support)
+     */
+    public function removeSubscribedUser(ChildUserLocationFavorite $subscribedUser)
+    {
+        if ($this->getSubscribedUsers()->contains($subscribedUser)) {
+            $pos = $this->collSubscribedUsers->search($subscribedUser);
+            $this->collSubscribedUsers->remove($pos);
+            if (null === $this->subscribedUsersScheduledForDeletion) {
+                $this->subscribedUsersScheduledForDeletion = clone $this->collSubscribedUsers;
+                $this->subscribedUsersScheduledForDeletion->clear();
+            }
+            $this->subscribedUsersScheduledForDeletion[]= clone $subscribedUser;
+            $subscribedUser->setLocationAddress(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this LocationAddress is new, it will return
+     * an empty collection; or if this LocationAddress has previously
+     * been saved, it will retrieve related SubscribedUsers from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in LocationAddress.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildUserLocationFavorite[] List of ChildUserLocationFavorite objects
+     */
+    public function getSubscribedUsersJoinLocation(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildUserLocationFavoriteQuery::create(null, $criteria);
+        $query->joinWith('Location', $joinBehavior);
+
+        return $this->getSubscribedUsers($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this LocationAddress is new, it will return
+     * an empty collection; or if this LocationAddress has previously
+     * been saved, it will retrieve related SubscribedUsers from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in LocationAddress.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildUserLocationFavorite[] List of ChildUserLocationFavorite objects
+     */
+    public function getSubscribedUsersJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildUserLocationFavoriteQuery::create(null, $criteria);
+        $query->joinWith('User', $joinBehavior);
+
+        return $this->getSubscribedUsers($query, $con);
+    }
+
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1581,8 +1941,14 @@ abstract class LocationAddress implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collSubscribedUsers) {
+                foreach ($this->collSubscribedUsers as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collSubscribedUsers = null;
         $this->aLocation = null;
     }
 

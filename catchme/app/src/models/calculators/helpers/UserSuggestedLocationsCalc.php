@@ -25,43 +25,29 @@ class UserSuggestedLocationsCalc {
     }
 
     /** @var LocIdCoord[] */
-    private $locations;
+    private $locations = [];
 
     /** @var Clusterizer */
     private $clusterizer;
 
     /** @var WeightedUnit[] */
-    private $weightedUnits;
+    private $weightedUnits = [];
 
     /** @var float */
     private $itemWeight = 1;
-
-    /** @return LocIdCoord[] */
-    public function getLocations() {
-        return $this->locations;
-    }
-
-    /** @return Clusterizer */
-    public function getClusterizer() {
-        return $this->clusterizer;
-    }
-
-    public function getWeightedUnits() {
-        return $this->weightedUnits;
-    }
 
     public function setWeight($weight) {
         $this->itemWeight = $weight;
     }
 
     public function getCenterOfBiggestClusterDistanceFrom(LatLng $position) {
-        return LatLng::getDist([$position->lat, $position->lng], $this->clusterizer->getCenterOfBiggestCluster());
+        return LatLng::dist([$position->lat, $position->lng], $this->clusterizer->getCenterOfBiggestCluster());
     }
 
     /** @return WeightCalculator */
     public function getWeightCalculator() {
         return new WeightCalculator($this->itemWeight, function() {
-            return $this->getWeightedUnits();
+            return $this->weightedUnits;
         });
     }
 
@@ -70,11 +56,10 @@ class UserSuggestedLocationsCalc {
 
 class LocIdCoord implements IClusterPoint {
 
-    public function __construct($lid, $lat, $lng, $count = 1) {
+    public function __construct($lid, $lat, $lng) {
         $this->lid = $lid;
         $this->lat = $lat;
         $this->lng = $lng;
-        $this->count = $count;
     }
 
     /** @var int */
@@ -85,9 +70,6 @@ class LocIdCoord implements IClusterPoint {
 
     /** @var double */
     public $lng;
-
-    /** @var int */
-    public $count;
 
     /** @var null|ClusterData */
     public $clusterData;

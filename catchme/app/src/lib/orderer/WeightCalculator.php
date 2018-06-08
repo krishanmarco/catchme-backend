@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan on 02-Jun-18. */
 
 namespace WeightedCalculator;
+
 use Closure;
 
 class WeightedGroupCalculator implements IWeightCalculator {
@@ -22,19 +23,19 @@ class WeightedGroupCalculator implements IWeightCalculator {
     }
 
     /** @return WeightedUnit[] */
-    public function calculateUniqueAccumulatedSimple() {
-        return $this->calculateUniqueAccumulated(function(WeightedUnit $wu1, WeightedUnit $wu2) {
-            return $wu1->data === $wu2->data;
-        });
-    }
-
-    /** @return WeightedUnit[] */
     public function calculate() {
         return WeightHelper::orderByWeightsDesc($this->calculateUnordered());
     }
 
     /** @return WeightedUnit[] */
-    public function calculateUniqueAccumulated(Closure $isDataSame) {
+    public function calculateUniqueAccumulatedSimple() {
+        return $this->calculateUniqueAccumulated(function (WeightedUnit $wu1, WeightedUnit $wu2) {
+            return $wu1->data === $wu2->data;
+        });
+    }
+
+    /** @return WeightedUnit[] */
+    private function calculateUniqueAccumulated(Closure $isDataSame) {
         /** @var WeightedUnit[] $result */
         $result = [];
 
@@ -43,7 +44,7 @@ class WeightedGroupCalculator implements IWeightCalculator {
             $idxOfDuplicate = -1;
 
             for ($i = 0; $i < sizeof($result); $i++) {
-                if ($isDataSame->call($this, $wu, $result[$i])) {
+                if ($isDataSame($wu, $result[$i])) {
                     $idxOfDuplicate = $i;
                     break;
                 }
@@ -52,11 +53,19 @@ class WeightedGroupCalculator implements IWeightCalculator {
             if ($idxOfDuplicate === -1) {
                 $result[] = $wu;
             } else {
-                $result[$idxOfDuplicate]->weight += $wu->weight;
+                $result[$idxOfDuplicate]->count++;
+                $result[$idxOfDuplicate]->weight = rollingAvgByOne(
+                    $result[$idxOfDuplicate]->weight,
+                    $wu->weight,
+                    $wu->count
+                );
             }
         }
 
-        return WeightHelper::orderByWeightsDesc(WeightHelper::normalizeWeights($result));
+        $x =WeightHelper::orderByWeightsDesc(WeightHelper::normalizeWeights($result));
+        foreach ($x as $wu) echo "$wu->data -> $wu->weight -> $wu->count\n";
+        die();
+//        jsonDie($x);
     }
 
     /** @return WeightedUnit[] */
@@ -75,7 +84,7 @@ class WeightedGroupCalculator implements IWeightCalculator {
 
             // Apply the weightedUnits global weight to each item
             foreach ($subWeightedUnits as $iwu)
-                $iwu->weight = $iwu * $iWeightCalculator->getWeight();
+                $iwu->weight = $iwu->weight * $iWeightCalculator->getWeight();
 
             // Add the results to the result dataList
             $dataList = array_merge($dataList, $subWeightedUnits);
@@ -120,7 +129,7 @@ class WeightCalculator implements IWeightCalculator {
     }
 
     public function calculate() {
-        return $this->calculator->call($this);
+        return ($this->calculator)();
     }
 
 }
@@ -129,6 +138,7 @@ class WeightedUnit {
 
     public function __construct($data, $weight = 1) {
         $this->data = $data;
+        $this->weight = $weight;
     }
 
     /** @var float The weight this item has */
@@ -136,6 +146,19 @@ class WeightedUnit {
 
     /** @var mixed The data */
     public $data;
+
+    /** @var int */
+    public $count = 1;
+
+    public function getWeight() {
+        return $this->weight;
+    }
+
+    public function setWeight($weight) {
+        $this->weight = $weight;
+    }
+
+
 }
 
 class WeightHelper {
@@ -145,7 +168,7 @@ class WeightHelper {
      * @return WeightedUnit[]
      */
     public static function orderByWeightsDesc(array $weightedUnits) {
-        usort($dataList, function(WeightedUnit $wu1, WeightedUnit $wu2) {
+        usort($weightedUnits, function (WeightedUnit $wu1, WeightedUnit $wu2) {
             return $wu1->weight > $wu2->weight ? -1 : 1;
         });
         return $weightedUnits;
@@ -155,14 +178,16 @@ class WeightHelper {
      * @param WeightedUnit[] $weightedUnits
      * @return WeightedUnit[]
      */
-    public static function normalizeWeights(array $weightedUnits) {
+    public static function normalizeWeights(array $weightedUnits, $precision = null) {
         $sumOfWeights = 0;
 
         foreach ($weightedUnits as $wu)
-            $sumOfWeights += $wu->weight;
+            $sumOfWeights += $wu->getWeight();
 
-        foreach ($weightedUnits as $wu)
-            $wu->weight = $wu->weight / $sumOfWeights;
+        foreach ($weightedUnits as $wu) {
+            $newWeight = $wu->weight / $sumOfWeights;
+            $wu->weight = !is_null($precision) ? round($newWeight, $precision) : $newWeight;
+        }
 
         return $weightedUnits;
     }

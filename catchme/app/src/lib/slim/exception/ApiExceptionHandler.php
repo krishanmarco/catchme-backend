@@ -7,13 +7,12 @@ use Api\ExceptionResponse as ApiExceptionResponse;
 use R;
 
 class ApiExceptionHandler {
-    const unknownExceptionMessage = 'UNKNOWN_EXCEPTION';
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $exception) {
 
         // Check if the thrown exception is valid, if it is not override it with a valid ApiException
         if (!($exception instanceof IApiException))
-            $exception = new Api500(R::return_error_generic, self::unknownExceptionMessage);
+            $exception = new Api500(R::return_error_generic, $exception);
 
         // $exception is now an IApiException
         /** @var IApiException $exception */

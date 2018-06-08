@@ -19,7 +19,17 @@ class Api500 extends Exception implements IApiException {
         $apiExceptionResponse = new ApiExceptionResponse();
         $apiExceptionResponse->errorCode = $this->getCode();
         $apiExceptionResponse->logMessage = $this->getMessage();
-        $apiExceptionResponse->apiResponse = null;
+        $apiExceptionResponse->errors = null;
+
+        if (DEVELOPMENT_MODE && !is_null($this->getPrevious())) {
+            $apiExceptionResponse->_ = strtr('{c} {f} {l} {m}', [
+                '{c}' => $this->getPrevious()->getCode(),
+                '{f}' => $this->getPrevious()->getFile(),
+                '{l}' => $this->getPrevious()->getLine(),
+                '{m}' => $this->getPrevious()->getMessage(),
+            ]);
+        }
+
         return $apiExceptionResponse;
     }
 

@@ -47,8 +47,8 @@ function randomPhone() {
 const connectionState = [0, 1, 2];
 const NUMBER_OF_USERS = 5000;
 const NUMBER_OF_LOCATIONS = 50;
-const MIN_IMAGES_LOCATION = 15;
-const MAX_IMAGES_LOCATION = 50;
+const MIN_IMAGES_LOCATION = 1;
+const MAX_IMAGES_LOCATION = 5;
 const MIN_FAVORITES_PER_USER = 30;
 const MAX_FAVORITES_PER_USER = NUMBER_OF_LOCATIONS;//
 const MIN_CONNECTIONS_PER_USER = 30;
@@ -409,7 +409,7 @@ terraform () {
 
     run () {
         echo $1;
-        wget $1;
+        wget -qO- $1 &> /dev/null;
     }
 
     run $url"generateFakeUsers";

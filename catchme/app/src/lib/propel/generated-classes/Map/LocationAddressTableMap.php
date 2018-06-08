@@ -195,6 +195,13 @@ class LocationAddressTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, null, false);
+        $this->addRelation('SubscribedUser', '\\UserLocationFavorite', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':location_id',
+    1 => ':location_id',
+  ),
+), null, null, 'SubscribedUsers', false);
     } // buildRelations()
 
     /**

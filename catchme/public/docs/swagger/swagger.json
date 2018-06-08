@@ -26,6 +26,18 @@
       "in": "header",
       "type": "string"
     },
+    "locale": {
+      "name": "Accept-Language",
+      "required": false,
+      "in": "header",
+      "type": "string"
+    },
+    "geo": {
+      "name": "Geolocation",
+      "required": false,
+      "in": "header",
+      "type": "string"
+    },
     "fbToken": {
       "name": "fbToken",
       "required": true,
@@ -119,6 +131,7 @@
         "tags": ["Accounts"],
         "parameters": [
           {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/locale"},
           {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormUserSocialLogin"}}
         ],
         "responses": {
@@ -135,6 +148,7 @@
         "tags": ["Accounts"],
         "parameters": [
           {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/locale"},
           {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormUserSocialLogin"}}
         ],
         "responses": {
@@ -151,6 +165,7 @@
         "tags": ["Accounts"],
         "parameters": [
           {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/locale"},
           {"name": "body", "in": "body", "required": true, "schema": {"$ref": "#/definitions/FormUserRegister"}}
         ],
         "responses": {
@@ -329,6 +344,7 @@
         "tags": ["Search"],
         "parameters": [
           {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/geo"},
           {"$ref": "#/parameters/seed"}
         ],
         "responses": {
@@ -403,6 +419,7 @@
         "headers": { "Content-Type": "multipart/form-data" },
         "parameters": [
           {"$ref": "#/parameters/token"},
+          {"$ref": "#/parameters/locale"},
           {"name": "phone", "in": "formData", "required": false, "type": "string"},
           {"name": "publicMessage", "in": "formData", "required": false, "type": "string"},
           {"name": "pictureUrl", "in": "formData", "required": false, "type": "string"},

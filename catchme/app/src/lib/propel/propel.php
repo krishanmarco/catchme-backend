@@ -9,8 +9,8 @@ return [
                 'catch_me' => [
                     'adapter'    => 'mysql',
                     'classname'  => 'Propel\Runtime\Connection\ConnectionWrapper',
-                    'dsn'        => 'mysql:host=localhost;dbname=krisaxcv_catchme_app',
-                    'user'       => 'krisaxcv_chm_app',
+                    'dsn'        => 'mysql:host=localhost;dbname=krisaxcv_catchme-v2',
+                    'user'       => 'krisaxcv_catchme-v2',
                     'password'   => 'w.kc5M!Q&J}f',
                     'attributes' => []
                 ]

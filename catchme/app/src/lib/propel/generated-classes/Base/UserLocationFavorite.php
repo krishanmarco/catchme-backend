@@ -3,6 +3,8 @@
 namespace Base;
 
 use \Location as ChildLocation;
+use \LocationAddress as ChildLocationAddress;
+use \LocationAddressQuery as ChildLocationAddressQuery;
 use \LocationQuery as ChildLocationQuery;
 use \User as ChildUser;
 use \UserLocationFavoriteQuery as ChildUserLocationFavoriteQuery;
@@ -81,6 +83,11 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
      * @var        ChildLocation
      */
     protected $aLocation;
+
+    /**
+     * @var        ChildLocationAddress
+     */
+    protected $aLocationAddress;
 
     /**
      * @var        ChildUser
@@ -385,6 +392,10 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
             $this->aLocation = null;
         }
 
+        if ($this->aLocationAddress !== null && $this->aLocationAddress->getLocationId() !== $v) {
+            $this->aLocationAddress = null;
+        }
+
         return $this;
     } // setLocationId()
 
@@ -465,6 +476,9 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
         if ($this->aLocation !== null && $this->location_id !== $this->aLocation->getId()) {
             $this->aLocation = null;
         }
+        if ($this->aLocationAddress !== null && $this->location_id !== $this->aLocationAddress->getLocationId()) {
+            $this->aLocationAddress = null;
+        }
     } // ensureConsistency
 
     /**
@@ -505,6 +519,7 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aLocation = null;
+            $this->aLocationAddress = null;
             $this->aUser = null;
         } // if (deep)
     }
@@ -619,6 +634,13 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
                     $affectedRows += $this->aLocation->save($con);
                 }
                 $this->setLocation($this->aLocation);
+            }
+
+            if ($this->aLocationAddress !== null) {
+                if ($this->aLocationAddress->isModified() || $this->aLocationAddress->isNew()) {
+                    $affectedRows += $this->aLocationAddress->save($con);
+                }
+                $this->setLocationAddress($this->aLocationAddress);
             }
 
             if ($this->aUser !== null) {
@@ -799,6 +821,21 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
 
                 $result[$key] = $this->aLocation->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
+            if (null !== $this->aLocationAddress) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'locationAddress';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'location_address';
+                        break;
+                    default:
+                        $key = 'LocationAddress';
+                }
+
+                $result[$key] = $this->aLocationAddress->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->aUser) {
 
                 switch ($keyType) {
@@ -967,11 +1004,18 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
         $validPk = null !== $this->getUserId() &&
             null !== $this->getLocationId();
 
-        $validPrimaryKeyFKs = 2;
+        $validPrimaryKeyFKs = 3;
         $primaryKeyFKs = [];
 
         //relation user_location_favorite_fk_5ca888 to table location
         if ($this->aLocation && $hash = spl_object_hash($this->aLocation)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
+
+        //relation user_location_favorite_fk_8ab0d9 to table location_address
+        if ($this->aLocationAddress && $hash = spl_object_hash($this->aLocationAddress)) {
             $primaryKeyFKs[] = $hash;
         } else {
             $validPrimaryKeyFKs = false;
@@ -1122,6 +1166,57 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildLocationAddress object.
+     *
+     * @param  ChildLocationAddress $v
+     * @return $this|\UserLocationFavorite The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setLocationAddress(ChildLocationAddress $v = null)
+    {
+        if ($v === null) {
+            $this->setLocationId(NULL);
+        } else {
+            $this->setLocationId($v->getLocationId());
+        }
+
+        $this->aLocationAddress = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildLocationAddress object, it will not be re-added.
+        if ($v !== null) {
+            $v->addSubscribedUser($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildLocationAddress object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildLocationAddress The associated ChildLocationAddress object.
+     * @throws PropelException
+     */
+    public function getLocationAddress(ConnectionInterface $con = null)
+    {
+        if ($this->aLocationAddress === null && ($this->location_id != 0)) {
+            $this->aLocationAddress = ChildLocationAddressQuery::create()->findPk($this->location_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aLocationAddress->addSubscribedUsers($this);
+             */
+        }
+
+        return $this->aLocationAddress;
+    }
+
+    /**
      * Declares an association between this object and a ChildUser object.
      *
      * @param  ChildUser $v
@@ -1182,6 +1277,9 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
         if (null !== $this->aLocation) {
             $this->aLocation->removeSubscribedUser($this);
         }
+        if (null !== $this->aLocationAddress) {
+            $this->aLocationAddress->removeSubscribedUser($this);
+        }
         if (null !== $this->aUser) {
             $this->aUser->removeFavoriteLocation($this);
         }
@@ -1208,6 +1306,7 @@ abstract class UserLocationFavorite implements ActiveRecordInterface
         } // if ($deep)
 
         $this->aLocation = null;
+        $this->aLocationAddress = null;
         $this->aUser = null;
     }
 

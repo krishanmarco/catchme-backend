@@ -22,7 +22,7 @@ class Clusterizer {
      * Array used as a data set to form the clusters
      * @var IClusterPoint[]
      */
-    private $flatClusterPoints;
+    private $flatClusterPoints = [];
 
     /** @var Cluster[] */
     private $clusters;
@@ -48,6 +48,11 @@ class Clusterizer {
      * @param Closure $clusterCritieria
      */
     private function clusterize() {
+        if (sizeof($this->flatClusterPoints) <= 0) {
+            $this->flatClusterPoints = [];
+            return;
+        }
+
         $space = new Space(2);
 
         // Fill this Clusterizer space

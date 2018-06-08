@@ -60,7 +60,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationAddressQuery rightJoinWithLocation() Adds a RIGHT JOIN clause and with to the query using the Location relation
  * @method     ChildLocationAddressQuery innerJoinWithLocation() Adds a INNER JOIN clause and with to the query using the Location relation
  *
- * @method     \LocationQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildLocationAddressQuery leftJoinSubscribedUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the SubscribedUser relation
+ * @method     ChildLocationAddressQuery rightJoinSubscribedUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SubscribedUser relation
+ * @method     ChildLocationAddressQuery innerJoinSubscribedUser($relationAlias = null) Adds a INNER JOIN clause to the query using the SubscribedUser relation
+ *
+ * @method     ChildLocationAddressQuery joinWithSubscribedUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the SubscribedUser relation
+ *
+ * @method     ChildLocationAddressQuery leftJoinWithSubscribedUser() Adds a LEFT JOIN clause and with to the query using the SubscribedUser relation
+ * @method     ChildLocationAddressQuery rightJoinWithSubscribedUser() Adds a RIGHT JOIN clause and with to the query using the SubscribedUser relation
+ * @method     ChildLocationAddressQuery innerJoinWithSubscribedUser() Adds a INNER JOIN clause and with to the query using the SubscribedUser relation
+ *
+ * @method     \LocationQuery|\UserLocationFavoriteQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildLocationAddress findOne(ConnectionInterface $con = null) Return the first ChildLocationAddress matching the query
  * @method     ChildLocationAddress findOneOrCreate(ConnectionInterface $con = null) Return the first ChildLocationAddress matching the query, or a new ChildLocationAddress object populated from the query conditions when no match is found
@@ -664,6 +674,79 @@ abstract class LocationAddressQuery extends ModelCriteria
         return $this
             ->joinLocation($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Location', '\LocationQuery');
+    }
+
+    /**
+     * Filter the query by a related \UserLocationFavorite object
+     *
+     * @param \UserLocationFavorite|ObjectCollection $userLocationFavorite the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildLocationAddressQuery The current query, for fluid interface
+     */
+    public function filterBySubscribedUser($userLocationFavorite, $comparison = null)
+    {
+        if ($userLocationFavorite instanceof \UserLocationFavorite) {
+            return $this
+                ->addUsingAlias(LocationAddressTableMap::COL_LOCATION_ID, $userLocationFavorite->getLocationId(), $comparison);
+        } elseif ($userLocationFavorite instanceof ObjectCollection) {
+            return $this
+                ->useSubscribedUserQuery()
+                ->filterByPrimaryKeys($userLocationFavorite->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterBySubscribedUser() only accepts arguments of type \UserLocationFavorite or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the SubscribedUser relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildLocationAddressQuery The current query, for fluid interface
+     */
+    public function joinSubscribedUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('SubscribedUser');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'SubscribedUser');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the SubscribedUser relation UserLocationFavorite object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \UserLocationFavoriteQuery A secondary query class using the current class as primary query
+     */
+    public function useSubscribedUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinSubscribedUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'SubscribedUser', '\UserLocationFavoriteQuery');
     }
 
     /**

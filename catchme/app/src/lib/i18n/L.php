@@ -4,7 +4,7 @@ namespace I18n;
 
 class L {
     const defaultLocale = self::supportedLocales[0];
-    const supportedLocales = ['en-US'];
+    const supportedLocales = ['en_US'];
 
     const t_srv_feed_friend_added_image = 't_srv_feed_friend_added_image';
     const t_srv_feed_friendship_accept = 't_srv_feed_friendship_accept';

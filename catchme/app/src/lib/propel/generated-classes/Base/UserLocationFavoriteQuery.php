@@ -44,6 +44,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserLocationFavoriteQuery rightJoinWithLocation() Adds a RIGHT JOIN clause and with to the query using the Location relation
  * @method     ChildUserLocationFavoriteQuery innerJoinWithLocation() Adds a INNER JOIN clause and with to the query using the Location relation
  *
+ * @method     ChildUserLocationFavoriteQuery leftJoinLocationAddress($relationAlias = null) Adds a LEFT JOIN clause to the query using the LocationAddress relation
+ * @method     ChildUserLocationFavoriteQuery rightJoinLocationAddress($relationAlias = null) Adds a RIGHT JOIN clause to the query using the LocationAddress relation
+ * @method     ChildUserLocationFavoriteQuery innerJoinLocationAddress($relationAlias = null) Adds a INNER JOIN clause to the query using the LocationAddress relation
+ *
+ * @method     ChildUserLocationFavoriteQuery joinWithLocationAddress($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the LocationAddress relation
+ *
+ * @method     ChildUserLocationFavoriteQuery leftJoinWithLocationAddress() Adds a LEFT JOIN clause and with to the query using the LocationAddress relation
+ * @method     ChildUserLocationFavoriteQuery rightJoinWithLocationAddress() Adds a RIGHT JOIN clause and with to the query using the LocationAddress relation
+ * @method     ChildUserLocationFavoriteQuery innerJoinWithLocationAddress() Adds a INNER JOIN clause and with to the query using the LocationAddress relation
+ *
  * @method     ChildUserLocationFavoriteQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
  * @method     ChildUserLocationFavoriteQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
  * @method     ChildUserLocationFavoriteQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
@@ -54,7 +64,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserLocationFavoriteQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
  * @method     ChildUserLocationFavoriteQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
- * @method     \LocationQuery|\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \LocationQuery|\LocationAddressQuery|\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUserLocationFavorite findOne(ConnectionInterface $con = null) Return the first ChildUserLocationFavorite matching the query
  * @method     ChildUserLocationFavorite findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUserLocationFavorite matching the query, or a new ChildUserLocationFavorite object populated from the query conditions when no match is found
@@ -326,6 +336,8 @@ abstract class UserLocationFavoriteQuery extends ModelCriteria
      *
      * @see       filterByLocation()
      *
+     * @see       filterByLocationAddress()
+     *
      * @param     mixed $locationId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
@@ -432,6 +444,83 @@ abstract class UserLocationFavoriteQuery extends ModelCriteria
         return $this
             ->joinLocation($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Location', '\LocationQuery');
+    }
+
+    /**
+     * Filter the query by a related \LocationAddress object
+     *
+     * @param \LocationAddress|ObjectCollection $locationAddress The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildUserLocationFavoriteQuery The current query, for fluid interface
+     */
+    public function filterByLocationAddress($locationAddress, $comparison = null)
+    {
+        if ($locationAddress instanceof \LocationAddress) {
+            return $this
+                ->addUsingAlias(UserLocationFavoriteTableMap::COL_LOCATION_ID, $locationAddress->getLocationId(), $comparison);
+        } elseif ($locationAddress instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(UserLocationFavoriteTableMap::COL_LOCATION_ID, $locationAddress->toKeyValue('PrimaryKey', 'LocationId'), $comparison);
+        } else {
+            throw new PropelException('filterByLocationAddress() only accepts arguments of type \LocationAddress or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the LocationAddress relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserLocationFavoriteQuery The current query, for fluid interface
+     */
+    public function joinLocationAddress($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('LocationAddress');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'LocationAddress');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the LocationAddress relation LocationAddress object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \LocationAddressQuery A secondary query class using the current class as primary query
+     */
+    public function useLocationAddressQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinLocationAddress($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'LocationAddress', '\LocationAddressQuery');
     }
 
     /**

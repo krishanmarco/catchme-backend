@@ -131,3 +131,11 @@ function degToKm($deg) {
 function kmToDeg($km) {
     return $km / 111.32;
 }
+
+function rollingAvgByOne($oldAvg, $newSampleAvg, $currentCount) {
+    return $oldAvg * ($currentCount - 1) / $currentCount + ($newSampleAvg / $currentCount);
+}
+
+function jsonDie($d) {
+    die(json_encode($d));
+}

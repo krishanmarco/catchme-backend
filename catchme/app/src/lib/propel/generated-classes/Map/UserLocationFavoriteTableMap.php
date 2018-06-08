@@ -133,6 +133,7 @@ class UserLocationFavoriteTableMap extends TableMap
         // columns
         $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'user', 'id', true, null, null);
         $this->addForeignPrimaryKey('location_id', 'LocationId', 'INTEGER' , 'location', 'id', true, null, null);
+        $this->addForeignPrimaryKey('location_id', 'LocationId', 'INTEGER' , 'location_address', 'location_id', true, null, null);
     } // initialize()
 
     /**
@@ -145,6 +146,13 @@ class UserLocationFavoriteTableMap extends TableMap
   array (
     0 => ':location_id',
     1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('LocationAddress', '\\LocationAddress', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':location_id',
+    1 => ':location_id',
   ),
 ), null, null, null, false);
         $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (

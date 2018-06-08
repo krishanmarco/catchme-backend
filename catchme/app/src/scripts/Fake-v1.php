@@ -408,7 +408,7 @@ terraform () {
 
     run () {
         echo $1;
-        wget $1;
+        wget -qO- $1 &> /dev/null;
     }
 
     run $url"generateFakeUsers";

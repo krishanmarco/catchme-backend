@@ -24,7 +24,7 @@ use Models\Calculators\Helpers\LocIdCoord;
 
 class UserSuggestedLocations extends Cacheable {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
-    const CONFIG_POSITION_SEARCH_AREA_KM = 30;
+    const CONFIG_POSITION_SEARCH_AREA_KM = 50;
 
     public function __construct(DbUser $user, $seed, $userLatLng = null) {
         parent::__construct(
@@ -36,6 +36,7 @@ class UserSuggestedLocations extends Cacheable {
         $this->user = $user;
         $this->seed = intval($seed);
         $this->userLatLng = $userLatLng;
+        $this->suggestLocations();
     }
 
     /** @var DbUser */
@@ -88,13 +89,13 @@ class UserSuggestedLocations extends Cacheable {
         // Calculate the center coordinates of the biggest cluster
         // and get the distance from $userLatLng
         $uslcFavorites = $this->getLocationsAccumulatedFromFavorites();
-        $uslcFavorites->setWeight(1 / $uslcFavorites->getCenterOfBiggestClusterDistanceFrom($this->userLatLng));
+        $uslcFavorites->setWeight(/*1 / $uslcFavorites->getCenterOfBiggestClusterDistanceFrom($this->userLatLng)*/0.05);
 
         // Get the locations accumulated from friends
         // Calculate the center coordinates of the biggest cluster
         // and get the distance from $userLatLng
         $uslcFriends = $this->getLocationsAccumulatedFromFriends();
-        $uslcFriends->setWeight(1 / $uslcFriends->getCenterOfBiggestClusterDistanceFrom($this->userLatLng));
+        $uslcFriends->setWeight(/*1 / $uslcFriends->getCenterOfBiggestClusterDistanceFrom($this->userLatLng)*/0.05);
 
         // The $locPosWeight is based on if the positioning data is precise or not
         $uslcPosition = $this->getLocationsAccumulatedFromPosition(self::CONFIG_POSITION_SEARCH_AREA_KM);
@@ -107,48 +108,47 @@ class UserSuggestedLocations extends Cacheable {
         ]);
 
         // Extract data (locationId) from the weighted units
-        return array_map(
+        $d = array_map(
             function (WeightedUnit $wu) { return $wu->data; },
             $wgc->calculateUniqueAccumulatedSimple()
         );
+
+        die(json_encode($d));
+        return $d;
     }
 
     /**
-     * Gets locations close to this user where the sorting criteria
-     * Is the distance from this user, the search area is a class constant
+     * Gets locations close to the other favorites of this user where
+     * the sorting criteria si based on the size of the cluster in which
+     * that location is.
+     * Eg: If the user has 3 favorites [1, 2, 3] and they are clusterized by
+     * position as [[1, 2], [3]], then (weight(1) == weight(2)) > weight(3)
      * @param $weight float: Weight of this parameter
      * @return UserSuggestedLocationsCalc
      */
-    private function getLocationsAccumulatedFromPosition($areaKm) {
-        $userPos = [$this->userLatLng->lat, $this->userLatLng->lng];
-        $areaDeg = kmToDeg($areaKm) / 2;
-
+    private function getLocationsAccumulatedFromFavorites() {
         return new UserSuggestedLocationsCalc(
 
-        // Define the function that gets locations
-            function () use ($areaKm, $userPos, $areaDeg) {
-
-                // Get all location ids in the users area
-                $locations = LocationAddressQuery::create()
+        // Define function to get locations
+            function () {
+                $locations = UserLocationFavoriteQuery::create()
                     ->select([
-                        LocationAddressTableMap::COL_LOCATION_ID,
+                        UserLocationFavoriteTableMap::COL_LOCATION_ID,
                         LocationAddressTableMap::COL_LAT,
                         LocationAddressTableMap::COL_LNG
                     ])
-                    ->filterByLat(['min' => degToKm($userPos[0]) - $areaDeg, 'max' => degToKm($userPos[0]) + $areaDeg])
-                    ->filterByLng(['min' => degToKm($userPos[1]) - $areaDeg, 'max' => degToKm($userPos[1]) + $areaDeg])
+                    ->joinWithLocationAddress()
+                    ->filterByUserId($this->user->getId())
                     ->find()
                     ->getData();
 
-                return $this->mapLocPosQueryToLocIdCoords($locations);
+                return $this->mapLocPosQueryToLocIdCoords($locations, UserLocationFavoriteTableMap::COL_LOCATION_ID);
             },
 
 
             // Define function to map a LocIdCoord to WeightedUnit
-            // Build WeightUnits[] with weights based on $areaDeg - distance (Closer locations -> higher weight)
-            function (LocIdCoord $locIdCoord) use ($userPos, $areaDeg) {
-                $dist = LatLng::getDist([$locIdCoord->lat, $locIdCoord->lng], $userPos);
-                return new WeightedUnit($locIdCoord->lid, $areaDeg - $dist);
+            function (LocIdCoord $locIdCoord) {
+                return new WeightedUnit($locIdCoord->lid, $locIdCoord->clusterData->size);
             }
 
         );
@@ -177,53 +177,14 @@ class UserSuggestedLocations extends Cacheable {
                         UserLocationFavoriteTableMap::COL_LOCATION_ID,
                         LocationAddressTableMap::COL_LAT,
                         LocationAddressTableMap::COL_LNG,
-                        'COUNT(*)'
                     ])
-                    ->joinWith(LocationAddressTableMap::COL_LOCATION_ID)
+                    ->joinWithLocationAddress()
                     ->filterByUserId($friendIds, Criteria::IN)
-                    ->groupByLocationId()
                     ->find()
                     ->getData();
 
-                return $this->mapLocPosQueryToLocIdCoords($locations);
+                return $this->mapLocPosQueryToLocIdCoords($locations, UserLocationFavoriteTableMap::COL_LOCATION_ID);
             },
-
-            // Define function to map a LocIdCoord to WeightedUnit
-            function (LocIdCoord $locIdCoord) {
-                return new WeightedUnit($locIdCoord->lid, $locIdCoord->count);
-            }
-
-        );
-    }
-
-    /**
-     * Gets locations close to the other favorites of this user where
-     * the sorting criteria si based on the size of the cluster in which
-     * that location is.
-     * Eg: If the user has 3 favorites [1, 2, 3] and they are clusterized by
-     * position as [[1, 2], [3]], then (weight(1) == weight(2)) > weight(3)
-     * @param $weight float: Weight of this parameter
-     * @return UserSuggestedLocationsCalc
-     */
-    private function getLocationsAccumulatedFromFavorites() {
-        return new UserSuggestedLocationsCalc(
-
-        // Define function to get locations
-            function () {
-                $locations = UserLocationFavoriteQuery::create()
-                    ->select([
-                        UserLocationFavoriteTableMap::COL_LOCATION_ID,
-                        LocationAddressTableMap::COL_LAT,
-                        LocationAddressTableMap::COL_LNG
-                    ])
-                    ->joinWith(LocationAddressTableMap::COL_LOCATION_ID)
-                    ->filterByUserId($this->user->getId())
-                    ->find()
-                    ->getData();
-
-                return $this->mapLocPosQueryToLocIdCoords($locations);
-            },
-
 
             // Define function to map a LocIdCoord to WeightedUnit
             function (LocIdCoord $locIdCoord) {
@@ -234,16 +195,59 @@ class UserSuggestedLocations extends Cacheable {
     }
 
     /**
+     * Gets locations close to this user where the sorting criteria
+     * Is the distance from this user, the search area is a class constant
+     * @param $weight float: Weight of this parameter
+     * @return UserSuggestedLocationsCalc
+     */
+    private function getLocationsAccumulatedFromPosition($areaKm) {
+        $userPosDeg = [$this->userLatLng->lat, $this->userLatLng->lng];
+        $areaDeg = kmToDeg($areaKm) / 2;
+
+        return new UserSuggestedLocationsCalc(
+
+        // Define the function that gets locations
+            function () use ($areaKm, $userPosDeg, $areaDeg) {
+
+                // Get all location ids in the users area
+                $locations = LocationAddressQuery::create()
+                    ->select([
+                        LocationAddressTableMap::COL_LOCATION_ID,
+                        LocationAddressTableMap::COL_LAT,
+                        LocationAddressTableMap::COL_LNG
+                    ])
+                    ->filterByLat(['min' => $userPosDeg[0] - $areaDeg, 'max' => $userPosDeg[0] + $areaDeg])
+                    ->filterByLng(['min' => $userPosDeg[1] - $areaDeg, 'max' => $userPosDeg[1] + $areaDeg])
+                    ->find()
+                    ->getData();
+
+                return $this->mapLocPosQueryToLocIdCoords($locations, LocationAddressTableMap::COL_LOCATION_ID);
+            },
+
+
+            // Define function to map a LocIdCoord to WeightedUnit
+            // Build WeightUnits[] with weights based on $areaDeg - distance (Closer locations -> higher weight)
+            function (LocIdCoord $locIdCoord) use ($userPosDeg, $areaDeg) {
+                // Weight = How far is this location from the outer bound
+                // Farther the location is from the outer bound the closer it is to the user
+                // Hence the higher the weight
+                $weight = LatLng::distToWeight1([$locIdCoord->lat, $locIdCoord->lng], $userPosDeg);
+                return new WeightedUnit($locIdCoord->lid, $weight);
+            }
+
+        );
+    }
+
+    /**
      * @param array $locationsQueryResult
      * @return LocIdCoord[]
      */
-    private function mapLocPosQueryToLocIdCoords(array $locationsQueryResult) {
-        return array_map(function ($locData) {
-            $lid = $locData[UserLocationFavoriteTableMap::COL_LOCATION_ID];
-            $lat = $locData[LocationAddressTableMap::COL_LAT];
-            $lng = $locData[LocationAddressTableMap::COL_LNG];
-            $count = $locData['COUNT(*)'];
-            return new LocIdCoord($lid, $lat, $lng, $count);
+    private function mapLocPosQueryToLocIdCoords(array $locationsQueryResult, $colId) {
+        return array_map(function ($locData) use ($colId) {
+            $lid = intval($locData[$colId]);
+            $lat = doubleval($locData[LocationAddressTableMap::COL_LAT]);
+            $lng = doubleval($locData[LocationAddressTableMap::COL_LNG]);
+            return new LocIdCoord($lid, $lat, $lng);
         }, $locationsQueryResult);
     }
 

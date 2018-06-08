@@ -64,7 +64,7 @@ abstract class Cacheable {
 
     private function refreshData() {
         // Calculate the data and set as loaded
-        $this->data = $this->calculateData->call($this);
+        $this->data = ($this->calculateData)();
         $this->dataLoaded = true;
 
         // Save the data

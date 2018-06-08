@@ -9,6 +9,7 @@ use \Slim\Middleware\MiddlewareUserAuth;
 use \Slim\Middleware\MiddlewarePublic;
 use \Slim\Middleware\MiddlewareAuth;
 use \Slim\Exception\ApiExceptionHandler;
+use \Slim\Middleware\MiddlewareContext;
 
 
 // Important
@@ -52,6 +53,11 @@ $app->group('/api', function () use ($app) {
     $app->get('/test', function() {
         require_once __DIR__ . '/scripts/Test.php';
         die();
+    });
+
+    $app->get('/terraform', function() {
+        \cache\CacheableHelper::terraform();
+        die("OK");
     });
 
 
@@ -159,7 +165,7 @@ $app->group('/api', function () use ($app) {
 
     })->add(new MiddlewareUserAuth($app->getContainer(), EAccessLevel::ADMIN));
 
-});
+})->add(new MiddlewareContext($app->getContainer()));
 
 
 $app->run();

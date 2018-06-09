@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 class SFCriteria extends \Propel\Runtime\ActiveQuery\Criteria {
 
 

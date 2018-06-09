@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 09/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 09/09/2017 */
 
 if (!array_key_exists('pw', $_GET) || $_GET['pw'] !== 'S()KD2dk290kdLksK()')
     die("FAIL");

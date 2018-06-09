@@ -14,7 +14,6 @@ use Base\LocationAddress as BaseLocationAddress;
  */
 class LocationAddress extends BaseLocationAddress {
 
-
     public function setLatLng(LatLng $latLng) {
         parent::setLat($latLng->lat);
         parent::setLng($latLng->lng);

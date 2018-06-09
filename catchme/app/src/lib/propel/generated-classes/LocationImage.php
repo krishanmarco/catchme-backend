@@ -1,6 +1,7 @@
 <?php
 
 use Base\LocationImage as BaseLocationImage;
+use Controllers\ControllerMediaGet;
 
 /**
  * Skeleton subclass for representing a row from the 'location_image' table.
@@ -16,7 +17,11 @@ class LocationImage extends BaseLocationImage {
 
     /** @return String */
     public function getUrl() {
-        return URL_API . '/media/get/' . EMediaType::LOCATION_IMAGE . "/{$this->getLocationId()}/{$this->getId()}";
+        return strtr(ControllerMediaGet::URL_TPL, [
+            '{type}' => EMediaType::LOCATION_IMAGE,
+            '{id}' => $this->getLocationId(),
+            '{iid}' => $this->getId()
+        ]);
     }
 
 }

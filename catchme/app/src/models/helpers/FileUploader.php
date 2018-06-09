@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer 1.0 © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 use Slim\Http\UploadedFile;
 use Slim\Exception\Api400;

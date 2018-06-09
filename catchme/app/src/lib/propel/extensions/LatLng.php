@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 10/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 10/09/2017 */
 
 class LatLng {
 

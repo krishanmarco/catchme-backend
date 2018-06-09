@@ -201,3 +201,33 @@ class UserConnectionsResult {
     /** @var DbUser[] */
     public $blocked;
 }
+
+
+
+
+class RecoveryToken {
+
+    public static function fromValues($recoveryKey, $email) {
+        $recoveryToken = new RecoveryToken();
+        $recoveryToken->recoveryKey = $recoveryKey;
+        $recoveryToken->email = $email;
+        return $recoveryToken;
+    }
+
+    public static function fromTokenStr($decryptedToken) {
+        $decryptedToken = json_decode($decryptedToken, true);
+        $recoveryToken = new RecoveryToken();
+        $recoveryToken->email = $decryptedToken['email'];
+        $recoveryToken->systemTempVarId = $decryptedToken['systemTempVarId'];
+        $recoveryToken->recoveryKey = $decryptedToken['recoveryKey'];
+        return $recoveryToken;
+    }
+
+
+    private function __construct() { }
+
+    public $email;
+    public $systemTempVarId;
+    public $recoveryKey;
+
+}

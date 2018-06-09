@@ -1,45 +1,15 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Models\Queries\User;
 
 use UserLocationFavoriteQuery;
-use UserConnection;
 use Map\UserLocationFavoriteTableMap;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Map\UserConnectionTableMap;
 use Propel\Runtime\Propel;
-use WeightedCalculator\WeightedUnit;
+use EConnectionState;
 
 class UserQueriesWrapper {
-
-    /**
-     * Returns an ordered int[] of all location ids that
-     * the input array of user ids are subscribed to
-     *
-     * @param int[] $uids        Array of user ids
-     * @return int[]                Location ids that $userIds are subscribed to
-     */
-    public static function getUsersLocationIds(array $uids) {
-
-        $userFavoriteLocationQuery = UserLocationFavoriteQuery::create()
-            ->select([UserLocationFavoriteTableMap::COL_LOCATION_ID])
-            ->add(UserLocationFavoriteTableMap::COL_USER_ID, $uids, Criteria::IN)
-            ->groupByLocationId()
-            ->withColumn('COUNT(*)', 'Count')
-            ->orderBy('Count', Criteria::DESC);;
-
-        $locationIds = $userFavoriteLocationQuery->find()->getData();
-
-        // Note: Using select in the Propel query makes it return
-        // a string array as location ids
-        // Get all location ids mapping them from strings to ints
-        $locationIds = array_map(
-            function($ufl) { return intval($ufl[UserLocationFavoriteTableMap::COL_LOCATION_ID]); },
-            $locationIds
-        );
-
-        return $locationIds;
-    }
 
 
     /**
@@ -64,14 +34,16 @@ class UserQueriesWrapper {
             "SELECT {result_col_name} FROM (" .
             "SELECT IF({user_id} IN ({ids}), {connection_to}, {user_id}) as {result_col_name}, COUNT(*) " .
             "FROM {user_connection} " .
-            "WHERE ({user_id} IN ({ids}) OR {connection_to} IN ({ids})) " .
+            "WHERE ({user_id} IN ({ids}) OR {connection_to} IN ({ids})) AND {col_state} = {state} " .
             "GROUP BY  {result_col_name} " .
             "ORDER BY COUNT(*) DESC" .
             ") AS x",
             [
+                '{user_connection}' => UserConnectionTableMap::TABLE_NAME,
                 '{user_id}' => UserConnectionTableMap::COL_USER_ID,
                 '{connection_to}' => UserConnectionTableMap::COL_CONNECTION_ID,
-                '{user_connection}' => UserConnectionTableMap::TABLE_NAME,
+                '{col_state}' => UserConnectionTableMap::COL_STATE,
+                '{state}' => EConnectionState::CONFIRMED,
                 '{result_col_name}' => 'id',
                 '{ids}' => implode(',', $uids)
             ]

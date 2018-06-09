@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 14/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 14/09/2017 */
 
 namespace Models\User\Accounts;
 
@@ -24,15 +24,7 @@ class UserEditProfile {
     }
 
     public function editFirebaseToken($firebaseToken) {
-        try {
-            $this->user->getSocial()->setFirebase($firebaseToken)->save();
-
-        } catch (PropelException $exception) {
-            switch ($exception->getCode()) {
-                default:
-                    throw new Api400(R::return_error_generic);
-            }
-        }
+        $this->user->getSocial()->setFirebase($firebaseToken)->save();
     }
 
     /** @return UserEditProfile */

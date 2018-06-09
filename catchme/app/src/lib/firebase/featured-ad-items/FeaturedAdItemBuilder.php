@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 07/10/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 07/10/2017 */
 
 namespace Firebase\FeaturedAdItems;
 

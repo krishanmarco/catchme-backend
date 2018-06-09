@@ -2,6 +2,7 @@
 
 use Base\Location as BaseLocation;
 use \Slim\Exception\Api400;
+use \Propel\Runtime\Connection\ConnectionInterface;
 
 /**
  * Skeleton subclass for representing a row from the 'location' table.
@@ -15,23 +16,21 @@ use \Slim\Exception\Api400;
  */
 class Location extends BaseLocation {
 
-
-    // When a location is saved/updated we need to automatically
-    // save its search query in the LocationSearch table
-    public function postInsert(\Propel\Runtime\Connection\ConnectionInterface $con = null) {
-        parent::postInsert($con);
-        SearchLocation::prepareForLocation($this, new SearchLocation())
-            ->save($con);
+    /**
+     * @param Location[] $locations
+     * @return int[]
+     */
+    public static function mapUsersToIds(array $locations) {
+        return array_map(function(Location $location) { $location->getId(); }, $locations);
     }
 
-
-
-    // When a location is saved/updated we need to automatically
-    // save its search query in the LocationSearch table
-    public function postUpdate(\Propel\Runtime\Connection\ConnectionInterface $con = null) {
-        parent::postUpdate($con);
-        SearchLocation::prepareForLocation($this, SearchLocationQuery::create()->findPk($this->getId()))
-            ->save($con);
+    /**
+     * When a user is inserted/updated we need to automatically
+     * save its search query in the UserSearch table
+     */
+    public function postSave(ConnectionInterface $con = null) {
+        parent::postSave($con);
+        SearchLocation::refresh($this, $con);
     }
 
 

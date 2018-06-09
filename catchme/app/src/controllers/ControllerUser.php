@@ -1,13 +1,12 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 */
 
 namespace Controllers;
+
 use Context\Context;
 use Firebase\FeedItems\FeedItemUserAttendanceRequest;
 use Firebase\FirebaseHelper;
 use Api\Map\ModelToApiUserLocations;
 use Firebase\FeedManager;
-use Firebase\FeedItems\FeedItemFriendshipRequest;
-use Firebase\FeaturedAdItems\FeaturedAdItemAttendanceRequest;
 use Models\Calculators\UserModel;
 use Models\Feed\MultiNotificationManager;
 use Models\Location\Accounts\LocationEditProfile;
@@ -16,7 +15,6 @@ use Models\User\Accounts\UserManagerConnections;
 use Models\User\Accounts\UserEditProfile;
 use Models\User\Accounts\UserManagerLocations;
 use Models\User\Accounts\UserManagerStatus;
-use Slim\Exception\Api500;
 use User as DbUser;
 use Api\Map\ModelToApiUsers;
 use Api\User as ApiUser;
@@ -31,11 +29,8 @@ class ControllerUser {
         $this->authUser = $authUser;
     }
 
-
     /** @var DbUser $authUser */
     private $authUser;
-
-
 
     /** @return ApiUser */
     public function get() {
@@ -44,12 +39,17 @@ class ControllerUser {
             ->get();
     }
 
-
     /** @return String */
     public function getJwt() {
         return FirebaseHelper::getUserFirebaseJWT($this->authUser->getId());
     }
 
+    /** @return int */
+    public function editProfileFirebase($firebaseToken) {
+        $userEditProfile = new UserEditProfile($this->authUser);
+        $userEditProfile->editFirebaseToken($firebaseToken);
+        return R::return_ok;
+    }
 
     /** @return ApiUser */
     public function getProfile() {
@@ -64,14 +64,6 @@ class ControllerUser {
             ->get();
     }
 
-
-    /** @return int */
-    public function editProfileFirebase($firebaseToken) {
-        $userEditProfile = new UserEditProfile($this->authUser);
-        return $userEditProfile->editFirebaseToken($firebaseToken);
-    }
-
-
     /** @return ApiUser */
     public function editProfile(ApiUser $newProfile, $uploadedFile = null) {
         $userEditProfile = new UserEditProfile($this->authUser);
@@ -82,7 +74,6 @@ class ControllerUser {
             ->withEmail()
             ->get();
     }
-
 
     /** @return ApiLocation */
     public function locationsAdministratingRegister(ApiFormLocationRegister $form, $uploadedFile = null) {
@@ -98,7 +89,6 @@ class ControllerUser {
         return $locationController->get();
     }
 
-
     /** @return ApiLocation */
     public function locationsAdministratingEditLid(ApiLocation $apiLocation, $locationId, $uploadedFile = null) {
         $locationEditProfile = new LocationEditProfile($this->authUser, $locationId);
@@ -113,23 +103,33 @@ class ControllerUser {
         return $locationController->get();
     }
 
-
-
-
+    /** @return int */
     public function connectionsAddUid($uid) {
         $manager = new UserManagerConnections($this->authUser, $uid);
         $manager->add();
         return R::return_ok;
     }
 
+    /** @return int */
     public function connectionsRemoveUid($uid) {
         $manager = new UserManagerConnections($this->authUser, $uid);
         $manager->del();
         return R::return_ok;
     }
 
+    /** @return int */
+    public function locationsFavoritesAdd($lid) {
+        $manager = new UserManagerLocations($this->authUser);
+        $manager->add($lid);
+        return R::return_ok;
+    }
 
-
+    /** @return int */
+    public function locationsFavoritesDel($lid) {
+        $manager = new UserManagerLocations($this->authUser);
+        $manager->del($lid);
+        return R::return_ok;
+    }
 
     /** @return ApiUserLocationStatus[] */
     public function status() {
@@ -150,15 +150,12 @@ class ControllerUser {
 
         $userLocationStatus = $manager->add($apiUserLocationStatus);
 
-
-        $mfm = new MultiNotificationManager();
-
         // Add the notification item to firebase
         FeedManager::build($this->authUser)
             ->postMultipleFeeds(new FeedItemUserAttendanceRequest(
                 $this->authUser,
                 $userLocationStatus->getLocation()
-            ), $mfm->getUidsInterestedInUser($this->authUser->getId()));
+            ), MultiNotificationManager::uidsInterestedInUser($this->authUser->getId()));
 
         return ModelToApiUserLocations::single($userLocationStatus)
             ->get();
@@ -167,26 +164,8 @@ class ControllerUser {
     /** @return int */
     public function statusDel($tid) {
         $manager = new UserManagerStatus($this->authUser);
-        return $manager->del($tid);
-    }
-
-
-
-
-    /** @return int */
-    public function locationsFavoritesAdd($lid) {
-        $manager = new UserManagerLocations($this->authUser);
-        $manager->add($lid);
+        $manager->del($tid);
         return R::return_ok;
     }
-
-    /** @return int */
-    public function locationsFavoritesDel($lid) {
-        $manager = new UserManagerLocations($this->authUser);
-        $manager->del($lid);
-        return R::return_ok;
-    }
-
-
 
 }

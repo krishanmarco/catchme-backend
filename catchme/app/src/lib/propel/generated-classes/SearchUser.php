@@ -1,6 +1,7 @@
 <?php
 
 use Base\SearchUser as BaseSearchUser;
+use Propel\Runtime\Connection\ConnectionInterface;
 
 /**
  * Skeleton subclass for representing a row from the 'search_user' table.
@@ -14,18 +15,23 @@ use Base\SearchUser as BaseSearchUser;
  */
 class SearchUser extends BaseSearchUser {
 
-    public static function buildForUser(User $user, SearchUser $searchUser) {
-        $searchUser->setUserId($user->getId());
-        $searchUser->setQuery(strtoupper(strtr(
-            "{NAME} {EMAIL} {PHONE}",
-            [
-                '{NAME}' => $user->getName(),
-                '{EMAIL}' => $user->getEmail(),
-                '{PHONE}' => $user->getPhone()
-            ]
-        )));
+    public static function refresh(User $user, ConnectionInterface $con = null) {
+        $searchUser = $user->getSearchString($con);
 
-        return $searchUser;
+        if (is_null($searchUser))
+            $searchUser = new SearchUser();
+
+        $searchUser
+            ->setUserId($user->getId())
+            ->setQuery(strtoupper(strtr(
+                "{NAME} {EMAIL} {PHONE}",
+                [
+                    '{NAME}' => $user->getName(),
+                    '{EMAIL}' => $user->getEmail(),
+                    '{PHONE}' => $user->getPhone()
+                ]
+            )))
+            ->save($con);
     }
 
 }

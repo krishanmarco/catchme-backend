@@ -1,12 +1,9 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Models\Location\Search;
 
-use Propel\Extensions\QueryHelper;
-use Map\SearchUserTableMap;
 use SearchUserQuery;
 use SearchUser;
-use UserQuery;
 use User as DbUser;
 
 class UserSearch {

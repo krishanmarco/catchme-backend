@@ -3,6 +3,8 @@
 use Base\User as BaseUser;
 use Slim\Exception\Api400;
 use \Slim\Http\UploadedFile;
+use \Propel\Runtime\Connection\ConnectionInterface;
+use \Models\Calculators\UserModel;
 
 /**
  * Skeleton subclass for representing a row from the 'user' table.
@@ -16,44 +18,39 @@ use \Slim\Http\UploadedFile;
  */
 class User extends BaseUser {
 
-    // When a location is saved/updated we need to automatically
-    // save its search query in the LocationSearch table
-    public function postInsert(\Propel\Runtime\Connection\ConnectionInterface $con = null) {
-        parent::postInsert($con);
-        SearchUser::buildForUser($this, new SearchUser())
-            ->save($con);
+    /**
+     * @param User[] $users
+     * @return int[]
+     */
+    public static function mapUsersToIds(array $users) {
+        return array_map(function(User $user) { $user->getId(); }, $users);
     }
-
-
-    // When a location is saved/updated we need to automatically
-    // save its search query in the LocationSearch table
-    public function postUpdate(\Propel\Runtime\Connection\ConnectionInterface $con = null) {
-        parent::postUpdate($con);
-        SearchUser::buildForUser($this, SearchUserQuery::create()->findPk($this->getId()))
-            ->save($con);
-    }
-
-
-
 
     /** @var int[] friendIds */
     private $friendIds;
 
-    public function getFriendIds() {
 
+    /**
+     * When a user is saved/updated we need to automatically
+     * save its search query in the UserSearch table
+     */
+    public function postSave(ConnectionInterface $con = null) {
+        parent::postSave($con);
+        SearchUser::refresh($this, $con);
+    }
+
+    /** @return int[] */
+    public function getFriendIds() {
         if (is_null($this->friendIds)) {
 
-            $friends = \Models\Calculators\UserModel::fromUser($this)
+            $friends = UserModel::fromUser($this)
                 ->getUserConnections()->getResult()->friends;
 
-            $this->friendIds = [];
-            foreach ($friends as $user)
-                array_push($this->friendIds, $user->getId());
+            $this->friendIds = User::mapUsersToIds($friends);
         }
 
         return $this->friendIds;
     }
-
 
     public function trySetAvatarFromFile(UploadedFile $uploadedFile) {
         try {
@@ -72,7 +69,7 @@ class User extends BaseUser {
                 '{UNIQUE_NAME}' => $uniqueName
             ]));
 
-        } catch (Api400 $exception) {
+        } catch (Exception $exception) {
             // Not a critical error, continue
             // the profile avatar will not be updated
         }

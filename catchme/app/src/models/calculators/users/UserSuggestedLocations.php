@@ -1,10 +1,9 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Models\Calculators\Users;
 
 use cache\Cacheable;
 use cache\CacheableConstants;
-use cache\CacheableHelper;
 use Map\LocationAddressTableMap;
 use Map\LocationTableMap;
 use Map\UserLocationFavoriteTableMap;

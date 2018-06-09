@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 07/10/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 07/10/2017 */
 
 class EConnectionState {
     const PENDING = 0;
@@ -33,3 +33,8 @@ class EAccessLevel {
     const ADMIN = 1;
 }
 
+class ERelationship {
+    const SAME_PERSON = 0;
+    const CONNECTED = 1;
+    const NOT_CONNECTED = 2;
+}

@@ -1,6 +1,7 @@
 <?php
 
 use Base\SearchLocation as BaseSearchLocation;
+use Propel\Runtime\Connection\ConnectionInterface;
 
 /**
  * Skeleton subclass for representing a row from the 'search_location' table.
@@ -14,25 +15,27 @@ use Base\SearchLocation as BaseSearchLocation;
  */
 class SearchLocation extends BaseSearchLocation {
 
-    public static function prepareForLocation(Location $location, SearchLocation $searchLocation) {
-        $searchLocation->setLocationId($location->getId());
+    public static function refresh(Location $location, ConnectionInterface $con = null) {
+        $searchLocation = $location->getSearchString($con);
 
-        $locationAddress = $location->getAddress();
+        if (is_null($searchLocation))
+            $searchLocation = new SearchLocation();
 
-        $searchLocation->setQuery(strtoupper(strtr(
-            "{NAME} {EMAIL} {PHONE} {CITY} {TOWN} {POSTCODE} {ADDRESS}",
-            [
-                '{NAME}' => $location->getName(),
-                '{EMAIL}' => $location->getEmail(),
-                '{PHONE}' => $location->getPhone(),
-                '{CITY}' => $locationAddress->getCity(),
-                '{TOWN}' => $locationAddress->getTown(),
-                '{POSTCODE}' => $locationAddress->getPostcode(),
-                '{ADDRESS}' => $location->getAddress(),
-            ]
-        )));
-
-        return $searchLocation;
+        $searchLocation
+            ->setLocationId($location->getId())
+            ->setQuery(strtoupper(strtr(
+                "{NAME} {EMAIL} {PHONE} {CITY} {TOWN} {POSTCODE} {ADDRESS}",
+                [
+                    '{NAME}' => $location->getName(),
+                    '{EMAIL}' => $location->getEmail(),
+                    '{PHONE}' => $location->getPhone(),
+                    '{CITY}' => $location->getAddress()->getCity(),
+                    '{TOWN}' => $location->getAddress()->getTown(),
+                    '{POSTCODE}' => $location->getAddress()->getPostcode(),
+                    '{ADDRESS}' => $location->getAddress()->getAddress(),
+                ]
+            )))
+            ->save($con);
     }
 
 }

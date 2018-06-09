@@ -1,6 +1,7 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Fithancer v1.0 © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Api\Map;
+
 use Api\Sec\ConnectionPrivacyPolicy;
 use Api\UserConnections;
 use Api\UserLocations;
@@ -10,9 +11,7 @@ use Models\UserLocationsResult;
 use User as DbUser;
 use Api\User as ApiUser;
 
-
 class ModelToApiUser {
-
 
     public function __construct(DbUser $dbUser) {
         $this->requestedUser = $dbUser;
@@ -23,26 +22,24 @@ class ModelToApiUser {
         $this->withBasicParameters();
     }
 
-
-    /** @var DbUser $requestedUser */
+    /** @var DbUser */
     private $requestedUser;
 
-    /** @var ModelToApiLocations $modelToApiLocations */
+    /** @var ModelToApiLocations */
     private $modelToApiLocations;
 
-    /** @var ModelToApiUsers $modelToApiUsers */
+    /** @var ModelToApiUsers */
     private $modelToApiUsers;
 
-    /** @var ModelToApiUserLocations $modelToApiUserLocationStatuses */
+    /** @var ModelToApiUserLocations */
     private $modelToApiUserLocationStatuses;
-
 
     /** @var ApiUser */
     private $apiUser;
-    public function get() { return $this->apiUser; }
 
-
-
+    public function get() {
+        return $this->apiUser;
+    }
 
     /** @return ModelToApiUser */
     public function applyPrivacyPolicy(DbUser $requestingUser) {
@@ -50,9 +47,6 @@ class ModelToApiUser {
         $this->apiUser = $policy->applyTo($this->apiUser);
         return $this;
     }
-
-
-
 
     /** @return ModelToApiUser */
     private function withBasicParameters() {
@@ -65,7 +59,6 @@ class ModelToApiUser {
         return $this;
     }
 
-
     /** @return ModelToApiUser */
     public function withSecureData() {
         $this->apiUser->apiKey = $this->requestedUser->getApiKey();
@@ -76,20 +69,17 @@ class ModelToApiUser {
         return $this;
     }
 
-
     /** @return ModelToApiUser */
     public function withPhone() {
         $this->apiUser->phone = $this->requestedUser->getPhone();
         return $this;
     }
 
-
     /** @return ModelToApiUser */
     public function withEmail() {
         $this->apiUser->email = $this->requestedUser->getEmail();
         return $this;
     }
-
 
     /**
      * @param UserAdminLocationsResult $userAdminLocationsResult
@@ -102,7 +92,6 @@ class ModelToApiUser {
 
         return $this;
     }
-
 
     /**
      * @param UserConnectionsResult $userConnections
@@ -127,7 +116,6 @@ class ModelToApiUser {
         return $this;
     }
 
-
     /**
      * @param UserLocationsResult $userLocations
      * @return ModelToApiUser
@@ -148,9 +136,6 @@ class ModelToApiUser {
 
         return $this;
     }
-
-
-
 
 }
 

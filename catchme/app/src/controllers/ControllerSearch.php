@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 */
 
 namespace Controllers;
 
@@ -22,7 +22,6 @@ class ControllerSearch {
 
     /** @var DbUser $authUser */
     private $authUser;
-
 
     /** @return ApiLocation[] */
     public function locationsSearch($query) {

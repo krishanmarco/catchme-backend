@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 12/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 12/09/2017 */
 
 namespace Routes;
 use \Psr\Container\ContainerInterface;
@@ -95,9 +95,6 @@ class RoutesProtected {
             ->getBasedOnType($args['typeId'], $args['itemId'], $args['imageId']);
 
         return $response
-            //->withHeader('Content-Type', 'application/force-download')
-            //->withHeader('Content-Type', 'application/octet-stream')
-            //->withHeader('Content-Description', 'File Transfer')
             ->withHeader('Content-Type', 'image/jpeg')
             ->withHeader('Content-Transfer-Encoding', 'binary')
             ->withBody(new Stream($resource));

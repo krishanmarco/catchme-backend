@@ -1,10 +1,11 @@
 <?php
 
 namespace Models\User\Accounts;
+
 use Models\Email\EmailPasswordRecovered;
+use Models\RecoveryToken;
 use Slim\Exception\Api400;
 use R;
-use \Propel\Runtime\Exception\PropelException;
 use Api\FormChangePassword as ApiFormChangePassword;
 use UserQuery;
 use User as DbUser;
@@ -19,17 +20,17 @@ class UserManagerPassword {
 
     public static function change($uid, ApiFormChangePassword $form) {
         $pm = new UserManagerPassword(UserQuery::create()->findPk($uid));
-        return $pm->changePassword($form);
+        $pm->changePassword($form);
     }
 
     public static function recover($email) {
         $pm = new UserManagerPassword(UserQuery::create()->findOneByEmail($email));
-        return $pm->sendRecoveryEmail();
+        $pm->sendRecoveryEmail();
     }
 
     public static function reset($uid, $token) {
         $pm = new UserManagerPassword(UserQuery::create()->findPk($uid));
-        return $pm->resetPasswordWithToken($token);
+        $pm->resetPasswordWithToken($token);
     }
 
 
@@ -40,43 +41,22 @@ class UserManagerPassword {
     /** @var DbUser $user */
     private $user;
 
-    public function getUser() {
-        return $this->user;
-    }
-
-
     public function sendRecoveryEmail() {
 
         // check if user exists
         if (is_null($this->user))
-            return R::return_error_user_not_found;
+            throw new Api400(R::return_error_user_not_found);
 
         // User exists, send recovery email
+        $recoTkn = RecoveryToken::fromValues(getRandomString(15, 15), $this->user->getEmail());
+        $recoTkn = DbSystemTempVar::saveRecoTkn($recoTkn);
 
-        $tempVar = new DbSystemTempVar();
-        $tempVar->setType(ESystemTempVar::PASSWORD_RECO);
-        $tempVar->setExpiryTs(time() + USER_PASSWORD_RECO_TTL);
+        $recoLink = strtr(self::RECOVERY_LINK_URL_TEMPLATE, [
+            '{token}' => urlencode(DataEncrypter::publicEncryptStr(json_encode($recoTkn))),
+            '{uid}' => $this->user->getId()
+        ]);
 
-        $recoTkn = RecoveryToken::fromValues(
-            getRandomString(15, 15),  // Random recovery key
-            $this->user->getEmail()                // User email (Unique)
-        );
-        $tempVar->setData($recoTkn);
-        $tempVar->save();
-
-        // We now have an id for the $recoTkn
-        $recoTkn->systemTempVarId = $tempVar->getId();
-
-        $recoLink = strtr(
-            self::RECOVERY_LINK_URL_TEMPLATE, [
-                '{token}' => urlencode(DataEncrypter::publicEncryptStr(json_encode($tempVar->getData()))),
-                '{uid}' => $this->user->getId()
-            ]
-        );
-
-        (new EmailPasswordRecovery($this->user, $recoLink))->send();
-
-        return R::return_ok;
+        EmailPasswordRecovery::sendEmail($this->user, $recoLink);
     }
 
     public function resetPasswordWithToken($token) {
@@ -91,26 +71,24 @@ class UserManagerPassword {
         if (is_null($tempVar))
             throw new Api400(R::return_error_incorrect_recovery_key);
 
-        /** @var RecoveryToken $sysRecoToken */
-        $sysRecoToken = $tempVar->getData();
+        /** @var RecoveryToken $recoTkn */
+        $recoTkn = $tempVar->getData();
 
-        if ($userRecoToken->email != $sysRecoToken->email)
+        if ($userRecoToken->email != $recoTkn->email)
             throw new Api400(R::return_error_incorrect_recovery_key);
 
-        if ($userRecoToken->recoveryKey != $sysRecoToken->recoveryKey)
+        if ($userRecoToken->recoveryKey != $recoTkn->recoveryKey)
             throw new Api400(R::return_error_incorrect_recovery_key);
 
         // The token is valid
         $randomPassword = getRandomString(15, 15);
-        $this->adminChangePassword($randomPassword);
+        $this->changeAndSave($randomPassword);
 
         // Password changed successfully, delete the temp var
         $tempVar->delete();
 
         // Send the new password to the user
-        (new EmailPasswordRecovered($this->user, $randomPassword))->send();
-
-        return R::return_ok;
+        EmailPasswordRecovered::sendEmail($this->user, $randomPassword);
     }
 
     public function changePassword(ApiFormChangePassword $form) {
@@ -124,49 +102,12 @@ class UserManagerPassword {
             throw new Api400(R::return_error_passwords_not_equal);
 
         // The new password is == new password confirm
-        return $this->adminChangePassword($form->passwordNext);
+        $this->changeAndSave($form->passwordNext);
     }
 
-    public function adminChangePassword($newPassword) {
+    private function changeAndSave($newPassword) {
         $this->user = UserAccountUtils::setUserPassword($this->user, $newPassword);
-
-        try {
-            $this->user->save();
-
-        } catch (PropelException $exception) {
-            // Unknown Exception
-            throw new Api400();
-        }
-
-        return R::return_ok;
+        $this->user->save();
     }
-
-}
-
-
-class RecoveryToken {
-
-    public static function fromValues($recoveryKey, $email) {
-        $recoveryToken = new RecoveryToken();
-        $recoveryToken->recoveryKey = $recoveryKey;
-        $recoveryToken->email = $email;
-        return $recoveryToken;
-    }
-
-    public static function fromTokenStr($decryptedToken) {
-        $decryptedToken = json_decode($decryptedToken, true);
-        $recoveryToken = new RecoveryToken();
-        $recoveryToken->email = $decryptedToken['email'];
-        $recoveryToken->systemTempVarId = $decryptedToken['systemTempVarId'];
-        $recoveryToken->recoveryKey = $decryptedToken['recoveryKey'];
-        return $recoveryToken;
-    }
-
-
-    private function __construct() { }
-
-    public $email;
-    public $systemTempVarId;
-    public $recoveryKey;
 
 }

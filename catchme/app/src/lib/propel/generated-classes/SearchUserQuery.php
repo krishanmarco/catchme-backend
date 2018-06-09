@@ -1,6 +1,7 @@
 <?php
 
 use Base\SearchUserQuery as BaseSearchUserQuery;
+use Map\SearchUserTableMap;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'search_user' table.
@@ -16,12 +17,12 @@ class SearchUserQuery extends BaseSearchUserQuery {
 
     public function fullTextSearch($searchString) {
         $matchQuery = strtr('MATCH({col_name}) AGAINST(? IN BOOLEAN MODE)', [
-            '{col_name}' => \Map\SearchUserTableMap::COL_QUERY
+            '{col_name}' => SearchUserTableMap::COL_QUERY
         ]);
 
         return $this
             ->where($matchQuery, $searchString)
-            ->groupBy(\Map\SearchUserTableMap::COL_USER_ID);
+            ->groupBy(SearchUserTableMap::COL_USER_ID);
     }
 
 }

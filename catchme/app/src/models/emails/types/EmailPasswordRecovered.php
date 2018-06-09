@@ -8,6 +8,11 @@ use I18n\I18n;
 
 class EmailPasswordRecovered extends EmailBase {
 
+    public static function sendEmail(DbUser $dbUser, $newPassword) {
+        $epr = new EmailPasswordRecovered($dbUser, $newPassword);
+        $epr->send();
+    }
+
     public function __construct(DbUser $dbUser, $newPassword) {
         parent::__construct($dbUser->getEmail(), $dbUser->getLocale(), true);
         $this->dbUser = $dbUser;

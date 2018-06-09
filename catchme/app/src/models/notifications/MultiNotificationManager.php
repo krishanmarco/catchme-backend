@@ -1,10 +1,10 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 09/10/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 09/10/2017 */
 
 namespace Models\Feed;
 use Models\Calculators\LocationModel;
 use Models\Calculators\UserModel;
 
-class MultiNotificationManager {
+abstract class MultiNotificationManager {
 
     /**
      * Gets the current users (based on $userModel)
@@ -12,7 +12,7 @@ class MultiNotificationManager {
      * ----------------------------
      * @return int[]
      */
-    public function getUidsInterestedInUser($userId) {
+    public static function uidsInterestedInUser($userId) {
         $connectionStrengths = UserModel::fromId($userId)
             ->getUserConnectionManager()
             ->getConnectionStrengths();
@@ -24,13 +24,16 @@ class MultiNotificationManager {
         return array_keys($connectionStrengths);
     }
 
-
-    public function getUidsInterestedInLocation($locationId) {
+    /**
+     * Gets the current users (based on $locationModel)
+     * favorites that can be notified of an event
+     * ----------------------------
+     * @return int[]
+     */
+    public static function uidsInterestedInLocation($locationId) {
         return LocationModel::fromId($locationId)
             ->getLocationFollowers()
             ->getResultIds();
     }
-
-
 
 }

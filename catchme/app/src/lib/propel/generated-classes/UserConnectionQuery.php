@@ -1,6 +1,9 @@
 <?php
 
 use Base\UserConnectionQuery as BaseUserConnectionQuery;
+use Map\UserConnectionTableMap;
+use Propel\Runtime\Propel;
+use EConnectionState;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'user_connection' table.
@@ -15,8 +18,51 @@ use Base\UserConnectionQuery as BaseUserConnectionQuery;
 class UserConnectionQuery extends BaseUserConnectionQuery {
 
 
-    public function filterByConnectionIds($uid1, $uid2) {
+    /**
+     * This query is too complicated for the propel API
+     * This method returns all the friends of ${userIds} unique
+     *
+     * ---- Db testing Query
+     * SELECT IF(user_id IN (1), connection_id, user_id) as id, COUNT(*)
+     * FROM user_connection
+     * WHERE user_id IN (1) OR connection_id IN (1) AND state = 1
+     * GROUP BY id
+     * ORDER BY COUNT(*) DESC
+     * ----
+     * @return int[] */
+    public static function getUsersFriendIds(array $uids) {
+        if (sizeof($uids) <= 0)
+            return [];
 
+        $connection = Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME);
+        $statement = $connection->prepare(strtr(
+            "SELECT {col_res} FROM (" .
+            "SELECT IF({col_user_id} IN ({col_id_val}), {col_connection_id}, {col_user_id}) as {col_res}, COUNT(*) " .
+            "FROM {tbl_name} " .
+            "WHERE ({col_user_id} IN ({col_id_val}) OR {col_connection_id} IN ({col_id_val})) AND {col_state} = {col_state_val} " .
+            "GROUP BY  {col_res} " .
+            "ORDER BY COUNT(*) DESC" .
+            ") AS x",
+            [
+                '{tbl_name}' => UserConnectionTableMap::TABLE_NAME,
+                '{col_user_id}' => UserConnectionTableMap::COL_USER_ID,
+                '{col_connection_id}' => UserConnectionTableMap::COL_CONNECTION_ID,
+                '{col_state}' => UserConnectionTableMap::COL_STATE,
+                '{col_state_val}' => EConnectionState::CONFIRMED,
+                '{col_res}' => 'id',
+                '{col_id_val}' => implode(',', $uids)
+            ]
+        ));
+        $statement->execute();
+
+        return array_map(
+            function($row) { return intval($row['id']); },
+            $statement->fetchAll(\PDO::FETCH_ASSOC)
+        );
+    }
+
+
+    public function filterByConnectionIds($uid1, $uid2) {
         $whereLeft = strtr('{colLeft} = ?', [
             '{table}' => \Map\UserConnectionTableMap::CLASS_DEFAULT,
             '{colLeft}' => \Map\UserConnectionTableMap::COL_USER_ID

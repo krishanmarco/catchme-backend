@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 14/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 14/09/2017 */
 
 namespace Models\User\Accounts;
 use Api\UserLocationStatus;
@@ -8,7 +8,6 @@ use User;
 use UserLocation;
 use UserLocationQuery;
 use Api\UserLocationStatus as ApiUserLocationStatus;
-use R;
 
 class UserManagerStatus {
 
@@ -16,46 +15,27 @@ class UserManagerStatus {
         $this->user = $user;
     }
 
-
     /** @var User $user */
     private $user;
 
-
     /** @return UserLocation */
     public function add(ApiUserLocationStatus $apiUserLocationStatus) {
-
         $userLocation = new UserLocation();
         $userLocation->setUserId($this->user->getId());
         $userLocation->setLocationId($apiUserLocationStatus->locationId);
         $userLocation->setFromTs($apiUserLocationStatus->fromTs);
         $userLocation->setUntilTs($apiUserLocationStatus->untilTs);
-
-
-        try {
-            $userLocation->save();
-
-        } catch (PropelException $e) {
-            switch ($e->getCode()) {
-                default: throw new Api400(R::return_error_generic, $e);
-            }
-        }
-
-
+        $userLocation->save();
         return $userLocation;
     }
 
-
-    /** @return int */
     public function del($tid) {
-
         $userLocation = UserLocationQuery::create()
             ->filterByUserId($this->user->getId())
             ->findPk($tid);
 
-
         if (!is_null($userLocation))
             $userLocation->delete();
     }
-
 
 }

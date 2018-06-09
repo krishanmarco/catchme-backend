@@ -1,6 +1,7 @@
 <?php
 
 use Base\SearchLocationQuery as BaseSearchLocationQuery;
+use Map\SearchLocationTableMap;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'search_location' table.
@@ -16,12 +17,12 @@ class SearchLocationQuery extends BaseSearchLocationQuery {
 
     public function fullTextSearch($searchString) {
         $matchQuery = strtr('MATCH({col_name}) AGAINST(? IN BOOLEAN MODE)', [
-            '{col_name}' => \Map\SearchLocationTableMap::COL_QUERY
+            '{col_name}' => SearchLocationTableMap::COL_QUERY
         ]);
 
         return $this
             ->where($matchQuery, $searchString)
-            ->groupBy(\Map\SearchLocationTableMap::COL_LOCATION_ID);
+            ->groupBy(earchLocationTableMap::COL_LOCATION_ID);
     }
 
 }

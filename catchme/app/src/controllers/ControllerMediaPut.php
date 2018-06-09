@@ -1,11 +1,9 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 */
 
 namespace Controllers;
 
-use Models\Calculators\UserModel;
 use Models\Feed\MultiNotificationManager;
 use Models\Location\LocationImagesModel;
-use Models\User\Accounts\UserEditProfile;
 use Firebase\FeedManager;
 use Firebase\FeedItems\FeedItemFriendAddedImage;
 use FileUploader;
@@ -24,7 +22,7 @@ class ControllerMediaPut {
     /** @var DbUser $authenticatedUser */
     private $authenticatedUser;
 
-
+    /** @return string */
     public function addBasedOnType($typeId, $itemId, UploadedFile $uploadedFile) {
         switch ($typeId) {
             case EMediaType::LOCATION_IMAGE:
@@ -34,16 +32,13 @@ class ControllerMediaPut {
         throw new Api400(R::return_error_generic);
     }
 
-
-
-
+    /** @return string */
     public function putLocationImage($locationId, UploadedFile $uploadedFile) {
         $locationImagesModel = LocationImagesModel::fromId($locationId);
 
         $locationImage = $locationImagesModel->add($this->authenticatedUser->getId());
 
         try {
-
             $savePath = strtr(LOCATION_MEDIA_DIR_TPL, [
                 '{LID}' => $locationImage->getLocationId()
             ]);
@@ -57,15 +52,13 @@ class ControllerMediaPut {
             throw $apiException;
         }
 
-        $mfm = new MultiNotificationManager();
-
         // Add the notification item to firebase
         FeedManager::build($this->authenticatedUser)
             ->postMultipleFeeds(new FeedItemFriendAddedImage(
                 $this->authenticatedUser,
                 $locationImagesModel->getLocation(),
                 $locationImage
-            ), $mfm->getUidsInterestedInUser($this->authenticatedUser->getId()));
+            ), MultiNotificationManager::uidsInterestedInUser($this->authenticatedUser->getId()));
 
         return $locationImage->getUrl();
     }

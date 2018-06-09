@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 */
 
 namespace Controllers;
 
@@ -28,7 +28,6 @@ class ControllerUsers {
             ->get();
     }
 
-
     /** @return ApiUser */
     public function getProfile() {
         $userModel = UserModel::fromId($this->userId);
@@ -40,6 +39,5 @@ class ControllerUsers {
             ->applyPrivacyPolicy($this->authUser)
             ->get();
     }
-
 
 }

@@ -1,4 +1,4 @@
-<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 - Fithancer © */
+<?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 13/09/2017 */
 
 namespace Controllers;
 
@@ -18,19 +18,16 @@ class ControllerAdmin {
     /** @var DbUser $authAdmin */
     private $authAdmin;
 
-
+    /** @return int */
     public function sendFeaturedAdAttendanceRequest(FormFeaturedAdAdd $featuredAd) {
-        $mfm = new MultiNotificationManager();
-
         // Add the notification item to firebase
         FeaturedAdsManager::build()
             ->postMultipleFeaturedAds(
                 new FeaturedAdItemAttendanceRequest($featuredAd),
-                $mfm->getUidsInterestedInLocation($featuredAd->locationId)
+                MultiNotificationManager::uidsInterestedInLocation($featuredAd->locationId)
             );
 
         return R::return_ok;
     }
-
 
 }

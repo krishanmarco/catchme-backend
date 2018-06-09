@@ -76,13 +76,13 @@ abstract class Cacheable {
             ->prepare(strtr(
                 "SELECT {col_data}, {col_insert_ts} " .
                 "FROM {tbl_name} " .
-                "WHERE {col_id} = {col_id_val}",
+                "WHERE {val_id} = {col_id}",
                 [
                     '{tbl_name}' => $this->cacheTableName,
                     '{col_id}' => CacheableConstants::SQL_COL_CACHE_ID,
                     '{col_data}' => CacheableConstants::SQL_COL_CACHE_DATA,
                     '{col_insert_ts}' => CacheableConstants::SQL_COL_CACHE_INSERT_TS,
-                    '{col_id_val}' => $this->cacheEntryId
+                    '{val_id}' => $this->cacheEntryId
                 ]
             ));
         $statement->execute();
@@ -98,16 +98,16 @@ abstract class Cacheable {
         Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME)
             ->prepare(strtr(
                 "INSERT INTO {tbl_name} ({col_id}, {col_data}, {col_insert_ts}) " .
-                "VALUES ({col_id_val}, '{col_data_val}', {col_insert_ts_val}) " .
-                "ON DUPLICATE KEY UPDATE {col_data}='{col_data_val}', {col_insert_ts}={col_insert_ts_val};",
+                "VALUES ({val_id_val}, '{col_data_val}', {col_insert_ts}) " .
+                "ON DUPLICATE KEY UPDATE {val_data}='{col_data_val}', {col_insert_ts}={col_insert_ts};",
                 [
                     '{tbl_name}' => $this->cacheTableName,
                     '{col_id}' => CacheableConstants::SQL_COL_CACHE_ID,
                     '{col_data}' => CacheableConstants::SQL_COL_CACHE_DATA,
                     '{col_insert_ts}' => CacheableConstants::SQL_COL_CACHE_INSERT_TS,
-                    '{col_id_val}' => $this->cacheEntryId,
-                    '{col_data_val}' => $dataStr,
-                    '{col_insert_ts_val}' => time(),
+                    '{val_id}' => $this->cacheEntryId,
+                    '{val_data}' => $dataStr,
+                    '{val_insert_ts}' => time(),
                 ]
             ))
             ->execute();

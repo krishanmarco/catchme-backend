@@ -8,6 +8,7 @@ use SFCriteria;
 use User as DbUser;
 use UserQuery;
 use Models\UserSuggestedFriendsResult;
+use UserConnectionQuery;
 
 class UserSuggestedFriends {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
@@ -36,11 +37,11 @@ class UserSuggestedFriends {
 
         // Select all this users confirmed friends
         // only the ids are needed
-        $friendIds = UserQueriesWrapper::getUsersFriendIds([$this->user->getId()]);
+        $friendIds = UserConnectionQuery::getUsersFriendIds([$this->user->getId()]);
 
         // Get the friends of the selected friends
         // Note, the array returned by array_unique is ASSOCIATIVE
-        $suggestedIds = array_unique(UserQueriesWrapper::getUsersFriendIds($friendIds));
+        $suggestedIds = array_unique(UserConnectionQuery::getUsersFriendIds($friendIds));
 
         // Remove the current user from the selected user ids
         // Note, the array returned by array_search is ASSOCIATIVE

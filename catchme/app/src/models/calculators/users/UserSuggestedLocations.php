@@ -20,6 +20,7 @@ use WeightedCalculator\WeightedGroupCalculator;
 use WeightedCalculator\WeightedUnit;
 use Models\Calculators\Helpers\UserSuggestedLocationsCalc;
 use Models\Calculators\Helpers\LocIdCoord;
+use UserConnectionQuery;
 
 class UserSuggestedLocations extends Cacheable {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
@@ -166,7 +167,7 @@ class UserSuggestedLocations extends Cacheable {
         // Define function to get locations
             function () {
                 // Select all this users confirmed friend ids
-                $friendIds = UserQueriesWrapper::getUsersFriendIds([$this->user->getId()]);
+                $friendIds = UserConnectionQuery::getUsersFriendIds([$this->user->getId()]);
 
                 // Select all the location ids the users friends are subscribed to
                 // Use the location count as a ranking parameter

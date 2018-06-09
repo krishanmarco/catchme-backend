@@ -37,9 +37,9 @@ class UserConnectionQuery extends BaseUserConnectionQuery {
         $connection = Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME);
         $statement = $connection->prepare(strtr(
             "SELECT {col_res} FROM (" .
-            "SELECT IF({val_user_id} IN ({col_id}), {col_connection_id}, {col_user_id}) as {col_res}, COUNT(*) " .
+            "SELECT IF({col_user_id} IN ({val_user_id}), {col_connection_id}, {col_user_id}) as {col_res}, COUNT(*) " .
             "FROM {tbl_name} " .
-            "WHERE ({val_user_id} IN ({col_id_val}) OR {col_connection_id} IN ({col_id_val})) AND {col_state} = {col_state} " .
+            "WHERE ({col_user_id} IN ({val_user_id}) OR {col_connection_id} IN ({val_user_id}) AND {col_state} = {val_state}) " .
             "GROUP BY  {col_res} " .
             "ORDER BY COUNT(*) DESC" .
             ") AS x",
@@ -50,7 +50,7 @@ class UserConnectionQuery extends BaseUserConnectionQuery {
                 '{col_state}' => UserConnectionTableMap::COL_STATE,
                 '{col_res}' => 'id',
                 '{val_state}' => EConnectionState::CONFIRMED,
-                '{val_id}' => implode(',', $uids)
+                '{val_user_id}' => implode(',', $uids)
             ]
         ));
         $statement->execute();
@@ -59,6 +59,58 @@ class UserConnectionQuery extends BaseUserConnectionQuery {
             function($row) { return intval($row['id']); },
             $statement->fetchAll(\PDO::FETCH_ASSOC)
         );
+    }
+    /**
+     * This query is too complicated for the propel API
+     * This method returns the friends of all the ids in the {$userIds} field
+     * in a way that if both {x} and {y} are in {userIds} and {x friends y} then
+     * either {x} will be indicated in {y}s friends or {y} will be indicated in {x}s friends
+     * but not both.
+     *
+     * ---- Db testing Query
+     * SELECT
+     *  IF(user_id IN (2, 3, 4), user_id, connection_id) AS id1,
+     *  IF(user_id IN (2, 3, 4), connection_id, user_id) AS id2
+     * FROM user_connection
+     * WHERE (user_id IN (2, 3, 4) OR connection_id IN (2, 3, 4))
+     * ORDER BY id1 ASC, id2 ASC
+     * ----
+     * @return array(friendId => [friendsFriendId, friendsFriendsId, ...]) */
+    public static function getUsersFriendsIdsGroupedByUserIdUnique(array $uids) {
+        if (sizeof($uids) <= 0)
+            return [];
+
+        $connection = Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME);
+        $statement = $connection->prepare(strtr(
+            "SELECT " .
+            "IF({col_user_id} IN ({val_id}), {col_user_id}, {col_connection_id}) as {col_res_1}, " .
+            "IF({col_user_id} IN ({val_id}), {col_connection_id}, {col_user_id}) as {col_res_2} " .
+            "FROM {tbl_name} " .
+            "WHERE {col_user_id} IN ({val_id}) OR {col_connection_id} IN ({val_id})",
+            [
+                '{tbl_name}' => UserConnectionTableMap::TABLE_NAME,
+                '{col_user_id}' => UserConnectionTableMap::COL_USER_ID,
+                '{col_connection_id}' => UserConnectionTableMap::COL_CONNECTION_ID,
+                '{col_res_1}' => 'id1',
+                '{col_res_2}' => 'id2',
+                '{val_id}' => implode(',', $uids)
+            ]
+        ));
+        $statement->execute();
+        $fetch = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        $result = [];
+        foreach ($fetch as $row) {
+            $id1 = intval($row['id1']);
+            $id2 = intval($row['id2']);
+
+            if (!key_exists($id1, $result))
+                $result[$id1] = [];
+
+            array_push($result[$id1], $id2);
+        }
+
+        return $result;
     }
 
 

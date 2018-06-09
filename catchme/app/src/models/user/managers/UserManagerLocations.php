@@ -2,11 +2,9 @@
 
 namespace Models\User\Accounts;
 use Propel\Runtime\Exception\PropelException;
-use Slim\Exception\Api400;
 use UserLocationFavoriteQuery;
 use UserLocationFavorite;
 use User;
-use R;
 
 class UserManagerLocations {
 

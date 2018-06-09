@@ -4,6 +4,7 @@ namespace Models\Calculators\Users;
 
 use User as DbUser;
 use Models\Queries\User\UserQueriesWrapper;
+use UserConnectionQuery;
 
 /**
  * This class handles all calculations that involve the relationship between users
@@ -42,11 +43,11 @@ class UserConnectionManager {
     private function calculateConnectionStrengths() {
 
         // Given the current user, get all his friends ids
-        $usersFriendIds = UserQueriesWrapper::getUsersFriendIds([$this->user->getId()]);
+        $usersFriendIds = UserConnectionQuery::getUsersFriendIds([$this->user->getId()]);
 
         // Foreach friend, get that friends friends
         // array(friendId => [friendsFriendId, friendsFriendsId, ...])
-        $friendsFriends = UserQueriesWrapper::getUsersFriendsIdsGroupedByUserIdUnique($usersFriendIds);
+        $friendsFriends = UserConnectionQuery::getUsersFriendsIdsGroupedByUserIdUnique($usersFriendIds);
 
         // Build the connection array
         foreach ($friendsFriends as $friendId => $friendIdsFriends) {

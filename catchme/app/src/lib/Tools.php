@@ -108,7 +108,9 @@ function deleteDirectory($dir) {
 }
 
 function classFromArray(array $data) {
-    return json_decode(json_encode($data));
+    return !is_null($data)
+        ? json_decode(json_encode($data))
+        : null;
 }
 
 function removeFromArrayWhere(array $array, Closure $deleteItems) {

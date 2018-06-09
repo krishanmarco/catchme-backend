@@ -2,6 +2,8 @@
 
 namespace Api;
 
+use Grpc\Server;
+
 class ServerTextBuilder {
     const KEY_TEXT = 't';
     const KEY_I18N = 'i';
@@ -19,25 +21,32 @@ class ServerTextBuilder {
         return $this->text(' ');
     }
 
-    public function textBold($text, $styleArray = null) {
+    /** @return ServerTextBuilder */
+    public function textBold($text, $styleArray = []) {
         return $this->text($text, array_merge($styleArray, ['fontWeight' => 'bold']));
     }
 
     /** @return ServerTextBuilder */
     public function text($text, $styleArray = null) {
-        $this->strings[] = classFromArray([
-            self::KEY_TEXT => $text,
-            self::KEY_STYLE => classFromArray($styleArray)
-        ]);
+        $params = [self::KEY_TEXT => $text];
+
+        if (!is_null($styleArray))
+            $params[self::KEY_STYLE] = classFromArray($styleArray);
+
+        $this->strings[] = classFromArray($params);
+
         return $this;
     }
 
     /** @return ServerTextBuilder */
     public function i18n($i18n, $styleArray = null) {
-        $this->strings[] = classFromArray([
-            self::KEY_I18N => $i18n,
-            self::KEY_STYLE => classFromArray($styleArray)
-        ]);
+        $params = [self::KEY_I18N => $i18n];
+
+        if (!is_null($styleArray))
+            $params[self::KEY_STYLE] = classFromArray($styleArray);
+
+        $this->strings[] = classFromArray($params);
+
         return $this;
 
     }

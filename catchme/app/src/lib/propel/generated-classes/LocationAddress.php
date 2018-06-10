@@ -21,7 +21,7 @@ class LocationAddress extends BaseLocationAddress {
 
     /** @return LatLng */
     public function getLatLng() {
-        return new LatLng($this->getLng(), $this->getLng());
+        return new LatLng($this->getLat(), $this->getLng());
     }
 
 }

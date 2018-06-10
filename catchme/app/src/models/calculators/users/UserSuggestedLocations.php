@@ -7,7 +7,6 @@ use cache\CacheableConstants;
 use Map\LocationAddressTableMap;
 use Map\LocationTableMap;
 use Map\UserLocationFavoriteTableMap;
-use Models\Queries\User\UserQueriesWrapper;
 use Propel\Runtime\ActiveQuery\Criteria;
 use SFCriteria;
 use Models\UserSuggestedLocationsResult;

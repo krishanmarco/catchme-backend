@@ -35,6 +35,7 @@ class LocationRegistration {
         $this->location->setPhone($formLocationRegister->phone);
         $this->location->setTimings($formLocationRegister->timings);
         $this->location->setSignupTs(time());
+        $this->location->setVerified(LOCATION_DEFAULT_VERIFIED);
 
         if ($uploadedFile instanceof UploadedFile) {
             $this->location->trySetAvatarFromFile($uploadedFile);

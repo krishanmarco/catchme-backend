@@ -76,7 +76,7 @@ abstract class Cacheable {
             ->prepare(strtr(
                 "SELECT {col_data}, {col_insert_ts} " .
                 "FROM {tbl_name} " .
-                "WHERE {val_id} = {col_id}",
+                "WHERE {col_id} = {val_id}",
                 [
                     '{tbl_name}' => $this->cacheTableName,
                     '{col_id}' => CacheableConstants::SQL_COL_CACHE_ID,
@@ -98,8 +98,8 @@ abstract class Cacheable {
         Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME)
             ->prepare(strtr(
                 "INSERT INTO {tbl_name} ({col_id}, {col_data}, {col_insert_ts}) " .
-                "VALUES ({val_id_val}, '{col_data_val}', {col_insert_ts}) " .
-                "ON DUPLICATE KEY UPDATE {val_data}='{col_data_val}', {col_insert_ts}={col_insert_ts};",
+                "VALUES ({val_id}, '{val_data}', {val_insert_ts}) " .
+                "ON DUPLICATE KEY UPDATE {col_data}='{val_data}', {col_insert_ts}={val_insert_ts};",
                 [
                     '{tbl_name}' => $this->cacheTableName,
                     '{col_id}' => CacheableConstants::SQL_COL_CACHE_ID,
@@ -115,10 +115,10 @@ abstract class Cacheable {
 
     private function queryDeleteData() {
         Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME)
-            ->prepare(strtr("DELETE FROM {tbl_name} WHERE {col_id} = {id};", [
+            ->prepare(strtr("DELETE FROM {tbl_name} WHERE {col_id} = {val_id};", [
                 '{tbl_name}' => $this->cacheTableName,
                 '{col_id}' => CacheableConstants::SQL_COL_CACHE_ID,
-                '{id}' => $this->cacheEntryId
+                '{val_id}' => $this->cacheEntryId
             ]))
             ->execute();
     }

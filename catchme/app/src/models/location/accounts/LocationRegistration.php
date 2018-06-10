@@ -5,11 +5,9 @@ use Propel\Runtime\Exception\PropelException as PropelException;
 use Location as DbLocation;
 use LocationAddress as DbLocationAddress;
 use Slim\Exception\Api400;
-use Slim\Exception\Api500;
 use Slim\Http\UploadedFile;
 use User as DbUser;
 use Api\FormLocationRegister as ApiFormLocationRegister;
-use Api\LocationAddress as ApiLocationAddress;
 use LatLng;
 use R;
 
@@ -41,17 +39,15 @@ class LocationRegistration {
             $this->location->trySetAvatarFromFile($uploadedFile);
         }
 
-        /** @var ApiLocationAddress $apiLocationAddress */
         $dbLocationAddress = new DbLocationAddress();
-        $apiLocationAddress = $formLocationRegister->address;
-        $dbLocationAddress->setCountry($apiLocationAddress->country);
-        $dbLocationAddress->setState($apiLocationAddress->state);
-        $dbLocationAddress->setCity($apiLocationAddress->city);
-        $dbLocationAddress->setTown($apiLocationAddress->town);
-        $dbLocationAddress->setPostcode($apiLocationAddress->postcode);
-        $dbLocationAddress->setAddress($apiLocationAddress->address);
-        $dbLocationAddress->setLatLng(LatLng::fromObject($apiLocationAddress->latLng));
-        $dbLocationAddress->setGooglePlaceId($apiLocationAddress->googlePlaceId);
+        $dbLocationAddress->setCountry($formLocationRegister->country);
+        $dbLocationAddress->setState($formLocationRegister->state);
+        $dbLocationAddress->setCity($formLocationRegister->city);
+        $dbLocationAddress->setTown($formLocationRegister->town);
+        $dbLocationAddress->setPostcode($formLocationRegister->postcode);
+        $dbLocationAddress->setAddress($formLocationRegister->address);
+        $dbLocationAddress->setLatLng(LatLng::fromObject($formLocationRegister->latLng));
+        $dbLocationAddress->setGooglePlaceId($formLocationRegister->googlePlaceId);
         $this->location->setAddress($dbLocationAddress);
 
         try {

@@ -24,8 +24,15 @@ class FormLocationRegister {
     public $email =             [Rule::ruleIsset => [],         Rule::ruleEmail => []];
     public $capacity =          [Rule::ruleIsset => [],         Rule::ruleInt => []];
     public $phone =             [Rule::ruleIsset => [],         Rule::rulePhone => []];
-    public $address =           [Rule::ruleIsset => [],         Rule::ruleOf => [LocationAddress::class]];
     public $timings =           [Rule::ruleIsset => [],         Rule::ruleLongString => [168, 168]];
+    public $country =           [Rule::ruleIsset => [],         Rule::ruleCountry => []];
+    public $state =             [                               Rule::ruleCityTownState => []];
+    public $city =              [                               Rule::ruleCityTownState => []];
+    public $town =              [                               Rule::ruleCityTownState => []];
+    public $postcode =          [Rule::ruleIsset => [],         Rule::rulePostcode => []];
+    public $address =           [Rule::ruleIsset => [],         Rule::ruleAddress => []];
+    public $latLng =            [                               Rule::ruleLatLng => []];
+    public $googlePlaceId =     [                               Rule::ruleGooglePlaceId => []];
 }
 
 class FormChangePassword {
@@ -60,20 +67,17 @@ class Location {
     public $phone =             [			            		Rule::rulePhone => []];
     public $timings =           [                               Rule::ruleLongString => [168, 168]];
     public $imageUrls =         [            					Rule::ruleUrls => []];
-    public $people =            [            					Rule::ruleOf => [LocationPeople::class]];
-    public $address =           [			            		Rule::ruleOf => [LocationAddress::class]];
-    public $connections =       [            					Rule::ruleOf => [LocationConnections::class]];
-}
-
-class LocationAddress {
-    public $country =           [Rule::ruleIsset => [],         Rule::ruleCountry => []];
-    public $state =             [Rule::ruleIsset => [],         Rule::ruleCityTownState => []];
-    public $city =              [Rule::ruleIsset => [],         Rule::ruleCityTownState => []];
-    public $postcode =          [Rule::ruleIsset => [],         Rule::rulePostcode => []];
-    public $address =           [Rule::ruleIsset => [],         Rule::ruleAddress => []];
+    public $country =           [                               Rule::ruleCountry => []];
+    public $state =             [                               Rule::ruleCityTownState => []];
+    public $city =              [                               Rule::ruleCityTownState => []];
     public $town =              [                               Rule::ruleCityTownState => []];
+    public $postcode =          [                               Rule::rulePostcode => []];
+    public $address =           [                               Rule::ruleAddress => []];
     public $latLng =            [                               Rule::ruleLatLng => []];
     public $googlePlaceId =     [                               Rule::ruleGooglePlaceId => []];
+
+    public $people =            [            					Rule::ruleOf => [LocationPeople::class]];
+    public $connections =       [            					Rule::ruleOf => [LocationConnections::class]];
 }
 
 class LocationPeople {

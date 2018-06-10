@@ -22,7 +22,7 @@ class SearchLocationQuery extends BaseSearchLocationQuery {
 
         return $this
             ->where($matchQuery, $searchString)
-            ->groupBy(earchLocationTableMap::COL_LOCATION_ID);
+            ->groupBy(SearchLocationTableMap::COL_LOCATION_ID);
     }
 
 }

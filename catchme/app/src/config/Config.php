@@ -104,6 +104,7 @@ define("__TEMP__", __DIR__ . '/../../temp');
 
 // Location constants
 define('LOCATION_DEFAULT_VERIFIED', true);
+define('LOCATION_DEFAULT_IMAGE_APPROVED', true);
 define('LOCATION_MEDIA_DIR_TPL', __PRIVATE_DATA__ . '/locations/{LID}/media');
 define('LOCATION_MEDIA_TPL', LOCATION_MEDIA_DIR_TPL . '/{IMAGE_ID}');
 define('LOCATION_MEDIA_TTL', 24 * 60 * 60);

@@ -41,7 +41,7 @@ class LocationImagesModel {
         $locationImage->setLocationId($this->location->getId());
         $locationImage->setInserterId($inserterUid);
         $locationImage->setInsertedTs(time());
-        $locationImage->setApproved(true);
+        $locationImage->setApproved(LOCATION_DEFAULT_IMAGE_APPROVED);
 
 
         try {

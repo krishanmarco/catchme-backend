@@ -1,7 +1,6 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Api\Map;
-use Api\LocationAddress;
 use Api\LocationConnections;
 use Api\LocationPeople;
 use Location as DbLocation;
@@ -66,16 +65,14 @@ class ModelToApiLocation {
 
     /** @return ModelToApiLocation */
     public function withAddress() {
-        $apiAddress = new LocationAddress();
-        $apiAddress->country = $this->dbLocation->getAddress()->getCountry();
-        $apiAddress->state = $this->dbLocation->getAddress()->getState();
-        $apiAddress->city = $this->dbLocation->getAddress()->getCity();
-        $apiAddress->town = $this->dbLocation->getAddress()->getTown();
-        $apiAddress->postcode = $this->dbLocation->getAddress()->getPostcode();
-        $apiAddress->address = $this->dbLocation->getAddress()->getAddress();
-        $apiAddress->latLng = $this->dbLocation->getAddress()->getLatLng();
-        $apiAddress->googlePlaceId = $this->dbLocation->getAddress()->getGooglePlaceId();
-        $this->apiLocation->address = $apiAddress;
+        $this->apiLocation->country = $this->dbLocation->getAddress()->getCountry();
+        $this->apiLocation->state = $this->dbLocation->getAddress()->getState();
+        $this->apiLocation->city = $this->dbLocation->getAddress()->getCity();
+        $this->apiLocation->town = $this->dbLocation->getAddress()->getTown();
+        $this->apiLocation->postcode = $this->dbLocation->getAddress()->getPostcode();
+        $this->apiLocation->address = $this->dbLocation->getAddress()->getAddress();
+        $this->apiLocation->latLng = $this->dbLocation->getAddress()->getLatLng();
+        $this->apiLocation->googlePlaceId = $this->dbLocation->getAddress()->getGooglePlaceId();
         return $this;
     }
 

@@ -3,9 +3,9 @@
 namespace Controllers;
 
 use Api\Map\ModelToApiUsers;
+use Api\User as ApiUser;
 use Models\Calculators\UserModel;
 use User as DbUser;
-use Api\User as ApiUser;
 
 class ControllerUsers {
 
@@ -34,8 +34,8 @@ class ControllerUsers {
         return ModelToApiUsers::single($userModel->getUser())
             ->withEmail()
             ->withPhone()
-            ->withLocations($userModel->getUserLocations()->getResult())
-            ->withConnections($userModel->getUserConnections()->getResult())
+            ->withLocations($userModel->getUserLocations())
+            ->withConnections($userModel->getUserConnections())
             ->applyPrivacyPolicy($this->authUser)
             ->get();
     }

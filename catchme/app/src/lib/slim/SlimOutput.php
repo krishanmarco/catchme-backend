@@ -1,8 +1,9 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Slim;
-use \Psr\Http\Message\ResponseInterface;
-use \Api\ExceptionResponse;
+
+use Api\ExceptionResponse;
+use Psr\Http\Message\ResponseInterface;
 
 
 class SlimOutput {
@@ -15,8 +16,6 @@ class SlimOutput {
     public static function build(ResponseInterface $response, $backendResult) {
         return new SlimOutput($response, $backendResult);
     }
-
-
 
 
     private function __construct(ResponseInterface $response, $backendResult) {
@@ -32,6 +31,7 @@ class SlimOutput {
 
     /** @var ResponseInterface $response */
     private $response;
+
     public function getResponse() { return $this->response; }
 
 
@@ -41,9 +41,8 @@ class SlimOutput {
 
     /** @var bool $errorFound */
     private $errorFound = false;
+
     public function hasError() { return $this->errorFound; }
-
-
 
 
     private function handleError() {
@@ -64,8 +63,6 @@ class SlimOutput {
     }
 
 
-
-
     public function writeToResponse($asJson = true) {
         if ($asJson) {
             $this->backendResult = DEVELOPMENT_MODE
@@ -80,7 +77,6 @@ class SlimOutput {
         // Return the result for Slim output
         return $this->response;
     }
-
 
 
 }

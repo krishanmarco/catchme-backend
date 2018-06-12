@@ -1,26 +1,24 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 14/09/2017 */
 
 namespace Models\User\Accounts;
-use Api\UserLocationStatus;
-use Propel\Runtime\Exception\PropelException;
-use Slim\Exception\Api400;
-use User;
-use UserLocation;
-use UserLocationQuery;
+
 use Api\UserLocationStatus as ApiUserLocationStatus;
+use User as DbUser;
+use UserLocation as DbUserLocation;
+use UserLocationQuery;
 
 class UserManagerStatus {
 
-    public function __construct(User $user) {
+    public function __construct(DbUser $user) {
         $this->user = $user;
     }
 
-    /** @var User $user */
+    /** @var DbUser $user */
     private $user;
 
-    /** @return UserLocation */
+    /** @return DbUserLocation */
     public function add(ApiUserLocationStatus $apiUserLocationStatus) {
-        $userLocation = new UserLocation();
+        $userLocation = new DbUserLocation();
         $userLocation->setUserId($this->user->getId());
         $userLocation->setLocationId($apiUserLocationStatus->locationId);
         $userLocation->setFromTs($apiUserLocationStatus->fromTs);

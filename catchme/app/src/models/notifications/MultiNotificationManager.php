@@ -1,8 +1,10 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 09/10/2017 */
 
 namespace Models\Feed;
+
 use Models\Calculators\LocationModel;
 use Models\Calculators\UserModel;
+use UserLocationFavorite as DbUserLocationFavorite;
 
 abstract class MultiNotificationManager {
 
@@ -31,9 +33,11 @@ abstract class MultiNotificationManager {
      * @return int[]
      */
     public static function uidsInterestedInLocation($locationId) {
-        return LocationModel::fromId($locationId)
+        $locationFollowers = LocationModel::fromId($locationId)
             ->getLocationFollowers()
-            ->getResultIds();
+            ->getLocationFollowers();
+
+        return DbUserLocationFavorite::mapToUserIds($locationFollowers);
     }
 
 }

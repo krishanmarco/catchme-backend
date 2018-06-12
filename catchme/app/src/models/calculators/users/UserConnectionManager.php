@@ -3,7 +3,6 @@
 namespace Models\Calculators\Users;
 
 use User as DbUser;
-use Models\Queries\User\UserQueriesWrapper;
 use UserConnectionQuery;
 
 /**

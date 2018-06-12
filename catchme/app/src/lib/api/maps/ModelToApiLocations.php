@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 15/09/2017 */
 
 namespace Api\Map;
+
 use Location as DbLocation;
 
 
@@ -13,8 +14,6 @@ class ModelToApiLocations {
     public static function multiple() {
         return new ModelToApiLocations();
     }
-
-
 
 
     public function locations(array $dbLocations) {

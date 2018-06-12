@@ -3,12 +3,10 @@
 namespace Models\Calculators\Users;
 
 use Map\UserTableMap;
-use Models\Queries\User\UserQueriesWrapper;
 use SFCriteria;
 use User as DbUser;
-use UserQuery;
-use Models\UserSuggestedFriendsResult;
 use UserConnectionQuery;
+use UserQuery;
 
 class UserSuggestedFriends {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
@@ -25,12 +23,12 @@ class UserSuggestedFriends {
     /** @var int */
     private $seed = 0;
 
-    /** @var UserSuggestedFriendsResult */
-    private $result;
+    /** @var DbUser[] */
+    public $suggestedFriends = [];
 
-    /** @return UserSuggestedFriendsResult */
-    public function getResult() {
-        return $this->result;
+    /** @var DbUser[] */
+    public function getSuggestedFriends() {
+        return $this->suggestedFriends;
     }
 
     private function calculateSuggestedFriends() {
@@ -53,7 +51,6 @@ class UserSuggestedFriends {
 
         // If there are no suggested connections return an empty list
         if (sizeof($suggestedIds) <= 0) {
-            $this->result = new UserSuggestedFriendsResult([]);
             return;
         }
 
@@ -80,13 +77,10 @@ class UserSuggestedFriends {
         $criteria = new SFCriteria();
         $criteria->addOrderByField(UserTableMap::COL_ID, $suggestedIdsSubset);
 
-        $suggestedUsers = UserQuery::create(null, $criteria)
+        $this->suggestedFriends = UserQuery::create(null, $criteria)
             ->orderById()
             ->findPks($suggestedIdsSubset)
             ->getData();
-
-
-        $this->result = new UserSuggestedFriendsResult($suggestedUsers);
     }
 
 }

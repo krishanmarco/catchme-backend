@@ -4,22 +4,22 @@ namespace Models\Calculators\Users;
 
 use cache\Cacheable;
 use cache\CacheableConstants;
+use Location as DbLocation;
+use LocationAddressQuery;
+use LocationQuery;
 use Map\LocationAddressTableMap;
 use Map\LocationTableMap;
 use Map\UserLocationFavoriteTableMap;
+use Models\Calculators\Helpers\LocIdCoord;
+use Models\Calculators\Helpers\UserSuggestedLocationsCalc;
+use Models\LatLng;
 use Propel\Runtime\ActiveQuery\Criteria;
 use SFCriteria;
-use Models\UserSuggestedLocationsResult;
 use User as DbUser;
-use LocationQuery;
-use LocationAddressQuery;
+use UserConnectionQuery;
 use UserLocationFavoriteQuery;
-use LatLng;
 use WeightedCalculator\WeightedGroupCalculator;
 use WeightedCalculator\WeightedUnit;
-use Models\Calculators\Helpers\UserSuggestedLocationsCalc;
-use Models\Calculators\Helpers\LocIdCoord;
-use UserConnectionQuery;
 
 class UserSuggestedLocations extends Cacheable {
     const CONFIG_TOTAL_NUMBER_OF_SUGGESTIONS = 15;
@@ -47,12 +47,12 @@ class UserSuggestedLocations extends Cacheable {
     /** @var null|LatLng */
     private $userLatLng;
 
-    /** @var UserSuggestedLocationsResult */
-    private $result;
+    /** @var DbLocation[] */
+    private $suggestedLocations;
 
-    /** @return UserSuggestedLocationsResult */
-    public function getResult() {
-        return $this->result;
+    /** @return DbLocation[] */
+    public function getSuggestedLocations() {
+        return $this->suggestedLocations;
     }
 
     public function suggestLocations() {
@@ -74,12 +74,10 @@ class UserSuggestedLocations extends Cacheable {
         $criteria = new SFCriteria();
         $criteria->addOrderByField(LocationTableMap::COL_ID, $orderedUniqueLocationIds);
 
-        $suggestedLocations = LocationQuery::create(null, $criteria)
+        $this->suggestedLocations = LocationQuery::create(null, $criteria)
             ->filterByVerified(true)
             ->findPks($suggestedIdsSubset)
             ->getData();
-
-        $this->result = new UserSuggestedLocationsResult($suggestedLocations);
     }
 
 

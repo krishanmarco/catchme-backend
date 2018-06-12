@@ -1,14 +1,14 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 12/09/2017 */
 
 namespace Routes;
-use \Psr\Container\ContainerInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
+
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Routes\Accessors\ControllerAccessorUnauth;
+use Slim\Http\Stream;
 use Slim\SlimAttrGet;
 use Slim\SlimOutput;
-use Slim\Http\Stream;
-
 
 
 class RoutesProtected {
@@ -22,15 +22,12 @@ class RoutesProtected {
     private $controller;
 
 
-
-
     const accountsLogin = RoutesProtected::class . ':accountsLogin';
 
     public function accountsLogin(ServerRequestInterface $request, ResponseInterface $response) {
         $result = $this->controller->accounts()->catchMeLogin(SlimAttrGet::getInputData($request));
         return SlimOutput::buildAndWrite($response, $result);
     }
-
 
 
     const accountsLoginFacebook = RoutesProtected::class . ':accountsLoginFacebook';
@@ -41,14 +38,12 @@ class RoutesProtected {
     }
 
 
-
     const accountsLoginGoogle = RoutesProtected::class . ':accountsLoginGoogle';
 
     public function accountsLoginGoogle(ServerRequestInterface $request, ResponseInterface $response) {
         $result = $this->controller->accounts()->googleLogin(SlimAttrGet::getInputData($request));
         return SlimOutput::buildAndWrite($response, $result);
     }
-
 
 
     const accountsRegister = RoutesProtected::class . ':accountsRegister';
@@ -59,14 +54,12 @@ class RoutesProtected {
     }
 
 
-
     const accountsPasswordChange = RoutesProtected::class . ':accountsPasswordChange';
 
     public function accountsPasswordChange(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $result = $this->controller->accounts()->changePassword($args['uid'], SlimAttrGet::getInputData($request));
         return SlimOutput::buildAndWrite($response, $result);
     }
-
 
 
     const accountsPasswordRecover = RoutesProtected::class . ':accountsPasswordRecover';
@@ -77,14 +70,12 @@ class RoutesProtected {
     }
 
 
-
     const accountsPasswordReset = RoutesProtected::class . ':accountsPasswordReset';
 
     public function accountsPasswordReset(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $result = $this->controller->accounts()->resetPassword($args['uid'], $request->getQueryParams()['token']);
         return SlimOutput::buildAndWrite($response, $result);
     }
-
 
 
     const mediaGetTypeIdItemIdImageId = RoutesProtected::class . ':mediaGetTypeIdItemIdImageId';

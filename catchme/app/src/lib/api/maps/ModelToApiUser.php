@@ -3,13 +3,13 @@
 namespace Api\Map;
 
 use Api\Sec\ConnectionPrivacyPolicy;
-use Api\UserConnections;
-use Api\UserLocations;
-use Models\UserAdminLocationsResult;
-use Models\UserConnectionsResult;
-use Models\UserLocationsResult;
-use User as DbUser;
 use Api\User as ApiUser;
+use Api\UserConnections as ApiUserConnections;
+use Api\UserLocations as ApiUserLocations;
+use Models\Calculators\Users\UserAdminLocations;
+use Models\Calculators\Users\UserConnections;
+use Models\Calculators\Users\UserLocations;
+use User as DbUser;
 
 class ModelToApiUser {
 
@@ -82,55 +82,55 @@ class ModelToApiUser {
     }
 
     /**
-     * @param UserAdminLocationsResult $userAdminLocationsResult
+     * @param UserAdminLocations $userAdminLocations
      * @return ModelToApiUser
      */
-    public function withAdminLocations(UserAdminLocationsResult $userAdminLocationsResult) {
+    public function withAdminLocations(UserAdminLocations $userAdminLocations) {
 
         $this->apiUser->adminLocations = $this->modelToApiLocations
-            ->locations($userAdminLocationsResult->adminOfLocations);
+            ->locations($userAdminLocations->getLocations());
 
         return $this;
     }
 
     /**
-     * @param UserConnectionsResult $userConnections
+     * @param UserConnections $userConnections
      * @return ModelToApiUser
      */
-    public function withConnections(UserConnectionsResult $userConnections) {
-        $apiUserConnections = new UserConnections();
+    public function withConnections(UserConnections $userConnections) {
+        $apiUserConnections = new ApiUserConnections();
 
         $apiUserConnections->friends = $this->modelToApiUsers
-            ->users($userConnections->friends);
+            ->users($userConnections->getUserFriends());
 
         $apiUserConnections->pending = $this->modelToApiUsers
-            ->users($userConnections->pending);
+            ->users($userConnections->getUserPending());
 
         $apiUserConnections->requests = $this->modelToApiUsers
-            ->users($userConnections->requests);
+            ->users($userConnections->getUserRequests());
 
         $apiUserConnections->blocked = $this->modelToApiUsers
-            ->users($userConnections->blocked);
+            ->users($userConnections->getUserBlocked());
 
         $this->apiUser->connections = $apiUserConnections;
         return $this;
     }
 
     /**
-     * @param UserLocationsResult $userLocations
+     * @param UserLocations $userLocations
      * @return ModelToApiUser
      */
-    public function withLocations(UserLocationsResult $userLocations) {
-        $apiUserLocations = new UserLocations();
+    public function withLocations(UserLocations $userLocations) {
+        $apiUserLocations = new ApiUserLocations();
 
-        $apiUserLocations->favorites = $userLocations->favorites;
-        $apiUserLocations->top = $userLocations->top;
+        $apiUserLocations->favorites = $userLocations->getFavorites();
+        $apiUserLocations->top = $userLocations->getTop();
 
         $apiUserLocations->userLocationStatuses = $this->modelToApiUserLocationStatuses
-            ->userLocationStatuses($userLocations->userLocationStatuses);
+            ->userLocationStatuses($userLocations->getUserLocations());
 
         $apiUserLocations->locations = $this->modelToApiLocations
-            ->locations($userLocations->locations);
+            ->locations($userLocations->getLocations());
 
         $this->apiUser->locations = $apiUserLocations;
 

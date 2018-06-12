@@ -1,25 +1,25 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 14/09/2017 */
 
 namespace Models\User\Accounts;
+
 use Propel\Runtime\Exception\PropelException;
+use User as DbUser;
+use UserLocationFavorite as DbUserLocationFavorite;
 use UserLocationFavoriteQuery;
-use UserLocationFavorite;
-use User;
 
 class UserManagerLocations {
 
-    public function __construct(User $user) {
+    public function __construct(DbUser $user) {
         $this->user = $user;
     }
 
 
-    /** @var User $user */
+    /** @var DbUser $user */
     private $user;
 
 
-
     public function add($locationId) {
-        $userFavoriteLocation = new UserLocationFavorite();
+        $userFavoriteLocation = new DbUserLocationFavorite();
         $userFavoriteLocation->setUserId($this->user->getId());
         $userFavoriteLocation->setLocationId($locationId);
 
@@ -31,7 +31,6 @@ class UserManagerLocations {
             // the wanted status is already set
         }
     }
-
 
 
     public function del($locationId) {

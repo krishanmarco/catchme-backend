@@ -1,14 +1,14 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 17/09/2017 */
 
 namespace Models\Location\Accounts;
-use LocationQuery;
+
+use Api\Location as ApiLocation;
 use Location as DbLocation;
+use LocationQuery;
+use R;
 use Slim\Exception\Api400;
 use Slim\Http\UploadedFile;
 use User as DbUser;
-use Api\Location as ApiLocation;
-use FileUploader;
-use R;
 
 
 class LocationEditProfile {

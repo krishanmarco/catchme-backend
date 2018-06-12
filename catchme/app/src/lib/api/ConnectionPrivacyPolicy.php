@@ -5,8 +5,8 @@ namespace Api\Sec;
 use Api\User as ApiUser;
 use Api\UserLocations as ApiUserLocations;
 use Api\UserLocationStatus as ApiUserLocationStatus;
-use User as DbUser;
 use ERelationship;
+use User as DbUser;
 
 class ConnectionPrivacyPolicy {
 

@@ -2,17 +2,17 @@
 
 namespace Controllers;
 
+use Api\Location as ApiLocation;
+use Api\Map\ModelToApiLocations;
+use Api\Map\ModelToApiUsers;
+use Api\SearchStrings as ApiSearchStrings;
+use Api\User as ApiUser;
 use Context\Context;
 use Models\Calculators\UserModel;
+use Models\LatLng;
 use Models\Location\Search\LocationSearch;
 use Models\Location\Search\UserSearch;
 use User as DbUser;
-use Api\Map\ModelToApiLocations;
-use Api\Map\ModelToApiUsers;
-use Api\Location as ApiLocation;
-use Api\User as ApiUser;
-use Api\SearchStrings as ApiSearchStrings;
-use LatLng;
 
 class ControllerSearch {
 
@@ -40,7 +40,7 @@ class ControllerSearch {
             $latLng = LatLng::fromHttpHeader($latLng);
 
         $locations = $userModel->getUserSuggestedLocations($seed, $latLng)
-            ->getResult()->suggestedLocations;
+            ->getSuggestedLocations();
 
         return ModelToApiLocations::multiple()->locations($locations);
     }
@@ -62,7 +62,7 @@ class ControllerSearch {
     /** @return ApiUser[] */
     public function usersSuggested($seed) {
         $userModel = UserModel::fromUser($this->authUser);
-        $suggested = $userModel->getUserSuggestedFriends($seed)->getResult()->suggestedFriends;
+        $suggested = $userModel->getUserSuggestedFriends($seed)->getSuggestedFriends();
         return ModelToApiUsers::multiple()->users($suggested);
     }
 }

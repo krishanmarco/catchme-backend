@@ -1,12 +1,10 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 07/10/2017 */
 
 namespace Models\Location;
-use Location;
-use LocationImage;
+
+use Location as DbLocation;
+use LocationImage as DbLocationImage;
 use LocationQuery as LocationQuery;
-use Propel\Runtime\Exception\PropelException;
-use Slim\Exception\Api400;
-use R;
 
 class LocationImagesModel {
 
@@ -17,48 +15,35 @@ class LocationImagesModel {
 
 
     /** @return LocationImagesModel */
-    public static function fromLocation(Location $location) {
+    public static function fromLocation(DbLocation $location) {
         return new LocationImagesModel($location);
     }
 
 
-
-
-    private function __construct(Location $location) {
+    private function __construct(DbLocation $location) {
         $this->location = $location;
     }
 
 
-    /** @var Location $location */
+    /** @var DbLocation $location */
     private $location;
+
     public function getLocation() { return $this->location; }
 
 
-    /** @return LocationImage */
+    /** @return DbLocationImage */
     public function add($inserterUid) {
-
-        $locationImage = new LocationImage();
+        $locationImage = new DbLocationImage();
         $locationImage->setLocationId($this->location->getId());
         $locationImage->setInserterId($inserterUid);
         $locationImage->setInsertedTs(time());
         $locationImage->setApproved(LOCATION_DEFAULT_IMAGE_APPROVED);
-
-
-        try {
-//            $this->location->addImage($locationImage)->save();
-            $locationImage->save();
-
-        } catch (PropelException $exception) {
-            switch ($exception->getCode()) {
-                default: throw new Api400(R::return_error_generic);
-            }
-        }
-
+        $locationImage->save();
         return $locationImage;
     }
 
 
-    public function delete(LocationImage $locationImage) {
+    public function delete(DbLocationImage $locationImage) {
         $locationImage->delete();
     }
 

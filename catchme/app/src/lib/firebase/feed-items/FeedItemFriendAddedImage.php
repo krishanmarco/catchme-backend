@@ -2,17 +2,17 @@
 
 namespace Firebase\FeedItems;
 
-use User;
-use Location;
-use LocationImage;
-use I18n\L;
 use Api\ServerTextBuilder;
+use I18n\L;
+use Location as DbLocation;
+use LocationImage as DbLocationImage;
+use User as DbUser;
 
 final class FeedItemFriendAddedImage extends FeedItemBuilder {
 
-    public function __construct(User $authUser,
-                                Location $location,
-                                LocationImage $locationImage) {
+    public function __construct(DbUser $authUser,
+                                DbLocation $location,
+                                DbLocationImage $locationImage) {
         parent::__construct();
         $this->currentUser = $authUser;
         $this->location = $location;
@@ -20,11 +20,11 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
     }
 
 
-    /** @var User $requestingUser */
+    /** @var DbUser $requestingUser */
     private $currentUser;
-    /** @var Location $location */
+    /** @var DbLocation $location */
     private $location;
-    /** @var LocationImage $locationImage */
+    /** @var DbLocationImage $locationImage */
     private $locationImage;
 
 
@@ -51,7 +51,7 @@ final class FeedItemFriendAddedImage extends FeedItemBuilder {
     }
 
     protected function setRightAvatar() {
-        return $this->locationImage->getUrl();
+        return $this->locationImage->asUrl();
     }
 
     public function setActions() {

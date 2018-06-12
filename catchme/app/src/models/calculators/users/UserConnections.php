@@ -2,10 +2,9 @@
 
 namespace Models\Calculators\Users;
 
+use EConnectionState;
 use User as DbUser;
 use UserConnectionQuery;
-use EConnectionState;
-use Models\UserConnectionsResult;
 
 class UserConnections {
 
@@ -17,19 +16,39 @@ class UserConnections {
     /** @var DbUser $user */
     private $user;
 
-    /** @var UserConnectionsResult $result */
-    private $result;
+    /** @var DbUser[] */
+    private $userFriends = [];
 
-    /** @return UserConnectionsResult */
-    public function getResult() {
-        return $this->result;
+    /** @var DbUser[] */
+    private $userPending = [];
+
+    /** @var DbUser[] */
+    private $userRequests = [];
+
+    /** @var DbUser[] */
+    private $userBlocked = [];
+
+    /** @return DbUser[] */
+    public function getUserFriends() {
+        return $this->userFriends;
+    }
+
+    /** @return DbUser[] */
+    public function getUserPending() {
+        return $this->userPending;
+    }
+
+    /** @return DbUser[] */
+    public function getUserRequests() {
+        return $this->userRequests;
+    }
+
+    /** @return DbUser[] */
+    public function getUserBlocked() {
+        return $this->userBlocked;
     }
 
     private function calculateUserConnections() {
-        $friends = [];
-        $pending = [];
-        $requests = [];
-        $blocked = [];
 
         $leftAssoc = UserConnectionQuery::create()
             ->filterByUserId($this->user->getId())
@@ -40,15 +59,15 @@ class UserConnections {
             switch ($uf->getState()) {
 
                 case EConnectionState::CONFIRMED:
-                    array_push($friends, $uf->getConnectionTo());
+                    array_push($this->userFriends, $uf->getConnectionTo());
                     break;
 
                 case EConnectionState::BLOCKED:
-                    array_push($blocked, $uf->getConnectionTo());
+                    array_push($this->userBlocked, $uf->getConnectionTo());
                     break;
 
                 case EConnectionState::PENDING:
-                    array_push($pending, $uf->getConnectionTo());
+                    array_push($this->userPending, $uf->getConnectionTo());
                     break;
             }
         }
@@ -62,11 +81,11 @@ class UserConnections {
             switch ($uf->getState()) {
 
                 case EConnectionState::CONFIRMED:
-                    array_push($friends, $uf->getUser());
+                    array_push($this->userFriends, $uf->getUser());
                     break;
 
                 case EConnectionState::PENDING:
-                    array_push($requests, $uf->getUser());
+                    array_push($this->userRequests, $uf->getUser());
                     break;
 
                 case EConnectionState::BLOCKED:
@@ -78,7 +97,6 @@ class UserConnections {
             }
         }
 
-        $this->result = new UserConnectionsResult($friends, $pending, $requests, $blocked);
     }
 
 }

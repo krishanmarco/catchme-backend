@@ -1,10 +1,11 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 25/09/2017 */
 
 namespace Firebase;
-use \Firebase\JWT\JWT as FirebaseJWT;
-use Kreait\Firebase\ServiceAccount;
-use Kreait\Firebase\Factory;
+
+use Firebase\JWT\JWT as FirebaseJWT;
 use Kreait\Firebase;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
 
 abstract class FirebaseHelper {
 

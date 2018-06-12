@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Models\User\Accounts;
+
 use User as DbUser;
 
 
@@ -8,7 +9,7 @@ abstract class UserAccountUtils {
 
     public static function hashPassword($inPassword, $inSalt) {
         $res = $inSalt . $inPassword;
-        for($i = 0; $i < strlen($inSalt); $i++)
+        for ($i = 0; $i < strlen($inSalt); $i++)
             $res = hash('sha256', $res);
         return $res;
     }

@@ -2,9 +2,6 @@
 
 namespace Map;
 
-use \UserConnection;
-use \UserConnectionQuery;
-use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
@@ -13,6 +10,9 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
+use Propel\Runtime\Propel;
+use UserConnection;
+use UserConnectionQuery;
 
 
 /**
@@ -26,8 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class UserConnectionTableMap extends TableMap
-{
+class UserConnectionTableMap extends TableMap {
     use InstancePoolTrait;
     use TableMapTrait;
 
@@ -97,12 +96,12 @@ class UserConnectionTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('UserId', 'ConnectionId', 'State', ),
-        self::TYPE_CAMELNAME     => array('userId', 'connectionId', 'state', ),
-        self::TYPE_COLNAME       => array(UserConnectionTableMap::COL_USER_ID, UserConnectionTableMap::COL_CONNECTION_ID, UserConnectionTableMap::COL_STATE, ),
-        self::TYPE_FIELDNAME     => array('user_id', 'connection_id', 'state', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+    protected static $fieldNames = array(
+        self::TYPE_PHPNAME => array('UserId', 'ConnectionId', 'State',),
+        self::TYPE_CAMELNAME => array('userId', 'connectionId', 'state',),
+        self::TYPE_COLNAME => array(UserConnectionTableMap::COL_USER_ID, UserConnectionTableMap::COL_CONNECTION_ID, UserConnectionTableMap::COL_STATE,),
+        self::TYPE_FIELDNAME => array('user_id', 'connection_id', 'state',),
+        self::TYPE_NUM => array(0, 1, 2,)
     );
 
     /**
@@ -111,12 +110,12 @@ class UserConnectionTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('UserId' => 0, 'ConnectionId' => 1, 'State' => 2, ),
-        self::TYPE_CAMELNAME     => array('userId' => 0, 'connectionId' => 1, 'state' => 2, ),
-        self::TYPE_COLNAME       => array(UserConnectionTableMap::COL_USER_ID => 0, UserConnectionTableMap::COL_CONNECTION_ID => 1, UserConnectionTableMap::COL_STATE => 2, ),
-        self::TYPE_FIELDNAME     => array('user_id' => 0, 'connection_id' => 1, 'state' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+    protected static $fieldKeys = array(
+        self::TYPE_PHPNAME => array('UserId' => 0, 'ConnectionId' => 1, 'State' => 2,),
+        self::TYPE_CAMELNAME => array('userId' => 0, 'connectionId' => 1, 'state' => 2,),
+        self::TYPE_COLNAME => array(UserConnectionTableMap::COL_USER_ID => 0, UserConnectionTableMap::COL_CONNECTION_ID => 1, UserConnectionTableMap::COL_STATE => 2,),
+        self::TYPE_FIELDNAME => array('user_id' => 0, 'connection_id' => 1, 'state' => 2,),
+        self::TYPE_NUM => array(0, 1, 2,)
     );
 
     /**
@@ -126,8 +125,7 @@ class UserConnectionTableMap extends TableMap
      * @return void
      * @throws PropelException
      */
-    public function initialize()
-    {
+    public function initialize() {
         // attributes
         $this->setName('user_connection');
         $this->setPhpName('UserConnection');
@@ -136,30 +134,29 @@ class UserConnectionTableMap extends TableMap
         $this->setPackage('');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'user', 'id', true, null, null);
-        $this->addForeignPrimaryKey('connection_id', 'ConnectionId', 'INTEGER' , 'user', 'id', true, null, null);
+        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER', 'user', 'id', true, null, null);
+        $this->addForeignPrimaryKey('connection_id', 'ConnectionId', 'INTEGER', 'user', 'id', true, null, null);
         $this->addColumn('state', 'State', 'INTEGER', true, null, null);
     } // initialize()
 
     /**
      * Build the RelationMap objects for this table relationships
      */
-    public function buildRelations()
-    {
-        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':user_id',
-    1 => ':id',
-  ),
-), null, null, null, false);
-        $this->addRelation('ConnectionTo', '\\User', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':connection_id',
-    1 => ':id',
-  ),
-), null, null, null, false);
+    public function buildRelations() {
+        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array(
+            0 =>
+                array(
+                    0 => ':user_id',
+                    1 => ':id',
+                ),
+        ), null, null, null, false);
+        $this->addRelation('ConnectionTo', '\\User', RelationMap::MANY_TO_ONE, array(
+            0 =>
+                array(
+                    0 => ':connection_id',
+                    1 => ':id',
+                ),
+        ), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -171,13 +168,12 @@ class UserConnectionTableMap extends TableMap
      * and findPk*() calls.
      *
      * @param \UserConnection $obj A \UserConnection object.
-     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
+     * @param string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
-    public static function addInstanceToPool($obj, $key = null)
-    {
+    public static function addInstanceToPool($obj, $key = null) {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize([(null === $obj->getUserId() || is_scalar($obj->getUserId()) || is_callable([$obj->getUserId(), '__toString']) ? (string) $obj->getUserId() : $obj->getUserId()), (null === $obj->getConnectionId() || is_scalar($obj->getConnectionId()) || is_callable([$obj->getConnectionId(), '__toString']) ? (string) $obj->getConnectionId() : $obj->getConnectionId())]);
+                $key = serialize([(null === $obj->getUserId() || is_scalar($obj->getUserId()) || is_callable([$obj->getUserId(), '__toString']) ? (string)$obj->getUserId() : $obj->getUserId()), (null === $obj->getConnectionId() || is_scalar($obj->getConnectionId()) || is_callable([$obj->getConnectionId(), '__toString']) ? (string)$obj->getConnectionId() : $obj->getConnectionId())]);
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -193,15 +189,14 @@ class UserConnectionTableMap extends TableMap
      *
      * @param mixed $value A \UserConnection object or a primary key value.
      */
-    public static function removeInstanceFromPool($value)
-    {
+    public static function removeInstanceFromPool($value) {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \UserConnection) {
-                $key = serialize([(null === $value->getUserId() || is_scalar($value->getUserId()) || is_callable([$value->getUserId(), '__toString']) ? (string) $value->getUserId() : $value->getUserId()), (null === $value->getConnectionId() || is_scalar($value->getConnectionId()) || is_callable([$value->getConnectionId(), '__toString']) ? (string) $value->getConnectionId() : $value->getConnectionId())]);
+                $key = serialize([(null === $value->getUserId() || is_scalar($value->getUserId()) || is_callable([$value->getUserId(), '__toString']) ? (string)$value->getUserId() : $value->getUserId()), (null === $value->getConnectionId() || is_scalar($value->getConnectionId()) || is_callable([$value->getConnectionId(), '__toString']) ? (string)$value->getConnectionId() : $value->getConnectionId())]);
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
-                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string)$value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string)$value[1] : $value[1])]);
             } elseif ($value instanceof Criteria) {
                 self::$instances = [];
 
@@ -221,21 +216,20 @@ class UserConnectionTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
      */
-    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
+    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
         // If the PK cannot be derived from the row, return NULL.
         if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)])]);
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -243,27 +237,22 @@ class UserConnectionTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, an array of the primary key columns will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
-    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
-            $pks = [];
+    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
+        $pks = [];
 
-        $pks[] = (int) $row[
-            $indexType == TableMap::TYPE_NUM
-                ? 0 + $offset
-                : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)
-        ];
-        $pks[] = (int) $row[
-            $indexType == TableMap::TYPE_NUM
-                ? 1 + $offset
-                : self::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)
-        ];
+        $pks[] = (int)$row[$indexType == TableMap::TYPE_NUM
+            ? 0 + $offset
+            : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+        $pks[] = (int)$row[$indexType == TableMap::TYPE_NUM
+            ? 1 + $offset
+            : self::translateFieldName('ConnectionId', TableMap::TYPE_PHPNAME, $indexType)];
 
         return $pks;
     }
@@ -279,26 +268,24 @@ class UserConnectionTableMap extends TableMap
      * @param boolean $withPrefix Whether or not to return the path with the class name
      * @return string path.to.ClassName
      */
-    public static function getOMClass($withPrefix = true)
-    {
+    public static function getOMClass($withPrefix = true) {
         return $withPrefix ? UserConnectionTableMap::CLASS_DEFAULT : UserConnectionTableMap::OM_CLASS;
     }
 
     /**
      * Populates an object of the default type or an object that inherit from the default.
      *
-     * @param array  $row       row returned by DataFetcher->fetch().
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row row returned by DataFetcher->fetch().
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return array           (UserConnection object, last column rank)
      */
-    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
+    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
         $key = UserConnectionTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
         if (null !== ($obj = UserConnectionTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
@@ -325,8 +312,7 @@ class UserConnectionTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function populateObjects(DataFetcherInterface $dataFetcher)
-    {
+    public static function populateObjects(DataFetcherInterface $dataFetcher) {
         $results = array();
 
         // set the class once to avoid overhead in the loop
@@ -350,6 +336,7 @@ class UserConnectionTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -358,12 +345,11 @@ class UserConnectionTableMap extends TableMap
      * on demand.
      *
      * @param Criteria $criteria object containing the columns to add.
-     * @param string   $alias    optional table alias
+     * @param string $alias optional table alias
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function addSelectColumns(Criteria $criteria, $alias = null)
-    {
+    public static function addSelectColumns(Criteria $criteria, $alias = null) {
         if (null === $alias) {
             $criteria->addSelectColumn(UserConnectionTableMap::COL_USER_ID);
             $criteria->addSelectColumn(UserConnectionTableMap::COL_CONNECTION_ID);
@@ -382,16 +368,14 @@ class UserConnectionTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function getTableMap()
-    {
+    public static function getTableMap() {
         return Propel::getServiceContainer()->getDatabaseMap(UserConnectionTableMap::DATABASE_NAME)->getTable(UserConnectionTableMap::TABLE_NAME);
     }
 
     /**
      * Add a TableMap instance to the database for this tableMap class.
      */
-    public static function buildTableMap()
-    {
+    public static function buildTableMap() {
         $dbMap = Propel::getServiceContainer()->getDatabaseMap(UserConnectionTableMap::DATABASE_NAME);
         if (!$dbMap->hasTable(UserConnectionTableMap::TABLE_NAME)) {
             $dbMap->addTableObject(new UserConnectionTableMap());
@@ -401,7 +385,7 @@ class UserConnectionTableMap extends TableMap
     /**
      * Performs a DELETE on the database, given a UserConnection or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or UserConnection object or primary key or array of primary keys
+     * @param mixed $values Criteria or UserConnection object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -409,8 +393,7 @@ class UserConnectionTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, ConnectionInterface $con = null)
-     {
+    public static function doDelete($values, ConnectionInterface $con = null) {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(UserConnectionTableMap::DATABASE_NAME);
         }
@@ -441,7 +424,7 @@ class UserConnectionTableMap extends TableMap
         if ($values instanceof Criteria) {
             UserConnectionTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) {
+            foreach ((array)$values as $singleval) {
                 UserConnectionTableMap::removeInstanceFromPool($singleval);
             }
         }
@@ -455,22 +438,20 @@ class UserConnectionTableMap extends TableMap
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
-    public static function doDeleteAll(ConnectionInterface $con = null)
-    {
+    public static function doDeleteAll(ConnectionInterface $con = null) {
         return UserConnectionQuery::create()->doDeleteAll($con);
     }
 
     /**
      * Performs an INSERT on the database, given a UserConnection or Criteria object.
      *
-     * @param mixed               $criteria Criteria or UserConnection object containing data that is used to create the INSERT statement.
+     * @param mixed $criteria Criteria or UserConnection object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function doInsert($criteria, ConnectionInterface $con = null)
-    {
+    public static function doInsert($criteria, ConnectionInterface $con = null) {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(UserConnectionTableMap::DATABASE_NAME);
         }

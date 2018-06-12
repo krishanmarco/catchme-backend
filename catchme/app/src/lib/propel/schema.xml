@@ -2,346 +2,352 @@
 <database name="catch_me" defaultIdMethod="native" defaultPhpNamingMethod="underscore" heavyIndexing="true">
 
 
-  <table name="user" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+    <table name="user" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
 
-    <column       name="id"                         type="INTEGER"      required="true"                                     primaryKey="true"     autoIncrement="true" />
-    <column       name="name"                       type="VARCHAR"      required="true"                                                                                />
-    <column       name="email"                      type="VARCHAR"      required="true"                                                                                />
+        <column name="id" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="name" type="VARCHAR" required="true"/>
+        <column name="email" type="VARCHAR" required="true"/>
 
-    <column       name="api_key"                    type="VARCHAR"      required="true"       size="32"                                                                />
-    <column       name="pass_sha256"                type="VARCHAR"      required="true"       size="64"                                                                />
-    <column       name="pass_salt"                  type="VARCHAR"      required="true"       size="15"                                                                />
-    <column       name="ban"                        type="BOOLEAN"      required="true"                   defaultValue="true"                                          />
-    <column       name="signup_ts"                  type="INTEGER"      required="true"       size="10"   defaultValue="1483228800"                                    />
+        <column name="api_key" type="VARCHAR" required="true" size="32"/>
+        <column name="pass_sha256" type="VARCHAR" required="true" size="64"/>
+        <column name="pass_salt" type="VARCHAR" required="true" size="15"/>
+        <column name="ban" type="BOOLEAN" required="true" defaultValue="true"/>
+        <column name="signup_ts" type="INTEGER" required="true" size="10" defaultValue="1483228800"/>
 
-    <column       name="gender"                     type="TINYINT"      required="true"       size="1"    defaultValue="0"                                             />
-    <column       name="reputation"                 type="INTEGER"      required="true"                   defaultValue="0"                                             />
+        <column name="gender" type="TINYINT" required="true" size="1" defaultValue="0"/>
+        <column name="reputation" type="INTEGER" required="true" defaultValue="0"/>
 
-    <column       name="setting_privacy"            type="VARCHAR"      required="true"                   defaultValue="222"                                           />
-    <column       name="setting_notifications"      type="VARCHAR"      required="true"                   defaultValue="11111"                                         />
+        <column name="setting_privacy" type="VARCHAR" required="true" defaultValue="222"/>
+        <column name="setting_notifications" type="VARCHAR" required="true" defaultValue="11111"/>
 
-    <column       name="access_level"               type="TINYINT"      required="true"                   defaultValue="0"                                             />
+        <column name="access_level" type="TINYINT" required="true" defaultValue="0"/>
 
-    <column       name="phone"                      type="VARCHAR"      required="false"                                                                               />
-    <column       name="public_message"             type="VARCHAR"      required="false"                                                                               />
-    <column       name="picture_url"                type="VARCHAR"      required="false"                                                                               />
-    <column       name="locale"                     type="VARCHAR"      required="false"      size="8"                                                                 />
+        <column name="phone" type="VARCHAR" required="false"/>
+        <column name="public_message" type="VARCHAR" required="false"/>
+        <column name="picture_url" type="VARCHAR" required="false"/>
+        <column name="locale" type="VARCHAR" required="false" size="8"/>
 
 
-    <index>
-      <index-column name="id"/>
-    </index>
+        <index>
+            <index-column name="id"/>
+        </index>
 
-    <unique>
-      <unique-column name="email"/>
-    </unique>
+        <unique>
+            <unique-column name="email"/>
+        </unique>
 
-  </table>
+    </table>
 
 
-  <table name="user_social" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+    <table name="user_social" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
 
-    <column       name="user_id"            type="INTEGER"      required="true"                                     primaryKey="true"                          />
-    <column       name="firebase"           type="VARCHAR"      required="false"                                                                                />
+        <column name="user_id" type="INTEGER" required="true" primaryKey="true"/>
+        <column name="firebase" type="VARCHAR" required="false"/>
 
-    <foreign-key foreignTable="user" phpName="User" refPhpName="Social">
-      <reference local="user_id" foreign="id"/>
-    </foreign-key>
+        <foreign-key foreignTable="user" phpName="User" refPhpName="Social">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
 
-  </table>
+    </table>
 
 
+    <table name="location" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
 
-  <table name="location" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+        <column name="id" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="admin_id" type="INTEGER" required="true"/>
+        <column name="signup_ts" type="INTEGER" required="true" size="10" defaultValue="1483228800"/>
+        <column name="verified" type="BOOLEAN" required="true" defaultValue="0"/>
 
+        <column name="name" type="VARCHAR" required="true"/>
+        <column name="description" type="VARCHAR" required="true"/>
+        <column name="capacity" type="INTEGER" required="true" defaultValue="0"/>
+        <column name="picture_url" type="VARCHAR" required="true"/>
+        <column name="timings" type="VARCHAR" required="true" size="168" defaultValue=""/>
+        <column name="reputation" type="INTEGER" required="true" defaultValue="0"/>
 
-    <column       name="id"                 type="INTEGER"      required="true"                                             primaryKey="true"     autoIncrement="true" />
-    <column       name="admin_id"           type="INTEGER"      required="true"                                                                                        />
-    <column       name="signup_ts"          type="INTEGER"      required="true"   size="10"     defaultValue="1483228800"                                             />
-    <column       name="verified"           type="BOOLEAN"      required="true"                 defaultValue="0"                                                      />
+        <column name="email" type="VARCHAR" required="false"/>
+        <column name="phone" type="VARCHAR" required="false"/>
 
-    <column       name="name"               type="VARCHAR"      required="true"                                                                                        />
-    <column       name="description"        type="VARCHAR"      required="true"                                                                                        />
-    <column       name="capacity"           type="INTEGER"      required="true"                 defaultValue="0"                                                      />
-    <column       name="picture_url"        type="VARCHAR"      required="true"                                                                                       />
-    <column       name="timings"            type="VARCHAR"      required="true"   size="168"    defaultValue=""                                                       />
-    <column       name="reputation"         type="INTEGER"      required="true"                 defaultValue="0"                                                      />
 
-    <column       name="email"              type="VARCHAR"      required="false"                                                                                       />
-    <column       name="phone"              type="VARCHAR"      required="false"                                                                                       />
+        <foreign-key foreignTable="user" phpName="Admin" refPhpName="InsertedLocation">
+            <reference local="admin_id" foreign="id"/>
+        </foreign-key>
 
 
-    <foreign-key foreignTable="user" phpName="Admin" refPhpName="InsertedLocation">
-      <reference local="admin_id" foreign="id"/>
-    </foreign-key>
+        <index>
+            <index-column name="id"/>
+        </index>
 
+    </table>
 
-    <index>
-      <index-column name="id"/>
-    </index>
 
-  </table>
+    <table name="location_address" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
 
+        <column name="location_id" type="INTEGER" required="true" primaryKey="true"/>
+        <column name="country" type="VARCHAR" required="true" size="2"/>
+        <column name="state" type="VARCHAR" required="false"/>
+        <column name="city" type="VARCHAR" required="false"/>
+        <column name="town" type="VARCHAR" required="false"/>
+        <column name="postcode" type="VARCHAR" required="false"/>
+        <column name="address" type="VARCHAR" required="true"/>
+        <column name="lat" type="DOUBLE" required="false"/>
+        <column name="lng" type="DOUBLE" required="false"/>
+        <column name="google_place_id" type="VARCHAR" required="false"/>
 
 
-  <table name="location_address" idMethod="native" >
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+        <foreign-key foreignTable="location" phpName="Location" refPhpName="Address">
+            <reference local="location_id" foreign="id"/>
+        </foreign-key>
 
 
-    <column       name="location_id"        type="INTEGER"      required="true"                                             primaryKey="true"                         />
-    <column       name="country"            type="VARCHAR"      required="true"       size="2"                                                                        />
-    <column       name="state"              type="VARCHAR"      required="false"                                                                                      />
-    <column       name="city"               type="VARCHAR"      required="false"                                                                                      />
-    <column       name="town"               type="VARCHAR"      required="false"                                                                                      />
-    <column       name="postcode"           type="VARCHAR"      required="false"                                                                                      />
-    <column       name="address"            type="VARCHAR"      required="true"                                                                                       />
-    <column       name="lat"                type="DOUBLE"       required="false"                                                                                      />
-    <column       name="lng"                type="DOUBLE"       required="false"                                                                                      />
-    <column       name="google_place_id"    type="VARCHAR"      required="false"                                                                                      />
+        <index>
+            <index-column name="location_id"/>
+        </index>
 
+    </table>
 
-    <foreign-key foreignTable="location" phpName="Location" refPhpName="Address">
-      <reference local="location_id" foreign="id"/>
-    </foreign-key>
 
+    <table name="search_location" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
-    <index>
-      <index-column name="location_id"/>
-    </index>
 
-  </table>
+        <column name="location_id" type="INTEGER" required="true" primaryKey="true"/>
+        <column name="query" type="VARCHAR" required="true"/>
 
 
+        <foreign-key foreignTable="location" phpName="Location" refPhpName="SearchString" onDelete="CASCADE">
+            <reference local="location_id" foreign="id"/>
+        </foreign-key>
 
 
-  <table name="search_location" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+        <index>
+            <index-column name="location_id"/>
+        </index>
 
 
-    <column       name="location_id"        type="INTEGER"     required="true"                                             primaryKey="true"                          />
-    <column       name="query"              type="VARCHAR"     required="true"                                                                                        />
+        <index name="idx_search_location_fulltext">
+            <index-column name="query"/>
+            <vendor type="mysql">
+                <parameter name="Index_type" value="FULLTEXT"/>
+            </vendor>
+        </index>
 
+    </table>
 
-    <foreign-key foreignTable="location" phpName="Location" refPhpName="SearchString" onDelete="CASCADE">
-      <reference local="location_id" foreign="id"/>
-    </foreign-key>
 
+    <table name="search_user" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
-    <index>
-      <index-column name="location_id"/>
-    </index>
 
+        <column name="user_id" type="INTEGER" required="true" primaryKey="true"/>
+        <column name="query" type="VARCHAR" required="true"/>
 
-    <index name="idx_search_location_fulltext">
-      <index-column name="query"/>
-      <vendor type="mysql">
-        <parameter name="Index_type" value="FULLTEXT"/>
-      </vendor>
-    </index>
 
-  </table>
+        <foreign-key foreignTable="user" phpName="User" refPhpName="SearchString" onDelete="CASCADE">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
 
 
+        <index>
+            <index-column name="user_id"/>
+        </index>
 
 
-  <table name="search_user" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+        <index name="idx_search_user_fulltext">
+            <index-column name="query"/>
+            <vendor type="mysql">
+                <parameter name="Index_type" value="FULLTEXT"/>
+            </vendor>
+        </index>
 
+    </table>
 
-    <column       name="user_id"            type="INTEGER"     required="true"                                             primaryKey="true"                          />
-    <column       name="query"              type="VARCHAR"     required="true"                                                                                        />
 
+    <table name="user_location_favorite" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
-    <foreign-key foreignTable="user" phpName="User" refPhpName="SearchString" onDelete="CASCADE">
-      <reference local="user_id" foreign="id"/>
-    </foreign-key>
+        <column name="user_id" type="INTEGER" required="true" primaryKey="true"/>
+        <column name="location_id" type="INTEGER" required="true" primaryKey="true"/>
 
 
-    <index>
-      <index-column name="user_id"/>
-    </index>
+        <foreign-key foreignTable="location" phpName="Location" refPhpName="SubscribedUser">
+            <reference local="location_id" foreign="id"/>
+        </foreign-key>
 
+        <foreign-key foreignTable="location_address" phpName="LocationAddress" refPhpName="SubscribedUser">
+            <reference local="location_id" foreign="location_id"/>
+        </foreign-key>
 
-    <index name="idx_search_user_fulltext">
-      <index-column name="query"/>
-      <vendor type="mysql">
-        <parameter name="Index_type" value="FULLTEXT"/>
-      </vendor>
-    </index>
+        <foreign-key foreignTable="user" phpName="User" refPhpName="FavoriteLocation">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
 
-  </table>
 
+        <index>
+            <index-column name="user_id"/>
+            <index-column name="location_id"/>
+        </index>
 
+    </table>
 
 
-  <table name="user_location_favorite" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+    <table name="user_connection" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
-    <column       name="user_id"              type="INTEGER" required="true"                                                primaryKey="true"                         />
-    <column       name="location_id"          type="INTEGER" required="true"                                                primaryKey="true"                         />
 
+        <column name="user_id" type="INTEGER" required="true" primaryKey="true"/>
+        <column name="connection_id" type="INTEGER" required="true" primaryKey="true"/>
+        <column name="state" type="INTEGER" required="true"/>
 
-    <foreign-key foreignTable="location" phpName="Location" refPhpName="SubscribedUser">
-      <reference local="location_id" foreign="id"/>
-    </foreign-key>
 
-    <foreign-key foreignTable="location_address" phpName="LocationAddress" refPhpName="SubscribedUser">
-      <reference local="location_id" foreign="location_id"/>
-    </foreign-key>
+        <foreign-key foreignTable="user" phpName="User" refPhpName="AddedConnection">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
 
-    <foreign-key foreignTable="user" phpName="User" refPhpName="FavoriteLocation">
-      <reference local="user_id" foreign="id"/>
-    </foreign-key>
+        <foreign-key foreignTable="user" phpName="ConnectionTo" refPhpName="RequestedConnection">
+            <reference local="connection_id" foreign="id"/>
+        </foreign-key>
 
 
-    <index>
-      <index-column name="user_id"/>
-      <index-column name="location_id"/>
-    </index>
+        <index>
+            <index-column name="user_id"/>
+            <index-column name="connection_id"/>
+        </index>
 
-  </table>
+    </table>
 
 
-  <table name="user_connection" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+    <table name="user_location" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
+        <column name="id" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
 
-    <column name="user_id"                    type="INTEGER" required="true"                                                primaryKey="true"                         />
-    <column name="connection_id"              type="INTEGER" required="true"                                                primaryKey="true"                         />
-    <column name="state"                      type="INTEGER" required="true"                                                                                          />
 
+        <column name="user_id" type="INTEGER" required="true"/>
+        <column name="location_id" type="INTEGER" required="true"/>
 
-    <foreign-key foreignTable="user" phpName="User" refPhpName="AddedConnection">
-      <reference local="user_id" foreign="id"/>
-    </foreign-key>
+        <column name="from_ts" type="INTEGER" required="false" size="10"/>
+        <column name="until_ts" type="INTEGER" required="false" size="10"/>
 
-    <foreign-key foreignTable="user" phpName="ConnectionTo" refPhpName="RequestedConnection">
-      <reference local="connection_id" foreign="id"/>
-    </foreign-key>
 
+        <foreign-key foreignTable="user" phpName="User" refPhpName="Location">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
 
-    <index>
-      <index-column name="user_id"/>
-      <index-column name="connection_id"/>
-    </index>
+        <foreign-key foreignTable="location" phpName="Location" refPhpName="User">
+            <reference local="location_id" foreign="id"/>
+        </foreign-key>
 
-  </table>
 
+        <index>
+            <index-column name="user_id"/>
+            <index-column name="location_id"/>
+        </index>
 
+    </table>
 
 
-  <table name="user_location" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+    <table name="user_location_expired" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
-    <column name="id"                         type="INTEGER"      required="true"                                             primaryKey="true"     autoIncrement="true" />
+        <column name="id" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
 
+        <column name="user_id" type="INTEGER" required="true"/>
+        <column name="location_id" type="INTEGER" required="true"/>
 
-    <column name="user_id"                    type="INTEGER"               required="true"                                                                              />
-    <column name="location_id"                type="INTEGER"               required="true"                                                                              />
+        <column name="from_ts" type="INTEGER" required="false" size="10"/>
+        <column name="until_ts" type="INTEGER" required="false" size="10"/>
 
-    <column name="from_ts"                    type="INTEGER"               required="false"     size="10"                                                               />
-    <column name="until_ts"                   type="INTEGER"               required="false"     size="10"                                                               />
 
+        <foreign-key foreignTable="user" phpName="User" refPhpName="ExpiredLocation">
+            <reference local="user_id" foreign="id"/>
+        </foreign-key>
 
-    <foreign-key foreignTable="user" phpName="User" refPhpName="Location">
-      <reference local="user_id" foreign="id"/>
-    </foreign-key>
+        <foreign-key foreignTable="location" phpName="Location" refPhpName="ExpiredUser">
+            <reference local="location_id" foreign="id"/>
+        </foreign-key>
 
-    <foreign-key foreignTable="location" phpName="Location" refPhpName="User">
-      <reference local="location_id" foreign="id"/>
-    </foreign-key>
 
+        <index>
+            <index-column name="user_id"/>
+            <index-column name="location_id"/>
+        </index>
 
-    <index>
-      <index-column name="user_id"/>
-      <index-column name="location_id"/>
-    </index>
+    </table>
 
-  </table>
 
+    <table name="location_image" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
 
+        <column name="id" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="location_id" type="INTEGER" required="true"/>
+        <column name="inserter_id" type="INTEGER" required="true"/>
+        <column name="inserted_ts" type="INTEGER" required="true" size="10"/>
+        <column name="approved" type="BOOLEAN" required="true" defaultValue="0"/>
 
-  <table name="user_location_expired" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
+        <foreign-key foreignTable="location" phpName="Location" refPhpName="Image">
+            <reference local="location_id" foreign="id"/>
+        </foreign-key>
 
-    <column name="id"                         type="INTEGER"               required="true"                                   primaryKey="true"     autoIncrement="true" />
+        <foreign-key foreignTable="user" phpName="Inserter" refPhpName="InsertedImage">
+            <reference local="inserter_id" foreign="id"/>
+        </foreign-key>
 
-    <column name="user_id"                    type="INTEGER"               required="true"                                                                              />
-    <column name="location_id"                type="INTEGER"               required="true"                                                                              />
 
-    <column name="from_ts"                    type="INTEGER"               required="false"     size="10"                                                               />
-    <column name="until_ts"                   type="INTEGER"               required="false"     size="10"                                                               />
+        <index>
+            <index-column name="location_id"/>
+        </index>
 
+    </table>
 
-    <foreign-key foreignTable="user" phpName="User" refPhpName="ExpiredLocation">
-      <reference local="user_id" foreign="id"/>
-    </foreign-key>
 
-    <foreign-key foreignTable="location" phpName="Location" refPhpName="ExpiredUser">
-      <reference local="location_id" foreign="id"/>
-    </foreign-key>
+    <table name="system_temp_var" idMethod="native">
+        <vendor type="mysql">
+            <parameter name="Engine" value="MyISAM"/>
+        </vendor>
 
+        <column name="id" type="INTEGER" required="true" primaryKey="true" autoIncrement="true"/>
+        <column name="type" type="TINYINT" required="true"/>
+        <column name="data" type="OBJECT" required="true"/>
 
-    <index>
-      <index-column name="user_id"/>
-      <index-column name="location_id"/>
-    </index>
+        <column name="expiry_ts" type="INTEGER" required="true" size="10" defaultValue="0"/>
 
-  </table>
+        <index>
+            <index-column name="id"/>
+            <index-column name="type"/>
+        </index>
 
-
-
-
-  <table name="location_image" idMethod="native">
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
-
-
-    <column       name="id"                        type="INTEGER"             required="true"                                   primaryKey="true"   autoIncrement="true"        />
-    <column       name="location_id"               type="INTEGER"             required="true"                                                                                   />
-    <column       name="inserter_id"               type="INTEGER"             required="true"                                                                                   />
-    <column       name="inserted_ts"               type="INTEGER"             required="true"    size="10"                                                                      />
-    <column       name="approved"                  type="BOOLEAN"             required="true"                 defaultValue="0"                                                  />
-
-    <foreign-key foreignTable="location" phpName="Location" refPhpName="Image">
-      <reference local="location_id" foreign="id"/>
-    </foreign-key>
-
-    <foreign-key foreignTable="user" phpName="Inserter" refPhpName="InsertedImage">
-      <reference local="inserter_id" foreign="id"/>
-    </foreign-key>
-
-
-    <index>
-      <index-column name="location_id"/>
-    </index>
-
-  </table>
-
-
-
-
-  <table name="system_temp_var" idMethod="native" >
-    <vendor type="mysql"><parameter name="Engine" value="MyISAM"/></vendor>
-
-    <column name="id"                     type="INTEGER"      required="true"                                primaryKey="true" autoIncrement="true" />
-    <column name="type"                   type="TINYINT"      required="true"                                                                       />
-    <column name="data"                   type="OBJECT"       required="true"                                                                       />
-
-    <column name="expiry_ts"              type="INTEGER"      required="true"  size="10" defaultValue="0"                                           />
-
-    <index>
-      <index-column name="id"/>
-      <index-column name="type"/>
-    </index>
-
-  </table>
+    </table>
 
 </database>

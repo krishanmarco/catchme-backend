@@ -2,16 +2,16 @@
 
 namespace Controllers;
 
+use EMediaType;
+use FileUploader;
+use Firebase\FeedItems\FeedItemFriendAddedImage;
+use Firebase\FeedManager;
 use Models\Feed\MultiNotificationManager;
 use Models\Location\LocationImagesModel;
-use Firebase\FeedManager;
-use Firebase\FeedItems\FeedItemFriendAddedImage;
-use FileUploader;
+use R;
 use Slim\Exception\Api400;
 use Slim\Http\UploadedFile;
 use User as DbUser;
-use EMediaType;
-use R;
 
 class ControllerMediaPut {
 
@@ -60,7 +60,7 @@ class ControllerMediaPut {
                 $locationImage
             ), MultiNotificationManager::uidsInterestedInUser($this->authenticatedUser->getId()));
 
-        return $locationImage->getUrl();
+        return $locationImage->asUrl();
     }
 
 }

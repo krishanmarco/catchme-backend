@@ -2,9 +2,9 @@
 
 namespace Models\Calculators\Users;
 
-use UserLocationQuery;
 use User as DbUser;
-use Models\UserLocationStatusResult;
+use UserLocation as DbUserLocation;
+use UserLocationQuery;
 
 class UserLocationStatus {
 
@@ -16,20 +16,18 @@ class UserLocationStatus {
     /** @var DbUser */
     private $user;
 
-    /** @var UserLocationStatusResult */
-    private $result;
+    /** @var DbUserLocation[] */
+    public $userLocationStatuses = [];
 
-    /** @return UserLocationStatusResult */
-    public function getResult() {
-        return $this->result;
+    /** @return DbUserLocation[] */
+    public function getUserLocations() {
+        return $this->userLocationStatuses;
     }
 
     private function calculateUserLocationStatus() {
-        $userLocationStatus = UserLocationQuery::create()
+        $this->userLocationStatuses = UserLocationQuery::create()
             ->findByUserId($this->user->getId())
             ->getData();
-
-        $this->result = new UserLocationStatusResult($userLocationStatus);
     }
 }
 

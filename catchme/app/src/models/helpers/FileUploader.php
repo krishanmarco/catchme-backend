@@ -1,7 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
-use Slim\Http\UploadedFile;
 use Slim\Exception\Api400;
+use Slim\Http\UploadedFile;
 
 // Helper for uploading files
 // --------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ class FileUploader {
     }
 
     public function allowOnlyImages() {
-        $this->allowedExtRegex = implode('|', ['jpg','jpe','jpeg','png']);
+        $this->allowedExtRegex = implode('|', ['jpg', 'jpe', 'jpeg', 'png']);
         return $this;
     }
 
@@ -79,7 +79,7 @@ class FileUploader {
         if ($this->allowedExtRegex != null) {
 
             $uploadedName = $this->uploadedFile->getClientFilename();
-            if (!preg_match('/^.*\.('. $this->allowedExtRegex .')$/i', $uploadedName))
+            if (!preg_match('/^.*\.(' . $this->allowedExtRegex . ')$/i', $uploadedName))
                 throw new Api400(R::return_error_file_upload_failed);
 
         }
@@ -131,8 +131,7 @@ class FileUploader {
                 // Not critical error
             }
 
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw new Api400(R::return_error_file_upload_failed, $e);
         }
 

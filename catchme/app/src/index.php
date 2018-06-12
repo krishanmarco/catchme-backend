@@ -1,15 +1,15 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] - Catch Me 1.0 © */
 
-use \Routes\RoutesAdmin;
-use \Routes\RoutesPrivate;
-use \Routes\RoutesPublic;
-use \Routes\RoutesProtected;
-use \Slim\Middleware\MiddlewareValidator;
-use \Slim\Middleware\MiddlewareUserAuth;
-use \Slim\Middleware\MiddlewarePublic;
-use \Slim\Middleware\MiddlewareAuth;
-use \Slim\Exception\ApiExceptionHandler;
-use \Slim\Middleware\MiddlewareContext;
+use Routes\RoutesAdmin;
+use Routes\RoutesPrivate;
+use Routes\RoutesProtected;
+use Routes\RoutesPublic;
+use Slim\Exception\ApiExceptionHandler;
+use Slim\Middleware\MiddlewareAuth;
+use Slim\Middleware\MiddlewareContext;
+use Slim\Middleware\MiddlewarePublic;
+use Slim\Middleware\MiddlewareUserAuth;
+use Slim\Middleware\MiddlewareValidator;
 
 
 // Important
@@ -50,16 +50,15 @@ $app->group('/api', function () use ($app) {
         die();
     });
 
-    $app->get('/test', function() {
+    $app->get('/test', function () {
         require_once __DIR__ . '/scripts/Test.php';
         die();
     });
 
-    $app->get('/terraform', function() {
+    $app->get('/terraform', function () {
         \cache\CacheableHelper::terraform();
         die("OK");
     });
-
 
 
     /** Unauthenticated web
@@ -76,7 +75,6 @@ $app->group('/api', function () use ($app) {
         // /accounts/user/{uid}/password/reset?token=abcdef
         $app->get('/accounts/user/{uid}/password/reset', RoutesProtected::accountsPasswordReset);
     })->add(new MiddlewarePublic($app->getContainer()));;
-
 
 
     /** Anonymous authenticated web
@@ -105,7 +103,6 @@ $app->group('/api', function () use ($app) {
         $app->get('/media/get/{typeId:[0-9]+}/{itemId:[0-9]+}/{imageId:[0-9]+}[{ext:.*}]', RoutesProtected::mediaGetTypeIdItemIdImageId);
 
     })->add(new MiddlewareAuth($app->getContainer()));
-
 
 
     /** User authenticated web
@@ -151,7 +148,6 @@ $app->group('/api', function () use ($app) {
         $app->post('/media/add/{typeId:[0-9]+}/{itemId:[0-9]+}', RoutesPrivate::mediaAddTypeIdItemId);
 
     })->add(new MiddlewareUserAuth($app->getContainer()));
-
 
 
     /** User authenticated as admin

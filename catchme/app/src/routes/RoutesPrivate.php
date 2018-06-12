@@ -2,17 +2,15 @@
 
 namespace Routes;
 
-use \Psr\Container\ContainerInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use R;
 use Routes\Accessors\ControllerAccessorAuth;
 use Slim\Exception\Api400;
 use Slim\Http\UploadedFile;
 use Slim\SlimAttrGet;
 use Slim\SlimOutput;
-use Api\User as ApiUser;
-use R;
-use Psr\Http\Message\UploadedFileInterface;
 
 
 class RoutesPrivate {
@@ -26,15 +24,12 @@ class RoutesPrivate {
     private $controller;
 
 
-
-
     const locationsLid = RoutesPrivate::class . ':locationsLid';
 
     public function locationsLid(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $apiLocation = $this->controller->locations($args['lid'])->get();
         return SlimOutput::buildAndWrite($response, $apiLocation);
     }
-
 
 
     const locationsLidProfile = RoutesPrivate::class . ':locationsLidProfile';
@@ -45,7 +40,6 @@ class RoutesPrivate {
     }
 
 
-
     const searchQueryLocations = RoutesPrivate::class . ':searchQueryLocations';
 
     public function searchQueryLocations(ServerRequestInterface $request, ResponseInterface $response, $args) {
@@ -54,14 +48,12 @@ class RoutesPrivate {
     }
 
 
-
     const searchQueryUsers = RoutesPrivate::class . ':searchQueryUsers';
 
     public function searchQueryUsers(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $apiUsers = $this->controller->search()->usersSearch($args['query']);
         return SlimOutput::buildAndWrite($response, $apiUsers);
     }
-
 
 
     const searchUsers = RoutesPrivate::class . ':searchUsers';
@@ -74,14 +66,12 @@ class RoutesPrivate {
     }
 
 
-
     const suggestSeedLocations = RoutesPrivate::class . ':suggestSeedLocations';
 
     public function suggestSeedLocations(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $apiLocations = $this->controller->search()->locationsSuggested($args['seed']);
         return SlimOutput::buildAndWrite($response, $apiLocations);
     }
-
 
 
     const suggestSeedUsers = RoutesPrivate::class . ':suggestSeedUsers';
@@ -92,14 +82,12 @@ class RoutesPrivate {
     }
 
 
-
     const usersUid = RoutesPrivate::class . ':usersUid';
 
     public function usersUid(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $apiUser = $this->controller->users(intval($args['uid']))->get();
         return SlimOutput::buildAndWrite($response, $apiUser);
     }
-
 
 
     const usersUidProfile = RoutesPrivate::class . ':usersUidProfile';
@@ -110,14 +98,12 @@ class RoutesPrivate {
     }
 
 
-
     const user = RoutesPrivate::class . ':user';
 
     public function user(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $apiUser = $this->controller->user()->get();
         return SlimOutput::buildAndWrite($response, $apiUser);
     }
-
 
 
     const userFirebaseJwt = RoutesPrivate::class . ':userFirebaseJwt';
@@ -128,14 +114,12 @@ class RoutesPrivate {
     }
 
 
-
     const userProfile = RoutesPrivate::class . ':userProfile';
 
     public function userProfile(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $apiUser = $this->controller->user()->getProfile();
         return SlimOutput::buildAndWrite($response, $apiUser);
     }
-
 
 
     const userProfileEdit = RoutesPrivate::class . ':userProfileEdit';
@@ -159,14 +143,12 @@ class RoutesPrivate {
     }
 
 
-
     const userProfileEditFirebaseToken = RoutesPrivate::class . ':userProfileEditFirebaseToken';
 
     public function userProfileEditFirebaseToken(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $res = $this->controller->user()->editProfileFirebase($args['token']);
         return SlimOutput::buildAndWrite($response, $res);
     }
-
 
 
     const userConnectionsAddUid = RoutesPrivate::class . ':userConnectionsAddUid';
@@ -177,16 +159,12 @@ class RoutesPrivate {
     }
 
 
-
-
-
     const userConnectionsRemoveUid = RoutesPrivate::class . ':userConnectionsRemoveUid';
 
     public function userConnectionsRemoveUid(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $res = $this->controller->user()->connectionsRemoveUid($args['uid']);
         return SlimOutput::buildAndWrite($response, $res);
     }
-
 
 
     const userStatus = RoutesPrivate::class . ':userStatus';
@@ -197,14 +175,12 @@ class RoutesPrivate {
     }
 
 
-
     const userStatusAdd = RoutesPrivate::class . ':userStatusAdd';
 
     public function userStatusAdd(ServerRequestInterface $request, ResponseInterface $response) {
         $res = $this->controller->user()->statusAdd(SlimAttrGet::getInputData($request));
         return SlimOutput::buildAndWrite($response, $res);
     }
-
 
 
     const userStatusDelTid = RoutesPrivate::class . ':userStatusDelTid';
@@ -215,7 +191,6 @@ class RoutesPrivate {
     }
 
 
-
     const userLocationsFavoritesAddLid = RoutesPrivate::class . ':userLocationsFavoritesAddLid';
 
     public function userLocationsFavoritesAddLid(ServerRequestInterface $request, ResponseInterface $response, $args) {
@@ -224,14 +199,12 @@ class RoutesPrivate {
     }
 
 
-
     const userLocationsFavoritesDelLid = RoutesPrivate::class . ':userLocationsFavoritesDelLid';
 
     public function userLocationsFavoritesDelLid(ServerRequestInterface $request, ResponseInterface $response, $args) {
         $res = $this->controller->user()->locationsFavoritesDel($args['lid']);
         return SlimOutput::buildAndWrite($response, $res);
     }
-
 
 
     const userLocationsAdministratingRegister = RoutesPrivate::class . ':userLocationsAdministratingRegister';
@@ -251,7 +224,6 @@ class RoutesPrivate {
         );
         return SlimOutput::buildAndWrite($response, $opCode);
     }
-
 
 
     const userLocationsAdministratingEditLid = RoutesPrivate::class . ':userLocationsAdministratingEditLid';
@@ -274,7 +246,6 @@ class RoutesPrivate {
     }
 
 
-
     const mediaAddTypeIdItemId = RoutesPrivate::class . ':mediaAddTypeIdItemId';
 
     public function mediaAddTypeIdItemId(ServerRequestInterface $request, ResponseInterface $response, $args) {
@@ -294,8 +265,6 @@ class RoutesPrivate {
 
         return SlimOutput::buildAndWrite($response, $res);
     }
-
-
 
 
 }

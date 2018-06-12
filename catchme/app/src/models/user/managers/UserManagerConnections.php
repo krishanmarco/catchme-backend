@@ -2,13 +2,13 @@
 
 namespace Models\User\Accounts;
 
-use UserConnection;
-use UserConnectionQuery;
 use EConnectionState;
-use User as DbUser;
-use Firebase\FeedManager;
 use Firebase\FeedItems\FeedItemFriendshipAccept;
 use Firebase\FeedItems\FeedItemFriendshipRequest;
+use Firebase\FeedManager;
+use User as DbUser;
+use UserConnection as DbUserConnection;
+use UserConnectionQuery;
 
 class UserManagerConnections {
 
@@ -26,7 +26,7 @@ class UserManagerConnections {
     /** @var int */
     private $connectionUid;
 
-    /** @var UserConnection */
+    /** @var DbUserConnection */
     private $userConnection;
 
 
@@ -113,7 +113,7 @@ class UserManagerConnections {
 
 
     private function create($connectionState) {
-        $this->userConnection = new UserConnection();
+        $this->userConnection = new DbUserConnection();
         $this->userConnection->setUserId($this->authUser->getId());
         $this->userConnection->setConnectionId($this->connectionUid);
         $this->userConnection->setState($connectionState);

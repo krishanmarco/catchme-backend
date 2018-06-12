@@ -50,58 +50,72 @@ class GoogleToken {
     }
 
 
-
     private $error;
+
     public function hasError() { return !is_null($this->error); }
+
     public function getError() { return $this->error; }
 
 
     private $iss;
+
     public function getIss() { return $this->iss; }
 
     private $iat;
+
     public function getIat() { return $this->iat; }
 
     private $exp;
+
     public function getExp() { return $this->exp; }
 
     private $aud;
+
     public function getAud() { return $this->aud; }
 
     private $sub;
+
     public function getSub() { return $this->sub; }
 
     private $email_verified;
+
     public function getEmailVerified() { return $this->email_verified; }
 
     private $azp;
+
     public function getAzp() { return $this->azp; }
 
     private $email;
+
     public function getEmail() { return $this->email; }
 
     private $name;
+
     public function getName() { return $this->name; }
 
     private $picture;
+
     public function getPicture() { return $this->picture; }
 
     private $given_name;
+
     public function getGivenName() { return $this->given_name; }
 
     private $family_name;
+
     public function getFamilyName() { return $this->family_name; }
 
     private $locale;
+
     public function getLocale() { return $this->locale; }
 
     private $alg;
+
     public function getAlg() { return $this->alg; }
 
     private $kid;
+
     public function getKid() { return $this->kid; }
-
-
 
 
     private $tokenAuthentic;
@@ -111,8 +125,6 @@ class GoogleToken {
             $this->tokenAuthentic = $this->isTokenValid();
         return $this->tokenAuthentic;
     }
-
-
 
 
     private function parseTokenJson($jsonArray) {
@@ -132,8 +144,6 @@ class GoogleToken {
         $this->alg = $jsonArray['alg'];
         $this->kid = $jsonArray['kid'];
     }
-
-
 
 
     private function isTokenValid() {

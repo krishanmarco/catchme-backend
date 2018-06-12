@@ -1,15 +1,16 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Models\Location\Accounts;
-use Propel\Runtime\Exception\PropelException as PropelException;
+
+use Api\FormLocationRegister as ApiFormLocationRegister;
 use Location as DbLocation;
 use LocationAddress as DbLocationAddress;
+use Models\LatLng;
+use Propel\Runtime\Exception\PropelException as PropelException;
+use R;
 use Slim\Exception\Api400;
 use Slim\Http\UploadedFile;
 use User as DbUser;
-use Api\FormLocationRegister as ApiFormLocationRegister;
-use LatLng;
-use R;
 
 class LocationRegistration {
 
@@ -20,9 +21,8 @@ class LocationRegistration {
 
     /** @var DbLocation $location */
     private $location;
+
     public function getLocation() { return $this->location; }
-
-
 
 
     public function register(ApiFormLocationRegister $formLocationRegister, $uploadedFile = null) {
@@ -56,7 +56,8 @@ class LocationRegistration {
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
                 // duplicate entry, email already exists
-                default: throw new Api400(R::return_error_email_taken, null, $exception);
+                default:
+                    throw new Api400(R::return_error_email_taken, null, $exception);
             }
         }
     }

@@ -4,13 +4,13 @@ namespace Models\Calculators;
 
 use Models\Calculators\Users\UserAdminLocations;
 use Models\Calculators\Users\UserConnectionManager;
-use Models\Calculators\Users\UserLocationStatus;
-use Models\Calculators\Users\UserSuggestedLocations;
 use Models\Calculators\Users\UserConnections;
 use Models\Calculators\Users\UserLocations;
+use Models\Calculators\Users\UserLocationStatus;
 use Models\Calculators\Users\UserSuggestedFriends;
-use UserQuery;
+use Models\Calculators\Users\UserSuggestedLocations;
 use User as DbUser;
+use UserQuery;
 
 class UserModel {
 

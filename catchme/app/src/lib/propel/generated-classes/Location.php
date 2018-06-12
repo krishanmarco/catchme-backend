@@ -1,8 +1,8 @@
 <?php
 
 use Base\Location as BaseLocation;
-use \Slim\Exception\Api400;
-use \Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\Connection\ConnectionInterface;
+use Slim\Exception\Api400;
 
 /**
  * Skeleton subclass for representing a row from the 'location' table.
@@ -17,11 +17,11 @@ use \Propel\Runtime\Connection\ConnectionInterface;
 class Location extends BaseLocation {
 
     /**
-     * @param Location[] $locations
+     * @param Location[] $lList
      * @return int[]
      */
-    public static function mapUsersToIds(array $locations) {
-        return array_map(function(Location $location) { $location->getId(); }, $locations);
+    public static function mapToIds(array $lList) {
+        return array_map(function (Location $location) { return $location->getId(); }, $lList);
     }
 
     /**

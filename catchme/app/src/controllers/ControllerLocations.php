@@ -2,11 +2,11 @@
 
 namespace Controllers;
 
-use Api\Map\ModelToApiLocations;
-use Models\Calculators\LocationModel;
-use Models\Calculators\JoinedLocationUserModel;
-use User as DbUser;
 use Api\Location as ApiLocation;
+use Api\Map\ModelToApiLocations;
+use Models\Calculators\JoinedLocationUserModel;
+use Models\Calculators\LocationModel;
+use User as DbUser;
 
 class ControllerLocations {
 
@@ -39,9 +39,9 @@ class ControllerLocations {
         return ModelToApiLocations::single($joinedLocationUserModel->getLocation())
             ->applyPrivacyPolicy($this->authUser)
             ->withAddress()
-            ->withImages($locationModel->getLocationImages()->getResult())
-            ->withPeople($locationModel->getLocationCount()->getResult())
-            ->withConnections($joinedLocationUserModel->getLocationFriends()->getResult())
+            ->withImages($locationModel->getLocationImages())
+            ->withPeople($locationModel->getLocationCount())
+            ->withConnections($joinedLocationUserModel->getLocationFriends())
             ->get();
     }
 

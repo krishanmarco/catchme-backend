@@ -1,10 +1,9 @@
 <?php
 
 use Base\User as BaseUser;
-use Slim\Exception\Api400;
-use \Slim\Http\UploadedFile;
-use \Propel\Runtime\Connection\ConnectionInterface;
-use \Models\Calculators\UserModel;
+use Models\Calculators\UserModel;
+use Propel\Runtime\Connection\ConnectionInterface;
+use Slim\Http\UploadedFile;
 
 /**
  * Skeleton subclass for representing a row from the 'user' table.
@@ -19,11 +18,11 @@ use \Models\Calculators\UserModel;
 class User extends BaseUser {
 
     /**
-     * @param User[] $users
+     * @param User[] $uList
      * @return int[]
      */
-    public static function mapUsersToIds(array $users) {
-        return array_map(function(User $user) { $user->getId(); }, $users);
+    public static function mapToIds(array $uList) {
+        return array_map(function (User $user) { return $user->getId(); }, $uList);
     }
 
     /** @var int[] friendIds */
@@ -44,9 +43,9 @@ class User extends BaseUser {
         if (is_null($this->friendIds)) {
 
             $friends = UserModel::fromUser($this)
-                ->getUserConnections()->getResult()->friends;
+                ->getUserConnections()->getUserFriends();
 
-            $this->friendIds = User::mapUsersToIds($friends);
+            $this->friendIds = User::mapToIds($friends);
         }
 
         return $this->friendIds;

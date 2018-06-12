@@ -2,18 +2,17 @@
 
 namespace Models\User\Accounts;
 
-use Models\Email\EmailPasswordRecovered;
-use Models\RecoveryToken;
-use Slim\Exception\Api400;
-use R;
 use Api\FormChangePassword as ApiFormChangePassword;
-use UserQuery;
-use User as DbUser;
+use Models\Email\EmailPasswordRecovered;
+use Models\Email\EmailPasswordRecovery;
+use Models\RecoveryToken;
+use R;
+use Security\DataEncrypter;
+use Slim\Exception\Api400;
 use SystemTempVar as DbSystemTempVar;
 use SystemTempVarQuery;
-use ESystemTempVar;
-use Security\DataEncrypter;
-use Models\Email\EmailPasswordRecovery;
+use User as DbUser;
+use UserQuery;
 
 class UserManagerPassword {
     const RECOVERY_LINK_URL_TEMPLATE = URL_API . '/accounts/user/{uid}/password/reset?token={token}';

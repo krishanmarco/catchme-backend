@@ -2,8 +2,8 @@
 
 namespace Models\Location\Search;
 
+use SearchUser as DbSearchUser;
 use SearchUserQuery;
-use SearchUser;
 use User as DbUser;
 
 class UserSearch {
@@ -35,7 +35,7 @@ class UserSearch {
     private function searchOne($searchString) {
         // Use a FullTextSearch to match the search query
         // to the query column on the SearchUser table
-        /** @var SearchUser[] $indexedUsers */
+        /** @var DbSearchUser[] $indexedUsers */
         $indexedUsers = SearchUserQuery::create()
             ->fullTextSearch($searchString)
             ->joinWithUser()
@@ -43,7 +43,7 @@ class UserSearch {
             ->getData();
 
         // Select all found ids into the result holder
-        return array_map(function(SearchUser $searchUser) {
+        return array_map(function (DbSearchUser $searchUser) {
             return $searchUser->getUser();
         }, $indexedUsers);
     }

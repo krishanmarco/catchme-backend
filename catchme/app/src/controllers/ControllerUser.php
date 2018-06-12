@@ -2,26 +2,26 @@
 
 namespace Controllers;
 
+use Api\FormLocationRegister as ApiFormLocationRegister;
+use Api\Location as ApiLocation;
+use Api\Map\ModelToApiUserLocations;
+use Api\Map\ModelToApiUsers;
+use Api\User as ApiUser;
+use Api\UserLocationStatus as ApiUserLocationStatus;
 use Context\Context;
 use Firebase\FeedItems\FeedItemUserAttendanceRequest;
-use Firebase\FirebaseHelper;
-use Api\Map\ModelToApiUserLocations;
 use Firebase\FeedManager;
+use Firebase\FirebaseHelper;
 use Models\Calculators\UserModel;
 use Models\Feed\MultiNotificationManager;
 use Models\Location\Accounts\LocationEditProfile;
 use Models\Location\Accounts\LocationRegistration;
-use Models\User\Accounts\UserManagerConnections;
 use Models\User\Accounts\UserEditProfile;
+use Models\User\Accounts\UserManagerConnections;
 use Models\User\Accounts\UserManagerLocations;
 use Models\User\Accounts\UserManagerStatus;
-use User as DbUser;
-use Api\Map\ModelToApiUsers;
-use Api\User as ApiUser;
-use Api\Location as ApiLocation;
-use Api\FormLocationRegister as ApiFormLocationRegister;
-use Api\UserLocationStatus as ApiUserLocationStatus;
 use R;
+use User as DbUser;
 
 class ControllerUser {
 
@@ -58,9 +58,9 @@ class ControllerUser {
             ->withSecureData()
             ->withPhone()
             ->withEmail()
-            ->withAdminLocations($userModel->getUserAdminLocations()->getResult())
-            ->withLocations($userModel->getUserLocations()->getResult())
-            ->withConnections($userModel->getUserConnections()->getResult())
+            ->withAdminLocations($userModel->getUserAdminLocations())
+            ->withLocations($userModel->getUserLocations())
+            ->withConnections($userModel->getUserConnections())
             ->get();
     }
 
@@ -134,8 +134,8 @@ class ControllerUser {
     /** @return ApiUserLocationStatus[] */
     public function status() {
         $userLocationStatusList = UserModel::fromUser($this->authUser)
-            ->getUserLocationStatus()->getResult()
-            ->userLocationStatus;
+            ->getUserLocationStatus()
+            ->getUserLocations();
 
         return ModelToApiUserLocations::multiple()
             ->userLocationStatuses($userLocationStatusList);

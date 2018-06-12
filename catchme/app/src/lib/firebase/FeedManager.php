@@ -1,27 +1,28 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 07/10/2017 */
 
 namespace Firebase;
+
 use Firebase\FeedItems\FeedItemBuilder;
 use Kreait\Firebase;
-use User;
+use User as DbUser;
 
 class FeedManager {
     const FEEDS_PATH = 'usersFeed';
     const USER_FEEDS_PATH_TPL = 'users/{UID}/feed';
 
 
-    public static function build(User $currentUser) {
+    public static function build(DbUser $currentUser) {
         return new FeedManager($currentUser);
     }
 
 
-    private function __construct(User $currentUser) {
+    private function __construct(DbUser $currentUser) {
         $this->currentUser = $currentUser;
         $this->firebase = FirebaseHelper::getFirebaseConnection();
     }
 
 
-    /** @var User */
+    /** @var DbUser */
     private $currentUser;
 
     /** @var Firebase */

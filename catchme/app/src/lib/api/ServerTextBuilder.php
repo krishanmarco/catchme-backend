@@ -2,7 +2,6 @@
 
 namespace Api;
 
-use Grpc\Server;
 
 class ServerTextBuilder {
     const KEY_TEXT = 't';

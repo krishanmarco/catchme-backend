@@ -2,17 +2,16 @@
 
 namespace Map;
 
-use \SystemTempVar;
-use \SystemTempVarQuery;
-use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\DataFetcher\DataFetcherInterface;
 use Propel\Runtime\Exception\PropelException;
-use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
+use Propel\Runtime\Propel;
+use SystemTempVar;
+use SystemTempVarQuery;
 
 
 /**
@@ -26,8 +25,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class SystemTempVarTableMap extends TableMap
-{
+class SystemTempVarTableMap extends TableMap {
     use InstancePoolTrait;
     use TableMapTrait;
 
@@ -102,12 +100,12 @@ class SystemTempVarTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Type', 'Data', 'ExpiryTs', ),
-        self::TYPE_CAMELNAME     => array('id', 'type', 'data', 'expiryTs', ),
-        self::TYPE_COLNAME       => array(SystemTempVarTableMap::COL_ID, SystemTempVarTableMap::COL_TYPE, SystemTempVarTableMap::COL_DATA, SystemTempVarTableMap::COL_EXPIRY_TS, ),
-        self::TYPE_FIELDNAME     => array('id', 'type', 'data', 'expiry_ts', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+    protected static $fieldNames = array(
+        self::TYPE_PHPNAME => array('Id', 'Type', 'Data', 'ExpiryTs',),
+        self::TYPE_CAMELNAME => array('id', 'type', 'data', 'expiryTs',),
+        self::TYPE_COLNAME => array(SystemTempVarTableMap::COL_ID, SystemTempVarTableMap::COL_TYPE, SystemTempVarTableMap::COL_DATA, SystemTempVarTableMap::COL_EXPIRY_TS,),
+        self::TYPE_FIELDNAME => array('id', 'type', 'data', 'expiry_ts',),
+        self::TYPE_NUM => array(0, 1, 2, 3,)
     );
 
     /**
@@ -116,12 +114,12 @@ class SystemTempVarTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Type' => 1, 'Data' => 2, 'ExpiryTs' => 3, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'type' => 1, 'data' => 2, 'expiryTs' => 3, ),
-        self::TYPE_COLNAME       => array(SystemTempVarTableMap::COL_ID => 0, SystemTempVarTableMap::COL_TYPE => 1, SystemTempVarTableMap::COL_DATA => 2, SystemTempVarTableMap::COL_EXPIRY_TS => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'type' => 1, 'data' => 2, 'expiry_ts' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+    protected static $fieldKeys = array(
+        self::TYPE_PHPNAME => array('Id' => 0, 'Type' => 1, 'Data' => 2, 'ExpiryTs' => 3,),
+        self::TYPE_CAMELNAME => array('id' => 0, 'type' => 1, 'data' => 2, 'expiryTs' => 3,),
+        self::TYPE_COLNAME => array(SystemTempVarTableMap::COL_ID => 0, SystemTempVarTableMap::COL_TYPE => 1, SystemTempVarTableMap::COL_DATA => 2, SystemTempVarTableMap::COL_EXPIRY_TS => 3,),
+        self::TYPE_FIELDNAME => array('id' => 0, 'type' => 1, 'data' => 2, 'expiry_ts' => 3,),
+        self::TYPE_NUM => array(0, 1, 2, 3,)
     );
 
     /**
@@ -131,8 +129,7 @@ class SystemTempVarTableMap extends TableMap
      * @return void
      * @throws PropelException
      */
-    public function initialize()
-    {
+    public function initialize() {
         // attributes
         $this->setName('system_temp_var');
         $this->setPhpName('SystemTempVar');
@@ -150,8 +147,7 @@ class SystemTempVarTableMap extends TableMap
     /**
      * Build the RelationMap objects for this table relationships
      */
-    public function buildRelations()
-    {
+    public function buildRelations() {
     } // buildRelations()
 
     /**
@@ -160,21 +156,20 @@ class SystemTempVarTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
      */
-    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
+    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
         // If the PK cannot be derived from the row, return NULL.
         if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -182,20 +177,17 @@ class SystemTempVarTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, an array of the primary key columns will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
-    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
-        return (int) $row[
-            $indexType == TableMap::TYPE_NUM
-                ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
-        ];
+    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
+        return (int)$row[$indexType == TableMap::TYPE_NUM
+            ? 0 + $offset
+            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -209,26 +201,24 @@ class SystemTempVarTableMap extends TableMap
      * @param boolean $withPrefix Whether or not to return the path with the class name
      * @return string path.to.ClassName
      */
-    public static function getOMClass($withPrefix = true)
-    {
+    public static function getOMClass($withPrefix = true) {
         return $withPrefix ? SystemTempVarTableMap::CLASS_DEFAULT : SystemTempVarTableMap::OM_CLASS;
     }
 
     /**
      * Populates an object of the default type or an object that inherit from the default.
      *
-     * @param array  $row       row returned by DataFetcher->fetch().
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row row returned by DataFetcher->fetch().
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return array           (SystemTempVar object, last column rank)
      */
-    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
+    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
         $key = SystemTempVarTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
         if (null !== ($obj = SystemTempVarTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
@@ -255,8 +245,7 @@ class SystemTempVarTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function populateObjects(DataFetcherInterface $dataFetcher)
-    {
+    public static function populateObjects(DataFetcherInterface $dataFetcher) {
         $results = array();
 
         // set the class once to avoid overhead in the loop
@@ -280,6 +269,7 @@ class SystemTempVarTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -288,12 +278,11 @@ class SystemTempVarTableMap extends TableMap
      * on demand.
      *
      * @param Criteria $criteria object containing the columns to add.
-     * @param string   $alias    optional table alias
+     * @param string $alias optional table alias
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function addSelectColumns(Criteria $criteria, $alias = null)
-    {
+    public static function addSelectColumns(Criteria $criteria, $alias = null) {
         if (null === $alias) {
             $criteria->addSelectColumn(SystemTempVarTableMap::COL_ID);
             $criteria->addSelectColumn(SystemTempVarTableMap::COL_TYPE);
@@ -314,16 +303,14 @@ class SystemTempVarTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function getTableMap()
-    {
+    public static function getTableMap() {
         return Propel::getServiceContainer()->getDatabaseMap(SystemTempVarTableMap::DATABASE_NAME)->getTable(SystemTempVarTableMap::TABLE_NAME);
     }
 
     /**
      * Add a TableMap instance to the database for this tableMap class.
      */
-    public static function buildTableMap()
-    {
+    public static function buildTableMap() {
         $dbMap = Propel::getServiceContainer()->getDatabaseMap(SystemTempVarTableMap::DATABASE_NAME);
         if (!$dbMap->hasTable(SystemTempVarTableMap::TABLE_NAME)) {
             $dbMap->addTableObject(new SystemTempVarTableMap());
@@ -333,7 +320,7 @@ class SystemTempVarTableMap extends TableMap
     /**
      * Performs a DELETE on the database, given a SystemTempVar or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or SystemTempVar object or primary key or array of primary keys
+     * @param mixed $values Criteria or SystemTempVar object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -341,8 +328,7 @@ class SystemTempVarTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, ConnectionInterface $con = null)
-     {
+    public static function doDelete($values, ConnectionInterface $con = null) {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(SystemTempVarTableMap::DATABASE_NAME);
         }
@@ -355,7 +341,7 @@ class SystemTempVarTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(SystemTempVarTableMap::DATABASE_NAME);
-            $criteria->add(SystemTempVarTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria->add(SystemTempVarTableMap::COL_ID, (array)$values, Criteria::IN);
         }
 
         $query = SystemTempVarQuery::create()->mergeWith($criteria);
@@ -363,7 +349,7 @@ class SystemTempVarTableMap extends TableMap
         if ($values instanceof Criteria) {
             SystemTempVarTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) {
+            foreach ((array)$values as $singleval) {
                 SystemTempVarTableMap::removeInstanceFromPool($singleval);
             }
         }
@@ -377,22 +363,20 @@ class SystemTempVarTableMap extends TableMap
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
-    public static function doDeleteAll(ConnectionInterface $con = null)
-    {
+    public static function doDeleteAll(ConnectionInterface $con = null) {
         return SystemTempVarQuery::create()->doDeleteAll($con);
     }
 
     /**
      * Performs an INSERT on the database, given a SystemTempVar or Criteria object.
      *
-     * @param mixed               $criteria Criteria or SystemTempVar object containing data that is used to create the INSERT statement.
+     * @param mixed $criteria Criteria or SystemTempVar object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function doInsert($criteria, ConnectionInterface $con = null)
-    {
+    public static function doInsert($criteria, ConnectionInterface $con = null) {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(SystemTempVarTableMap::DATABASE_NAME);
         }
@@ -403,8 +387,8 @@ class SystemTempVarTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from SystemTempVar object
         }
 
-        if ($criteria->containsKey(SystemTempVarTableMap::COL_ID) && $criteria->keyContainsValue(SystemTempVarTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.SystemTempVarTableMap::COL_ID.')');
+        if ($criteria->containsKey(SystemTempVarTableMap::COL_ID) && $criteria->keyContainsValue(SystemTempVarTableMap::COL_ID)) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . SystemTempVarTableMap::COL_ID . ')');
         }
 
 

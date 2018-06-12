@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan on 07-Jun-18. */
 
 namespace Context;
+
 use I18n\L;
 
 class Context {

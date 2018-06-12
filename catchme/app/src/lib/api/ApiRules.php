@@ -1,9 +1,11 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 15/09/2017 */
 
 namespace Api;
-use Respect\Validation\Validator as v;
-use R;
+
 use EGender;
+use ESystemTempVar;
+use R;
+use Respect\Validation\Validator as v;
 use Security\Validator;
 
 
@@ -21,8 +23,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleId = 'validateId';
 
     public static function validateId($fieldValue) {
@@ -32,8 +32,6 @@ abstract class ApiRules {
 
         return R::return_ok;
     }
-
-
 
 
     const ruleIds = 'validateIds';
@@ -47,8 +45,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleBool = 'validateBool';
 
     public static function validateBool($fieldValue) {
@@ -58,8 +54,6 @@ abstract class ApiRules {
 
         return R::return_ok;
     }
-
-
 
 
     const ruleInt = 'validateInt';
@@ -73,15 +67,11 @@ abstract class ApiRules {
     }
 
 
-
-
     const rulePercentage = 'validatePercentage';
 
     public static function validatePercentage($fieldValue) {
         return self::validateInt($fieldValue, 0, 100);
     }
-
-
 
 
     const rulePhone = 'validatePhone';
@@ -95,8 +85,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleEmail = 'validateEmail';
 
     public static function validateEmail($fieldValue) {
@@ -108,8 +96,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleEmails = 'validateEmails';
 
     public static function validateEmails($fieldValue) {
@@ -119,8 +105,6 @@ abstract class ApiRules {
 
         return R::return_ok;
     }
-
-
 
 
     const ruleMediumString = 'validateMediumString';
@@ -138,8 +122,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleLongString = 'validateLongString';
 
     public static function validateLongString($fieldValue, $min = 3, $max = 1000) {
@@ -154,8 +136,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const rulePassword = 'validatePassword';
 
     public static function validatePassword($fieldValue, $min = 6, $max = 30) {
@@ -165,8 +145,6 @@ abstract class ApiRules {
 
         return R::return_ok;
     }
-
-
 
 
     const ruleTimestamp = 'validateTimestamp';
@@ -183,8 +161,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleUrl = 'validateUrl';
 
     public static function validateUrl($fieldValue) {
@@ -194,8 +170,6 @@ abstract class ApiRules {
 
         return R::return_ok;
     }
-
-
 
 
     const ruleUrls = 'validateUrls';
@@ -209,8 +183,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleCountry = 'validateCountry';
 
     public static function validateCountry($fieldValue) {
@@ -220,8 +192,6 @@ abstract class ApiRules {
 
         return R::return_ok;
     }
-
-
 
 
     const ruleCityTownState = 'validateCityTownState';
@@ -238,8 +208,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const rulePostcode = 'validatePostcode';
 
     public static function validatePostcode($fieldValue, $min = 0, $max = 255) {
@@ -252,8 +220,6 @@ abstract class ApiRules {
 
         return R::return_ok;
     }
-
-
 
 
     const ruleAddress = 'validateAddress';
@@ -270,8 +236,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleLatLng = 'validateLatLng';
 
     public static function validateLatLng($fieldValue) {
@@ -281,8 +245,6 @@ abstract class ApiRules {
 
         return R::return_ok;
     }
-
-
 
 
     const ruleGooglePlaceId = 'validateGooglePlaceId';
@@ -299,8 +261,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleSocialUserId = 'validateSocialUserId';
 
     public static function validateSocialUserId($fieldValue) {
@@ -315,8 +275,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleTokenPasswordReset = 'validateTokenPasswordReset';
 
     public static function validateTokenPasswordReset($fieldValue) {
@@ -329,8 +287,6 @@ abstract class ApiRules {
 
         return R::return_ok;
     }
-
-
 
 
     const ruleArrayOf = 'validateArrayOf';
@@ -361,8 +317,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleOf = 'validateOf';
 
     public static function validateOf($fieldValue, $type) {
@@ -377,8 +331,6 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleEGender = 'validateEGender';
 
     public static function validateEGender($fieldValue,
@@ -388,39 +340,13 @@ abstract class ApiRules {
     }
 
 
-
-
     const ruleESystemTempVar = 'validateESystemTempVar';
 
     public static function validateESystemTempVar($fieldValue,
-                                                  $first = ESystemTempVar::passwordRecovery,
-                                                  $last = ESystemTempVar::passwordRecovery) {
+                                                  $first = ESystemTempVar::PASSWORD_RECO,
+                                                  $last = ESystemTempVar::PASSWORD_RECO) {
         return self::validateInt($fieldValue, $first, $last);
     }
-
-
-
-
-    const ruleETimeState = 'validateETimeState';
-
-    public static function validateETimeState($fieldValue,
-                                               $first = ETimeState::undefined,
-                                               $last = ETimeState::valid) {
-        return self::validateInt($fieldValue, $first, $last);
-    }
-
-
-
-
-    const ruleEUploadType = 'validateEUploadType';
-
-    public static function validateEUploadType($fieldValue,
-                                                $first = EUploadType::backupFile,
-                                                $last = EUploadType::jsonDataFile) {
-        return self::validateInt($fieldValue, $first, $last);
-    }
-
-
 
 
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Base\LocationAddress as BaseLocationAddress;
+use Models\LatLng;
 
 /**
  * Skeleton subclass for representing a row from the 'location_address' table.

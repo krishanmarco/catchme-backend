@@ -1,9 +1,9 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 17/09/2017 */
 
 namespace Slim\Exception;
+
 use Api\ExceptionResponse as ApiExceptionResponse;
 use Exception;
-use stdClass;
 use R;
 
 class Api400 extends Exception implements IApiException {

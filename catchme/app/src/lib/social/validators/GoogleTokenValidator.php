@@ -11,13 +11,14 @@ class GoogleTokenValidator {
 
     /** @var GoogleToken $token */
     private $token;
+
     public function getToken() { return $this->token; }
 
-    
+
     public function validate() {
 
         // Error and authenticity checking
-        if($this->token->hasError())
+        if ($this->token->hasError())
             throw new Api400(R::return_error_invalid_social_token);
 
         if (!$this->token->isTokenAuthentic())

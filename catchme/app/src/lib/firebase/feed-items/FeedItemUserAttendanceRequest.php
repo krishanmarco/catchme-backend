@@ -2,23 +2,23 @@
 
 namespace Firebase\FeedItems;
 
-use User;
-use Location;
-use I18n\L;
 use Api\ServerTextBuilder;
+use I18n\L;
+use Location as DbLocation;
+use User as DbUser;
 
 final class FeedItemUserAttendanceRequest extends FeedItemBuilder {
 
-    public function __construct(User $authUser, Location $location) {
+    public function __construct(DbUser $authUser, DbLocation $location) {
         parent::__construct();
         $this->currentUser = $authUser;
         $this->location = $location;
     }
 
 
-    /** @var User $currentUser */
+    /** @var DbUser $currentUser */
     private $currentUser;
-    /** @var Location $location */
+    /** @var DbLocation $location */
     private $location;
 
 

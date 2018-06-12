@@ -14,8 +14,8 @@
       "controllers",
       "models",
       "lib",
-	  "config",
-	  "routes"
+      "config",
+      "routes"
     ]
   }
 

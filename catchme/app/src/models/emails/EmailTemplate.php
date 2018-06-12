@@ -1,8 +1,9 @@
 <?php /** Created by Krishan Marco Madan on 12-May-18. */
 
 namespace Models\Email;
-use \Slim\Exception\Api400;
+
 use R;
+use Slim\Exception\Api400;
 
 abstract class EmailTemplate {
 

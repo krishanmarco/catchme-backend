@@ -2,12 +2,12 @@
 
 namespace Models\Calculators\Locations;
 
-use Location as DbLocation;
-use Models\Calculators\LocationModel;
-use UserQuery;
 use EGender;
+use Location as DbLocation;
 use Map\UserTableMap as UserTableMap;
-use Models\LocationCountResult;
+use Models\Calculators\LocationModel;
+use UserLocation as DbUserLocation;
+use UserQuery;
 
 class LocationCount {
 
@@ -19,49 +19,60 @@ class LocationCount {
     /** @var DbLocation */
     private $location;
 
-    /** @var LocationCountResult */
-    private $result;
+    /** @var int */
+    private $menCount = 0;
 
-    /** @return LocationCountResult */
-    public function getResult() {
-        return $this->result;
+    /** @var int */
+    private $womenCount = 0;
+
+    /** @var int */
+    private $totalCount = 0;
+
+    /** @return int */
+    public function getMenCount() {
+        return $this->menCount;
+    }
+
+    /** @return int */
+    public function getWomenCount() {
+        return $this->womenCount;
+    }
+
+    /** @return int */
+    public function getTotalCount() {
+        return $this->totalCount;
     }
 
     private function calculateLocationCount() {
-        $menCount = 0;
-        $womenCount = 0;
-        $totalCount = 0;
 
         $genderVector = $this->calcGenderVector();
-
         foreach ($genderVector as $genderInt) {
 
             switch ($genderInt) {
                 case EGender::FEMALE:
-                    $womenCount++;
+                    $this->womenCount++;
                     break;
                 case EGender::MALE:
-                    $menCount++;
+                    $this->menCount++;
                     break;
                 default:
-                    $totalCount++;
+                    $this->totalCount++;
             }
         }
 
-        $totalCount += $menCount + $womenCount;
-
-        $this->result = new LocationCountResult($menCount, $womenCount, $totalCount);
+        $this->totalCount += $this->menCount + $this->womenCount;
     }
 
     /** @return int[] */
     private function calcGenderVector() {
-        // Get all Ids from $calcResultLocationUsers->getUserId();
-        $idsNow = [];
 
-        $locationModel = LocationModel::fromLocation($this->location);
-        $locationUsersResult = $locationModel->getLocationUsers()->getResult();
-        foreach ($locationUsersResult->usersNow as $userLocation)
-            array_push($idsNow, $userLocation->getUserId());
+        // Get all Ids from $calcResultLocationUsers->getUserId();
+        $usersNow = LocationModel::fromLocation($this->location)
+            ->getLocationUsers()
+            ->getUsersNow();
+
+        // Map UserLocation[] to user id int[]
+        $idsNow = DbUserLocation::mapToUserIds($usersNow);
 
         // For each id as key, select its gender
         return UserQuery::create()

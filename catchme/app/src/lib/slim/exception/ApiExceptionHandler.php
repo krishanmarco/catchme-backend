@@ -1,9 +1,10 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 17/09/2017 */
 
 namespace Slim\Exception;
+
+use Api\ExceptionResponse as ApiExceptionResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Api\ExceptionResponse as ApiExceptionResponse;
 use R;
 
 class ApiExceptionHandler {

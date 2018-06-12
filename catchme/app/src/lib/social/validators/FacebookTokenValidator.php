@@ -12,17 +12,19 @@ class FacebookTokenValidator {
 
     /** @var FacebookDebugToken $debugToken */
     private $debugToken;
+
     public function getDebugToken() { return $this->debugToken; }
 
     /** @var FacebookUserDataToken $userDataToken */
     private $userDataToken;
+
     public function getUserDataToken() { return $this->userDataToken; }
 
 
     public function validate() {
 
         // Error and authenticity checking
-        if($this->debugToken->hasError() || $this->userDataToken->hasError())
+        if ($this->debugToken->hasError() || $this->userDataToken->hasError())
             throw new Api400(R::return_error_invalid_social_token);
 
         if (!$this->debugToken->isTokenAuthentic() || !$this->userDataToken->isTokenAuthentic())

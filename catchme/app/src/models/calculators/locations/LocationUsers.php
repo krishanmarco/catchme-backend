@@ -2,9 +2,9 @@
 
 namespace Models\Calculators\Locations;
 
-use UserLocationQuery;
-use Models\LocationUsersResult;
 use Location as DbLocation;
+use UserLocation as DbUserLocation;
+use UserLocationQuery;
 
 class LocationUsers {
 
@@ -16,12 +16,20 @@ class LocationUsers {
     /** @var DbLocation */
     private $location;
 
-    /** @var LocationUsersResult */
-    private $result;
+    /** @var DbUserLocation[] */
+    private $usersNow;
 
-    /** @return LocationUsersResult */
-    public function getResult() {
-        return $this->result;
+    /** @var DbUserLocation[] */
+    private $usersLater;
+
+    /** @return DbUserLocation[] */
+    public function getUsersNow() {
+        return $this->usersNow;
+    }
+
+    /** @return DbUserLocation[] */
+    public function getUsersLater() {
+        return $this->usersLater;
     }
 
     private function calculateLocationUsers() {
@@ -30,22 +38,16 @@ class LocationUsers {
             ->joinWithUser()
             ->find();
 
-        // Initialize result fields
-        $usersNow = [];
-        $usersFuture = [];
-
         foreach ($userLocations as $ul) {
             // Check if $ul user is at this
             // location now or in the future
 
             if ($ul->getFromTs() <= time() && $ul->getUntilTs() >= time())
-                array_push($usersNow, $ul);
+                array_push($this->usersNow, $ul);
 
             else if ($ul->getFromTs() >= time())
-                array_push($usersFuture, $ul);
+                array_push($this->usersLater, $ul);
         }
-
-        $this->result = new LocationUsersResult($usersNow, $usersFuture);
     }
 
 }

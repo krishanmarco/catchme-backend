@@ -2,8 +2,8 @@
 
 namespace Api\Map;
 
-use UserLocation as DbUserLocation;
 use Api\UserLocationStatus as ApiUserLocationStatus;
+use UserLocation as DbUserLocation;
 
 
 class ModelToApiUserLocation {

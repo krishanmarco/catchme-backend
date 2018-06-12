@@ -2,14 +2,14 @@
 
 namespace Controllers;
 
+use Api\FormChangePassword as ApiFormChangePassword;
+use Api\FormUserLogin as ApiFormUserLogin;
+use Api\FormUserRegister as ApiFormUserRegister;
+use Api\FormUserSocialLogin as ApiFormUserSocialLogin;
+use Api\User as ApiUser;
 use Models\User\Accounts\UserLogin;
 use Models\User\Accounts\UserManagerPassword;
 use Models\User\Accounts\UserRegistration;
-use Api\User as ApiUser;
-use Api\FormUserLogin as ApiFormUserLogin;
-use Api\FormUserSocialLogin as ApiFormUserSocialLogin;
-use Api\FormUserRegister as ApiFormUserRegister;
-use Api\FormChangePassword as ApiFormChangePassword;
 use R;
 
 class ControllerAccounts {

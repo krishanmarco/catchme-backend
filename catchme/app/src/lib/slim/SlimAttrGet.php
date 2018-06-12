@@ -2,8 +2,8 @@
 
 namespace Slim;
 
-use \Psr\Http\Message\ServerRequestInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Routes\Accessors\ControllerAccessorAuth;
 use Routes\Accessors\ControllerAccessorAuthAdmin;
 use Routes\Accessors\ControllerAccessorUnauth;

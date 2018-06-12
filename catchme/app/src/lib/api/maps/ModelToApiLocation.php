@@ -1,14 +1,16 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Api\Map;
+
+use Api\Location as ApiLocation;
 use Api\LocationConnections;
 use Api\LocationPeople;
 use Location as DbLocation;
+use LocationImage as DbLocationImage;
+use Models\Calculators\JoinedLocationUser\LocationFriends;
+use Models\Calculators\Locations\LocationCount;
+use Models\Calculators\Locations\LocationImages;
 use User as DbUser;
-use Api\Location as ApiLocation;
-use Models\LocationFriendsResult;
-use Models\LocationCountResult;
-use Models\LocationImagesResult;
 
 
 class ModelToApiLocation {
@@ -20,30 +22,25 @@ class ModelToApiLocation {
         $this->withBasicParameters();
     }
 
-
     /** @var DbLocation $dbLocation */
     private $dbLocation;
 
     /** @var ModelToApiUsers $modelToApiUsers */
     private $modelToApiUsers;
 
-
-
     /** @var ApiLocation */
     private $apiLocation;
-    public function get() { return $this->apiLocation; }
 
-
-
+    /** @return ApiLocation */
+    public function get() {
+        return $this->apiLocation;
+    }
 
     /** @return ModelToApiLocation */
     public function applyPrivacyPolicy(DbUser $requestingUser) {
         $this->modelToApiUsers->applyPrivacyPolicy($requestingUser);
         return $this;
     }
-
-
-
 
     /** @return ModelToApiLocation */
     private function withBasicParameters() {
@@ -62,7 +59,6 @@ class ModelToApiLocation {
         return $this;
     }
 
-
     /** @return ModelToApiLocation */
     public function withAddress() {
         $this->apiLocation->country = $this->dbLocation->getAddress()->getCountry();
@@ -76,62 +72,54 @@ class ModelToApiLocation {
         return $this;
     }
 
-
     /** @return ModelToApiLocation */
     public function withTimings() {
         $this->apiLocation->timings = $this->dbLocation->getTimings();;
         return $this;
     }
 
-
     /**
-     * @param LocationImagesResult[] $locationImages
+     * @param LocationImages $locationImages
      * @return ModelToApiLocation
      */
-    public function withImages(array $locationImages) {
-        $urls = [];
-
-        foreach ($locationImages as $li)
-            array_push($urls, $li->url);
-
-        $this->apiLocation->imageUrls = $urls;
+    public function withImages(LocationImages $locationImages) {
+        $this->apiLocation = array_map(function (DbLocationImage $dli) {
+            return $dli->asUrl();
+        }, $locationImages->getLocationImages());
         return $this;
     }
 
-
     /**
-     * @param LocationCountResult $locationCount
+     * @param LocationCount $locationCount
      * @return ModelToApiLocation
      */
-    public function withPeople(LocationCountResult $locationCount) {
+    public function withPeople(LocationCount $locationCount) {
         $apiLocationPeople = new LocationPeople();
-        $apiLocationPeople->men = $locationCount->men;
-        $apiLocationPeople->women = $locationCount->women;
-        $apiLocationPeople->total = $locationCount->total;
+        $apiLocationPeople->men = $locationCount->getMenCount();
+        $apiLocationPeople->women = $locationCount->getWomenCount();
+        $apiLocationPeople->total = $locationCount->getTotalCount();
         $this->apiLocation->people = $apiLocationPeople;
         return $this;
     }
 
-
     /**
-     * @param LocationFriendsResult $locationFriends
+     * @param LocationFriends $locationFriends
      * @return ModelToApiLocation
      */
-    public function withConnections(LocationFriendsResult $locationFriends) {
+    public function withConnections(LocationFriends $locationFriends) {
         $apiLocationConnections = new LocationConnections();
 
         $apiLocationConnections->past = [];
 
         $apiLocationConnections->future = $this->modelToApiUsers
-            ->users($locationFriends->future);
+            ->users($locationFriends->getFriendsNow());
 
         $apiLocationConnections->now = $this->modelToApiUsers
-            ->users($locationFriends->now);
+            ->users($locationFriends->getFriendsLater());
 
         $this->apiLocation->connections = $apiLocationConnections;
         return $this;
     }
-
 
 
 }

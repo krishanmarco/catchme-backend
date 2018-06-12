@@ -57,7 +57,6 @@ const MIN_USER_LOCATION = 10;
 const MAX_USER_LOCATION = 15;
 
 
-
 // Script functions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -93,7 +92,6 @@ function generateFakeUsers() {
 }
 
 
-
 function generateFakeLocations() {
     $faker = Faker\Factory::create();
     $faker->seed(1234);
@@ -118,7 +116,7 @@ function generateFakeLocations() {
         $locationAddress->setTown($faker->city);
         $locationAddress->setPostcode($faker->postcode);
         $locationAddress->setAddress($faker->address);
-        $locationAddress->setLatLng(new LatLng($faker->latitude, $faker->longitude));
+        $locationAddress->setLatLng(new \Models\LatLng($faker->latitude, $faker->longitude));
         $locationAddress->setGooglePlaceId($faker->randomAscii);
         $location->setAddress($locationAddress);
 
@@ -130,7 +128,6 @@ function generateFakeLocations() {
         $location->save();
     }
 }
-
 
 
 function generateFakeLocationImages() {
@@ -178,7 +175,6 @@ function updateFakeLocationImages() {
 }
 
 
-
 function generateFakeUserConnections($start, $end) {
     $faker = Faker\Factory::create();
     $faker->seed(1234);
@@ -221,7 +217,6 @@ function generateFakeUserConnections($start, $end) {
 }
 
 
-
 function generateFakeUserFavorites($start, $end) {
     $faker = Faker\Factory::create();
     $faker->seed(1234);
@@ -248,7 +243,6 @@ function generateFakeUserFavorites($start, $end) {
         }
     }
 }
-
 
 
 function generateFakeUserLocations($start, $end) {
@@ -299,7 +293,6 @@ function updateFakeUserLocationTimestamps() {
 }
 
 
-
 function generateFakeUserLocationExpired($start, $end) {
     $faker = Faker\Factory::create();
     $faker->seed(1234);
@@ -339,7 +332,6 @@ function update() {
 }
 
 
-
 function dropAll() {
 
     function _exec($stmt) {
@@ -371,7 +363,6 @@ function dropAll() {
     deleteDirectory(__PRIVATE_DATA__);
     deleteDirectory(__PUBLIC_DATA__);
 }
-
 
 
 function revertToSimpleTestingState() {

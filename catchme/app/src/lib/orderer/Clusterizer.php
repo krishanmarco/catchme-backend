@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan on 01-Jun-18. */
 
 namespace KMeans;
+
 use Closure;
 
 /**
@@ -87,6 +88,7 @@ class Clusterizer {
 
 interface IClusterPoint {
     public function getCoordinates();
+
     public function setClusterData(ClusterData $clusterData);
 }
 

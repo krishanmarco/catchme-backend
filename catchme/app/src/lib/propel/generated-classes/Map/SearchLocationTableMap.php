@@ -2,9 +2,6 @@
 
 namespace Map;
 
-use \SearchLocation;
-use \SearchLocationQuery;
-use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
@@ -13,6 +10,9 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
+use Propel\Runtime\Propel;
+use SearchLocation;
+use SearchLocationQuery;
 
 
 /**
@@ -26,8 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class SearchLocationTableMap extends TableMap
-{
+class SearchLocationTableMap extends TableMap {
     use InstancePoolTrait;
     use TableMapTrait;
 
@@ -92,12 +91,12 @@ class SearchLocationTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('LocationId', 'Query', ),
-        self::TYPE_CAMELNAME     => array('locationId', 'query', ),
-        self::TYPE_COLNAME       => array(SearchLocationTableMap::COL_LOCATION_ID, SearchLocationTableMap::COL_QUERY, ),
-        self::TYPE_FIELDNAME     => array('location_id', 'query', ),
-        self::TYPE_NUM           => array(0, 1, )
+    protected static $fieldNames = array(
+        self::TYPE_PHPNAME => array('LocationId', 'Query',),
+        self::TYPE_CAMELNAME => array('locationId', 'query',),
+        self::TYPE_COLNAME => array(SearchLocationTableMap::COL_LOCATION_ID, SearchLocationTableMap::COL_QUERY,),
+        self::TYPE_FIELDNAME => array('location_id', 'query',),
+        self::TYPE_NUM => array(0, 1,)
     );
 
     /**
@@ -106,12 +105,12 @@ class SearchLocationTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('LocationId' => 0, 'Query' => 1, ),
-        self::TYPE_CAMELNAME     => array('locationId' => 0, 'query' => 1, ),
-        self::TYPE_COLNAME       => array(SearchLocationTableMap::COL_LOCATION_ID => 0, SearchLocationTableMap::COL_QUERY => 1, ),
-        self::TYPE_FIELDNAME     => array('location_id' => 0, 'query' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+    protected static $fieldKeys = array(
+        self::TYPE_PHPNAME => array('LocationId' => 0, 'Query' => 1,),
+        self::TYPE_CAMELNAME => array('locationId' => 0, 'query' => 1,),
+        self::TYPE_COLNAME => array(SearchLocationTableMap::COL_LOCATION_ID => 0, SearchLocationTableMap::COL_QUERY => 1,),
+        self::TYPE_FIELDNAME => array('location_id' => 0, 'query' => 1,),
+        self::TYPE_NUM => array(0, 1,)
     );
 
     /**
@@ -121,8 +120,7 @@ class SearchLocationTableMap extends TableMap
      * @return void
      * @throws PropelException
      */
-    public function initialize()
-    {
+    public function initialize() {
         // attributes
         $this->setName('search_location');
         $this->setPhpName('SearchLocation');
@@ -131,22 +129,21 @@ class SearchLocationTableMap extends TableMap
         $this->setPackage('');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('location_id', 'LocationId', 'INTEGER' , 'location', 'id', true, null, null);
+        $this->addForeignPrimaryKey('location_id', 'LocationId', 'INTEGER', 'location', 'id', true, null, null);
         $this->addColumn('query', 'Query', 'VARCHAR', true, 255, null);
     } // initialize()
 
     /**
      * Build the RelationMap objects for this table relationships
      */
-    public function buildRelations()
-    {
-        $this->addRelation('Location', '\\Location', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':location_id',
-    1 => ':id',
-  ),
-), 'CASCADE', null, null, false);
+    public function buildRelations() {
+        $this->addRelation('Location', '\\Location', RelationMap::MANY_TO_ONE, array(
+            0 =>
+                array(
+                    0 => ':location_id',
+                    1 => ':id',
+                ),
+        ), 'CASCADE', null, null, false);
     } // buildRelations()
 
     /**
@@ -155,21 +152,20 @@ class SearchLocationTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
      */
-    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
+    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
         // If the PK cannot be derived from the row, return NULL.
         if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -177,20 +173,17 @@ class SearchLocationTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, an array of the primary key columns will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
-    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
-        return (int) $row[
-            $indexType == TableMap::TYPE_NUM
-                ? 0 + $offset
-                : self::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)
-        ];
+    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
+        return (int)$row[$indexType == TableMap::TYPE_NUM
+            ? 0 + $offset
+            : self::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -204,26 +197,24 @@ class SearchLocationTableMap extends TableMap
      * @param boolean $withPrefix Whether or not to return the path with the class name
      * @return string path.to.ClassName
      */
-    public static function getOMClass($withPrefix = true)
-    {
+    public static function getOMClass($withPrefix = true) {
         return $withPrefix ? SearchLocationTableMap::CLASS_DEFAULT : SearchLocationTableMap::OM_CLASS;
     }
 
     /**
      * Populates an object of the default type or an object that inherit from the default.
      *
-     * @param array  $row       row returned by DataFetcher->fetch().
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row row returned by DataFetcher->fetch().
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return array           (SearchLocation object, last column rank)
      */
-    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
+    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
         $key = SearchLocationTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
         if (null !== ($obj = SearchLocationTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
@@ -250,8 +241,7 @@ class SearchLocationTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function populateObjects(DataFetcherInterface $dataFetcher)
-    {
+    public static function populateObjects(DataFetcherInterface $dataFetcher) {
         $results = array();
 
         // set the class once to avoid overhead in the loop
@@ -275,6 +265,7 @@ class SearchLocationTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -283,12 +274,11 @@ class SearchLocationTableMap extends TableMap
      * on demand.
      *
      * @param Criteria $criteria object containing the columns to add.
-     * @param string   $alias    optional table alias
+     * @param string $alias optional table alias
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function addSelectColumns(Criteria $criteria, $alias = null)
-    {
+    public static function addSelectColumns(Criteria $criteria, $alias = null) {
         if (null === $alias) {
             $criteria->addSelectColumn(SearchLocationTableMap::COL_LOCATION_ID);
             $criteria->addSelectColumn(SearchLocationTableMap::COL_QUERY);
@@ -305,16 +295,14 @@ class SearchLocationTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function getTableMap()
-    {
+    public static function getTableMap() {
         return Propel::getServiceContainer()->getDatabaseMap(SearchLocationTableMap::DATABASE_NAME)->getTable(SearchLocationTableMap::TABLE_NAME);
     }
 
     /**
      * Add a TableMap instance to the database for this tableMap class.
      */
-    public static function buildTableMap()
-    {
+    public static function buildTableMap() {
         $dbMap = Propel::getServiceContainer()->getDatabaseMap(SearchLocationTableMap::DATABASE_NAME);
         if (!$dbMap->hasTable(SearchLocationTableMap::TABLE_NAME)) {
             $dbMap->addTableObject(new SearchLocationTableMap());
@@ -324,7 +312,7 @@ class SearchLocationTableMap extends TableMap
     /**
      * Performs a DELETE on the database, given a SearchLocation or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or SearchLocation object or primary key or array of primary keys
+     * @param mixed $values Criteria or SearchLocation object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -332,8 +320,7 @@ class SearchLocationTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, ConnectionInterface $con = null)
-     {
+    public static function doDelete($values, ConnectionInterface $con = null) {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(SearchLocationTableMap::DATABASE_NAME);
         }
@@ -346,7 +333,7 @@ class SearchLocationTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(SearchLocationTableMap::DATABASE_NAME);
-            $criteria->add(SearchLocationTableMap::COL_LOCATION_ID, (array) $values, Criteria::IN);
+            $criteria->add(SearchLocationTableMap::COL_LOCATION_ID, (array)$values, Criteria::IN);
         }
 
         $query = SearchLocationQuery::create()->mergeWith($criteria);
@@ -354,7 +341,7 @@ class SearchLocationTableMap extends TableMap
         if ($values instanceof Criteria) {
             SearchLocationTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) {
+            foreach ((array)$values as $singleval) {
                 SearchLocationTableMap::removeInstanceFromPool($singleval);
             }
         }
@@ -368,22 +355,20 @@ class SearchLocationTableMap extends TableMap
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
-    public static function doDeleteAll(ConnectionInterface $con = null)
-    {
+    public static function doDeleteAll(ConnectionInterface $con = null) {
         return SearchLocationQuery::create()->doDeleteAll($con);
     }
 
     /**
      * Performs an INSERT on the database, given a SearchLocation or Criteria object.
      *
-     * @param mixed               $criteria Criteria or SearchLocation object containing data that is used to create the INSERT statement.
+     * @param mixed $criteria Criteria or SearchLocation object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function doInsert($criteria, ConnectionInterface $con = null)
-    {
+    public static function doInsert($criteria, ConnectionInterface $con = null) {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(SearchLocationTableMap::DATABASE_NAME);
         }

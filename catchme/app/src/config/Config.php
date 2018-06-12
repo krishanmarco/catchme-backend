@@ -63,12 +63,6 @@ define(
 );
 
 
-
-
-
-
-
-
 define("FIREBASE_API_KEY", "AIzaSyAou7dzdwfMFwmMqcxSs09I9RPohvr2jlI");
 define("FIREBASE_DATABASE_URI", "https://catch-me-179514.firebaseio.com");
 define("FIREBASE_PROJECT_ID", "catch-me-179514");
@@ -81,13 +75,6 @@ define('FIREBASE_LOGIN_SERVICE_PRIVATE_KEY', "-----BEGIN PRIVATE KEY-----\nMIIEv
 define("FIREBASE_ADMIN_SERVICE_CLIENT_ID", "106470506194480246689");
 define("FIREBASE_ADMIN_SERVICE_CLIENT_EMAIL", "firebase-adminsdk-k8jlz@catch-me-179514.iam.gserviceaccount.com");
 define("FIREBASE_ADMIN_SERVICE_PRIVATE_KEY", "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDBgTKg73Gfoufk\n6MNwX8Li9rG40lzoQK9Wy830etd+BV6SpBpGjoAQ+rScq2xM6sNNR5x5kGUDLKy2\nYPL0t+NWpgH+aQsSvzWOBg8xt/YkbjLPBsvGbTu9wDMLLYK1jbTeY0Ugz4dhaGKR\nddQj6CrmOxcwhQbBfDHTuS50G70sENQm1S3IgNLztg5kV3SbdVkx8rnb9lSmBHTE\nCRth0F9zvv/gyI5EgEUukjB6HwTYKED31LssTQcoCRDwy2+KNSistw16tcxn1/YJ\n/ZcDlTGReCaqRrFFYlS5xeRiPyhUX3BauyiNzLmWwpy4LvRBXt1s3cg+99yZk/bo\nMHDgVhgzAgMBAAECggEAGls9KKOEj/BR8qFroV5BvsVIPrrUccQBvepDkrW6rU0Q\n7RtSAuM8+VMUj7Rfq3hcgqWq3/n1cEHBApRg80kqu24gHmVzXynRIxebMTPz4FFs\nNTuhPNU7CmTn7vFTeOQkyxetXkM2FuPvbQ2mCAAC+9n3liHAYlFGviZed+0hTqN9\nhph3xyqgLgu77uHnytk+pqoIG2WSuts85zK1l4CmKvfpY4FJaq5eUENqNFIftC5p\nHavH/Mhb/BK6Y2+RGLBfJ+63JhYiLRw+ZXZRT8goWDy+vMnqieAx71+qeYiX6lC4\nVVRglHj9LQbTELyjg6bozrw9TuBiLalfJVCcUE33ZQKBgQDiBvkmZKZiRuyHk3RG\n5bztw/TMg1iWimScfaIUgYaAOcSB19C1B5K8HuFrpPEjODr+G+SKps3VioAg4W5b\nvCndBYQ5UrSiVpyEjwAfPlvFcMviyMDy/9rdE1Z8HycJxNpwuh706skDQv42HSPc\njfO/yRU/tprp8lFQENWSP2vUzQKBgQDbKitt6ZH86J0EmOH0ZxFwLbfBzLdvX2hF\nwfJllNBTs5LduUeMfq4Kf6U6BXNIcXp7DXgfLvL2PPfAzqbH0+jqDQpGWJP90tC+\ngWEanomls/pt90VSVMPiZ4o9kXTpHt2rLoGP1B/tgSaxukS+anZNNqjim+bvAodb\nYeE9YqGg/wKBgGYMSe74oFpctSvc+jGMRgl/YIX5g0SshRJWcpgZhrVb34nT+4nQ\nOoKu2o20MZ76I0BZLY0gFGymFIVD4oSOZsRAWltbKOzmd9ItkhuJFvwEmjjw9JSB\nybnoojJ2CjUR6KHell1zp3/OfmHGNEu+118ulWZntneLjQS+JP7bnX69AoGActkD\nTyKx3O1ssucGqVOFgNqES+tiSNufQcbjpjW4gdQ9ZzFbfBU6UMgZJnGKuvC0dV1W\nkEjDCyRh1Ei2f0rd6CCTPM/YJY/e0aXs480mZo4M8qk8S2ueBrupZqAdurfxA25o\neJ15abVfOI1azsntWoMFN1LpTmBt3AZLySYxerMCgYEAkUGllXNzqxQIRfXBQEIG\nqBax2TwtCmP/i6KC4M+d6gLO62uGpvjYpe3xCu1TkeIxsFHjbqEqYxYVIpQrXNV0\n+/WOB+7Qm1tcHaBUyFh9yBg2KybeWVIyVplLLnLrWnjzSRh3wNnuVcKEEEUDxevm\ncLailTf71OGgW/0zjk2rstE=\n-----END PRIVATE KEY-----\n");
-
-
-
-
-
-
-
 
 
 define("GOOGLE_CLIENT_ID", '458235769872-g7l24birc1n6d2cbqundeb8nupbb15sh.apps.googleusercontent.com');

@@ -6,8 +6,8 @@ use Api\FormFeaturedAdAdd;
 use Firebase\FeaturedAdItems\FeaturedAdItemAttendanceRequest;
 use Firebase\FeaturedAdsManager;
 use Models\Feed\MultiNotificationManager;
-use User as DbUser;
 use R;
+use User as DbUser;
 
 class ControllerAdmin {
 

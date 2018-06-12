@@ -52,35 +52,40 @@ class FacebookDebugToken {
     }
 
 
-
     private $errorMessage;
+
     public function hasError() { return !is_null($this->errorMessage); }
+
     public function getErrorMessage() { return $this->errorMessage; }
 
 
-
     private $app_id;
+
     public function getAppId() { return $this->app_id; }
 
     private $application;
+
     public function getApplication() { return $this->application; }
 
     private $expires_at;
+
     public function getExpiresAt() { return $this->expires_at; }
 
     private $is_valid;
+
     public function getIsValid() { return $this->is_valid; }
 
     private $issued_at;
+
     public function getIssuedAt() { return $this->issued_at; }
 
     private $scopes;
+
     public function getScopes() { return $this->scopes; }
 
     private $user_id;
+
     public function getUserId() { return $this->user_id; }
-
-
 
 
     private $tokenAuthentic;
@@ -92,8 +97,6 @@ class FacebookDebugToken {
     }
 
 
-
-
     private function parseTokenJson($jsonArray) {
         $this->app_id = $jsonArray['data']['app_id'];
         $this->application = $jsonArray['data']['application'];
@@ -103,8 +106,6 @@ class FacebookDebugToken {
         $this->scopes = $jsonArray['data']['scopes'];
         $this->user_id = $jsonArray['data']['user_id'];
     }
-
-
 
 
     private function isTokenValid() {

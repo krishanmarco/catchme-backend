@@ -2,13 +2,14 @@
 
 namespace Models\Calculators\Users;
 
+use Location as DbLocation;
 use Propel\Runtime\ActiveQuery\Criteria;
-use UserLocationFavoriteQuery;
-use UserLocationExpiredQuery;
-use UserLocationExpired;
-use UserLocationQuery;
 use User as DbUser;
-use Models\UserLocationsResult;
+use UserLocation as DbUserLocation;
+use UserLocationExpired as DbUserLocationExpired;
+use UserLocationExpiredQuery;
+use UserLocationFavoriteQuery;
+use UserLocationQuery;
 
 class UserLocations {
 
@@ -20,28 +21,46 @@ class UserLocations {
     /** @var DbUser $user */
     private $user;
 
-    /** @var UserLocationsResult $result */
-    private $result;
-
     /** @var array(LocationId => Location) $accumulatedLocations */
     private $accLocations = [];
 
-    /** @return UserLocationsResult */
-    public function getResult() {
-        return $this->result;
+    /* @var int[] */
+    public $favorites = [];
+
+    /* @var int[] */
+    public $top = [];
+
+    /* @var DbUserLocation[] */
+    public $userLocationStatuses = [];
+
+    /** @var DbLocation[] */
+    public $locations = [];
+
+    /** @return int[] */
+    public function getFavorites() {
+        return $this->favorites;
+    }
+
+    /** @return int[] */
+    public function getTop() {
+        return $this->top;
+    }
+
+    /** @return DbUserLocation[] */
+    public function getUserLocations() {
+        return $this->userLocationStatuses;
+    }
+
+    /** @return DbLocation[] */
+    public function getLocations() {
+        return $this->locations;
     }
 
     private function calculateUserLocations() {
-        $favoriteLocations = $this->calcFavoriteLocations();
-        $topLocations = $this->calcTopLocations();
-        $userLocationStatuses = $this->calcUserLocationStatuses();
-
-        $this->result = new UserLocationsResult(
-            $favoriteLocations,
-            $topLocations,
-            $userLocationStatuses,
-            array_values($this->accLocations)
-        );
+        $this->favorites = $this->calcFavoriteLocations();
+        $this->top = $this->calcTopLocations();
+        $this->userLocationStatuses = $this->calcUserLocationStatuses();
+        $this->locations = array_values($this->accLocations);
     }
 
     private function calcFavoriteLocations() {
@@ -67,7 +86,7 @@ class UserLocations {
         // Calculate a count for each location from the expired location table
         // SELECT id, location_id, COUNT(*) FROM user_location_expired
         // WHERE user_id = 1 GROUP BY location_id ORDER BY COUNT(*) DESC;
-        /** @var UserLocationExpired[] $finalLocations */
+        /** @var DbUserLocationExpired[] $finalLocations */
         $finalLocations = UserLocationExpiredQuery::create()
             ->filterByUserId($this->user->getId())
             ->groupByLocationId()

@@ -2,7 +2,7 @@
 
 class FacebookUserDataToken {
     const FACEBOOK_OAUTH_URL = "https://graph.facebook.com/v2.11/me?access_token={0}" .
-        "&fields=id,email,first_name,gender,last_name,link,locale,name,timezone,updated_time,verified";
+    "&fields=id,email,first_name,gender,last_name,link,locale,name,timezone,updated_time,verified";
 
     // {
     //      "id": "559560534181085",
@@ -48,46 +48,59 @@ class FacebookUserDataToken {
 
 
     private $errorMessage;
+
     public function hasError() { return !is_null($this->errorMessage); }
+
     public function getErrorMessage() { return $this->errorMessage; }
 
 
-
     private $id;
+
     public function getUserId() { return $this->id; }
 
     private $birthday;
+
     public function getBirthday() { return $this->birthday; }
 
     private $email;
+
     public function getEmail() { return $this->email; }
 
     private $first_name;
+
     public function getFirstName() { return $this->first_name; }
 
     private $gender;
+
     public function getGender() { return $this->gender; }
 
     private $last_name;
+
     public function getLastName() { return $this->last_name; }
 
     private $link;
+
     public function getLink() { return $this->link; }
 
     private $locale;
+
     public function getLocale() { return $this->locale; }
 
     private $name;
+
     public function getName() { return $this->name; }
 
     private $timezone;
+
     public function getTimezone() { return $this->timezone; }
 
     private $updated_time;
+
     public function getUpdatedTime() { return $this->updated_time; }
 
     private $verified;
-    public function getVerified(){ return $this->verified; }
+
+    public function getVerified() { return $this->verified; }
 
     public function getProfilePicture() {
         return strtr(

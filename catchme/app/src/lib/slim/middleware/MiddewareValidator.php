@@ -1,10 +1,11 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 27/08/2017 */
 
 namespace Slim\Middleware;
+
+use R;
 use Security\Validator;
 use Slim\Exception\Api400;
 use Slim\SlimAttrGet;
-use R;
 
 
 class MiddlewareValidator {
@@ -20,14 +21,14 @@ class MiddlewareValidator {
 
     /** @var string */
     private $apiDefOutputClass = null;
-    
+
     /** @var boolean */
     private $removeNulls;
 
     /**
-     * @param  \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
-     * @param  \Psr\Http\Message\ResponseInterface      $response PSR7 response
-     * @param  callable                                 $next     Next middleware
+     * @param  \Psr\Http\Message\ServerRequestInterface $request PSR7 request
+     * @param  \Psr\Http\Message\ResponseInterface $response PSR7 response
+     * @param  callable $next Next middleware
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
@@ -46,7 +47,7 @@ class MiddlewareValidator {
             $errorResult = $validator->getResult();
 
             if (!is_null($this->apiDefOutputClass))
-                $errorResult = array_merge((array) new $this->apiDefOutputClass, $errorResult);
+                $errorResult = array_merge((array)new $this->apiDefOutputClass, $errorResult);
 
             throw new Api400(R::return_error_form, $errorResult);
         }

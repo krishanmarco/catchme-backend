@@ -2,13 +2,11 @@
 
 namespace Models\User\Accounts;
 
-use Context\Context;
-use \Propel\Runtime\Exception\PropelException;
-use Slim\Exception\Api400;
+
+use Api\User as ApiUser;
 use Slim\Http\UploadedFile;
 use User as DbUser;
-use Api\User as ApiUser;
-use R;
+
 
 class UserEditProfile {
 

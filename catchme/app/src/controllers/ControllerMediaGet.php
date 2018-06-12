@@ -2,9 +2,9 @@
 
 namespace Controllers;
 
-use Slim\Exception\Api400;
 use EMediaType;
 use R;
+use Slim\Exception\Api400;
 use Slim\Exception\Api404;
 
 class ControllerMediaGet {

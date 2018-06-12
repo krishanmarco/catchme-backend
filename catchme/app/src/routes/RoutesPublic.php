@@ -1,10 +1,11 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 12/09/2017 */
 
 namespace Routes;
-use \Psr\Container\ContainerInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
+
 use Mobile\Auth\MobileUserAuth;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 
 class RoutesPublic {
@@ -14,13 +15,11 @@ class RoutesPublic {
     }
 
 
-
     const time = RoutesPublic::class . ':time';
 
     public function time(ServerRequestInterface $request, ResponseInterface $response) {
         return $response->getBody()->write(MobileUserAuth::getAuthTokenTime());
     }
-
 
 
     const token = RoutesPublic::class . ':token';

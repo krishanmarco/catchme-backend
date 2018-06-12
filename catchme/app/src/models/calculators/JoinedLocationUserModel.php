@@ -3,8 +3,8 @@
 namespace Models\Calculators;
 
 use Location as DbLocation;
-use User as DbUser;
 use Models\Calculators\JoinedLocationUser\LocationFriends;
+use User as DbUser;
 
 class JoinedLocationUserModel {
 

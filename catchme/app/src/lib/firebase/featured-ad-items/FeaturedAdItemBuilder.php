@@ -3,23 +3,23 @@
 namespace Firebase\FeaturedAdItems;
 
 /**
-    FeaturedAdItem: {
-        id: 1,                                      // (P) (!) Unique featuredAd item identifier
-        time: 10000000000,                          // (P) (!) Seconds in which the featuredAd was generated
-
-        title: 'AreaDocks - DJ Alvarez'             // (P) (!) Title text
-        subTitle: 'Monday 27 October @AreaDocks'    // (P) (?) Subtitle text
-        image: 'http://ctvh.com/image.png'          // (P) (!) Background image
-
-        expiry: -1,                                 // (C) (!) Seconds of expiry, if expired the item is not displayed (-1 means never)
-        clickAction: 'LocationGoToProfile',         // (C) (?) Action to be triggered when the item is clicked
-        actions: [                                  // (C) (?) {ACTION}s. When an action is triggered a featuredAd object is passed in
-            'FriendshipRequestAccept',              // (C) (?) {ACTION}
-            'FriendshipRequestDeny',                // (C) (?) {ACTION}
-            ...                                     // (C) (?) {ACTION}
-        ],
-        payload: {...}                              // (C) (!) Payload data for each action
-    }
+ * FeaturedAdItem: {
+ * id: 1,                                      // (P) (!) Unique featuredAd item identifier
+ * time: 10000000000,                          // (P) (!) Seconds in which the featuredAd was generated
+ *
+ * title: 'AreaDocks - DJ Alvarez'             // (P) (!) Title text
+ * subTitle: 'Monday 27 October @AreaDocks'    // (P) (?) Subtitle text
+ * image: 'http://ctvh.com/image.png'          // (P) (!) Background image
+ *
+ * expiry: -1,                                 // (C) (!) Seconds of expiry, if expired the item is not displayed (-1 means never)
+ * clickAction: 'LocationGoToProfile',         // (C) (?) Action to be triggered when the item is clicked
+ * actions: [                                  // (C) (?) {ACTION}s. When an action is triggered a featuredAd object is passed in
+ * 'FriendshipRequestAccept',              // (C) (?) {ACTION}
+ * 'FriendshipRequestDeny',                // (C) (?) {ACTION}
+ * ...                                     // (C) (?) {ACTION}
+ * ],
+ * payload: {...}                              // (C) (!) Payload data for each action
+ * }
  **/
 class FeaturedAdItem {
     const EXPIRY_NEVER = -1;
@@ -39,13 +39,13 @@ class FeaturedAdItem {
     /**
      * Array that has all the non-null properties in FeaturedAdItemBuilder
      * -------------------------------------------------------------
-     * @var array $data*/
+     * @var array $data
+     */
     private $data;
+
     public function get() { return $this->data; }
 
 }
-
-
 
 
 abstract class FeaturedAdItemBuilder {
@@ -59,38 +59,44 @@ abstract class FeaturedAdItemBuilder {
 
     /** @var int $time */
     private $time;
+
     public function getTime() { return $this->time; }
 
 
     /** @var int $expiry */
     private $expiry;
+
     protected abstract function setExpiry();
 
     /** @var String $title */
     private $title;
+
     protected abstract function setTitle();
 
     /** @var String $subTitle */
     private $subTitle;
+
     protected abstract function setSubTitle();
 
     /** @var String $image */
     private $image;
+
     protected abstract function setImage();
 
     /** @var String[] $actions */
     private $actions = [];
+
     protected abstract function setActions();
 
     /** @var String $clickAction */
     private $clickAction;
+
     protected abstract function setClickAction();
 
     /** @var \stdClass $payload */
     private $payload;
+
     protected abstract function setPayload();
-
-
 
 
     /** @return FeaturedAdItem */

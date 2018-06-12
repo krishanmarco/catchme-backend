@@ -1,8 +1,9 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Api\Map;
-use UserLocation as DbUserLocationStatus;
+
 use Api\UserLocationStatus as ApiUserLocationStatus;
+use UserLocation as DbUserLocationStatus;
 
 
 class ModelToApiUserLocations {

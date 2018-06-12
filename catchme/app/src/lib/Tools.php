@@ -2,13 +2,16 @@
 
 
 function prettyVarDump($o) { highlight_string("<?php.php\n\$data =\n" . var_export($o, true) . ";\n?>"); }
+
 function prettyVarDumpReturn($o) { return highlight_string("<?php.php\n\$data =\n" . var_export($o, true) . ";\n?>", true); }
 
 
-
 function getRandomString($inMin, $inMax) { return str_replace('.', '', substr(uniqid(mt_rand(), true), -rand($inMin, $inMax))); }
+
 function setOnlyIfNotSet($value, $setTo) { return isset($value) ? $value : $setTo; }
+
 function uniqueName() { return bin2hex(random_bytes(12)); }
+
 function filehash($filepath) { return hash_file('crc32b', $filepath); }
 
 function ifKeyExists($key, $array, $default = null) {
@@ -30,7 +33,7 @@ function to_phone_number($value) {
 }
 
 function objectAssign($obj1, $obj2) {
-    return (object) array_merge((array) $obj1, (array) $obj2);
+    return (object)array_merge((array)$obj1, (array)$obj2);
 }
 
 function emptyObject($object) {
@@ -65,7 +68,7 @@ function array_set(&$array, $key, $value, $delimiter = '.') {
 }
 
 function array_unflatten($collection, $delimiter = '.') {
-    $collection = (array) $collection;
+    $collection = (array)$collection;
 
     $output = [];
     foreach ($collection as $key => $value) {

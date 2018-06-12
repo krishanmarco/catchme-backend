@@ -1,24 +1,23 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Routes\Accessors;
+
 use Controllers\ControllerLocations;
 use Controllers\ControllerMediaPut;
-use Controllers\ControllerUsers;
-use User;
-use Controllers\ControllerUser;
 use Controllers\ControllerSearch;
+use Controllers\ControllerUser;
+use Controllers\ControllerUsers;
+use User as DbUser;
 
 
 class ControllerAccessorAuth {
 
-    public function __construct(User $user) {
+    public function __construct(DbUser $user) {
         $this->authenticatedUser = $user;
     }
 
-    /** @var User $authenticatedUser */
+    /** @var DbUser $authenticatedUser */
     private $authenticatedUser;
-
-
 
 
     public function locations($locationId) {

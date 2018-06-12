@@ -2,9 +2,9 @@
 
 namespace Models\Calculators\Users;
 
-use User as DbUser;
-use Models\UserAdminLocationsResult;
+use Location as DbLocation;
 use LocationQuery;
+use User as DbUser;
 
 class UserAdminLocations {
 
@@ -16,20 +16,18 @@ class UserAdminLocations {
     /** @var DbUser $user */
     private $user;
 
-    /** @var UserAdminLocationsResult $result */
-    private $result;
+    /** @var DbLocation[] */
+    private $locations;
 
-    /** @return UserAdminLocationsResult */
-    public function getResult() {
-        return $this->result;
+    /** @return DbLocation[] */
+    public function getLocations() {
+        return $this->locations;
     }
 
     private function calculateUserAdminLocations() {
-        $adminOfLocations = LocationQuery::create()
+        $this->locations = LocationQuery::create()
             ->findByAdminId($this->user->getId())
             ->getData();
-
-        $this->result = new UserAdminLocationsResult($adminOfLocations);
     }
 
 }

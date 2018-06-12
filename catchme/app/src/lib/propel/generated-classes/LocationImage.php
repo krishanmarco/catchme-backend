@@ -16,7 +16,7 @@ use Controllers\ControllerMediaGet;
 class LocationImage extends BaseLocationImage {
 
     /** @return String */
-    public function getUrl() {
+    public function asUrl() {
         return strtr(ControllerMediaGet::URL_TPL, [
             '{type}' => EMediaType::LOCATION_IMAGE,
             '{id}' => $this->getLocationId(),

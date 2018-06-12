@@ -2,9 +2,9 @@
 
 namespace Models\Email;
 
+use I18n\I18n;
 use I18n\L;
 use User as DbUser;
-use I18n\I18n;
 
 class EmailPasswordRecovered extends EmailBase {
 

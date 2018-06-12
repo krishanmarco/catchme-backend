@@ -2,6 +2,7 @@
 
 namespace Slim\Middleware;
 
+use EAccessLevel;
 use Mobile\Auth\Authentication as MobileAuthHelper;
 use Mobile\Auth\MobileUserAuth as MobileUserAuthHelper;
 use Psr\Container\ContainerInterface;
@@ -9,7 +10,6 @@ use Routes\Accessors\ControllerAccessorAuth;
 use Routes\Accessors\ControllerAccessorAuthAdmin;
 use Routes\Accessors\ControllerAccessorUnauth;
 use Slim\SlimAttrGet;
-use EAccessLevel;
 
 
 class MiddlewareAuth {

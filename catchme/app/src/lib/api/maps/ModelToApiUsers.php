@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 15/09/2017 */
 
 namespace Api\Map;
+
 use User as DbUser;
 
 
@@ -15,11 +16,9 @@ class ModelToApiUsers {
     }
 
 
-
     private function __construct() {
         // No parameters needed
     }
-
 
 
     /** @var DbUser $requestingUser */
@@ -31,7 +30,6 @@ class ModelToApiUsers {
         $this->requestingUser = $requestingUser;
         return $this;
     }
-
 
 
     public function users(array $dbUsers) {
@@ -51,5 +49,5 @@ class ModelToApiUsers {
 
         return $modelToApiUser->get();
     }
-    
+
 }

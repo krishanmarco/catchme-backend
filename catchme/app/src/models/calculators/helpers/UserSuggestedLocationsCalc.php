@@ -2,13 +2,13 @@
 
 namespace Models\Calculators\Helpers;
 
+use Closure;
+use KMeans\ClusterData;
 use KMeans\Clusterizer;
 use KMeans\IClusterPoint;
-use KMeans\ClusterData;
-use LatLng;
-use WeightedCalculator\WeightedUnit;
+use Models\LatLng;
 use WeightedCalculator\WeightCalculator;
-use Closure;
+use WeightedCalculator\WeightedUnit;
 
 class UserSuggestedLocationsCalc {
 
@@ -46,7 +46,7 @@ class UserSuggestedLocationsCalc {
 
     /** @return WeightCalculator */
     public function getWeightCalculator() {
-        return new WeightCalculator($this->itemWeight, function() {
+        return new WeightCalculator($this->itemWeight, function () {
             return $this->weightedUnits;
         });
     }

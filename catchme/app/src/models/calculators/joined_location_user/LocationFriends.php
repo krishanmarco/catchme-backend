@@ -2,11 +2,10 @@
 
 namespace Models\Calculators\JoinedLocationUser;
 
-use Models\LocationFriendsResult;
+use Location as DbLocation;
 use Models\Calculators\LocationModel;
 use Models\Calculators\UserModel;
 use User as DbUser;
-use Location as DbLocation;
 
 class LocationFriends {
 
@@ -22,40 +21,49 @@ class LocationFriends {
     /** @var DbUser */
     private $user;
 
-    /** @var LocationFriendsResult */
-    private $result;
+    /** @var DbUser[] */
+    private $friendsNow = [];
 
-    /** @return LocationFriendsResult */
-    public function getResult() {
-        return $this->result;
+    /** @var DbUser[] */
+    private $friendsLater = [];
+
+    /** @return DbUser[] */
+    public function getFriendsNow() {
+        return $this->friendsNow;
+    }
+
+    /** @return DbUser[] */
+    public function getFriendsLater() {
+        return $this->friendsLater;
     }
 
     private function calculateLocationFriends() {
 
-        // Get all the users in the current location
-        $locationUsersResult = LocationModel::fromLocation($this->location)
-            ->getLocationUsers()->getResult();
-
         // Get all the current users friends
         $userFriends = UserModel::fromUser($this->user)
-            ->getUserConnections()->getResult()->friends;
+            ->getUserConnections()->getUserFriends();
 
+        // Get all the users in the current location
+        $locationUsers = LocationModel::fromLocation($this->location)
+            ->getLocationUsers();
+
+        // Get all the users in the current location (now)
+        $locationUsersNow = $locationUsers->getUsersNow();
+
+        // Get all the users in the current location (later)
+        $locationUsersLater = $locationUsers->getUsersLater();
 
         // Find the intersection between $userFriends and the locations now users
-        $nowFriends = [];
-        foreach ($locationUsersResult->usersNow as $userNow)
+        foreach ($locationUsersNow as $userNow)
             foreach ($userFriends as $userFriend)
                 if ($userNow->getUserId() == $userFriend->getId())
-                    array_push($nowFriends, $userFriend);
+                    array_push($this->friendsNow, $userFriend);
 
         // Find the intersection between $userFriends and the locations future users
-        $futureFriends = [];
-        foreach ($locationUsersResult->usersFuture as $userFuture)
+        foreach ($locationUsersLater as $userFuture)
             foreach ($userFriends as $userFriend)
                 if ($userFuture->getUserId() == $userFriend->getId())
-                    array_push($futureFriends, $userFriend);
-
-        $this->result = new LocationFriendsResult($nowFriends, $futureFriends);
+                    array_push($this->friendsLater, $userFriend);
     }
 
 }

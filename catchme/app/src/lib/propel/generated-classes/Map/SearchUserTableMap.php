@@ -2,9 +2,6 @@
 
 namespace Map;
 
-use \SearchUser;
-use \SearchUserQuery;
-use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
@@ -13,6 +10,9 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
+use Propel\Runtime\Propel;
+use SearchUser;
+use SearchUserQuery;
 
 
 /**
@@ -26,8 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class SearchUserTableMap extends TableMap
-{
+class SearchUserTableMap extends TableMap {
     use InstancePoolTrait;
     use TableMapTrait;
 
@@ -92,12 +91,12 @@ class SearchUserTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('UserId', 'Query', ),
-        self::TYPE_CAMELNAME     => array('userId', 'query', ),
-        self::TYPE_COLNAME       => array(SearchUserTableMap::COL_USER_ID, SearchUserTableMap::COL_QUERY, ),
-        self::TYPE_FIELDNAME     => array('user_id', 'query', ),
-        self::TYPE_NUM           => array(0, 1, )
+    protected static $fieldNames = array(
+        self::TYPE_PHPNAME => array('UserId', 'Query',),
+        self::TYPE_CAMELNAME => array('userId', 'query',),
+        self::TYPE_COLNAME => array(SearchUserTableMap::COL_USER_ID, SearchUserTableMap::COL_QUERY,),
+        self::TYPE_FIELDNAME => array('user_id', 'query',),
+        self::TYPE_NUM => array(0, 1,)
     );
 
     /**
@@ -106,12 +105,12 @@ class SearchUserTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('UserId' => 0, 'Query' => 1, ),
-        self::TYPE_CAMELNAME     => array('userId' => 0, 'query' => 1, ),
-        self::TYPE_COLNAME       => array(SearchUserTableMap::COL_USER_ID => 0, SearchUserTableMap::COL_QUERY => 1, ),
-        self::TYPE_FIELDNAME     => array('user_id' => 0, 'query' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+    protected static $fieldKeys = array(
+        self::TYPE_PHPNAME => array('UserId' => 0, 'Query' => 1,),
+        self::TYPE_CAMELNAME => array('userId' => 0, 'query' => 1,),
+        self::TYPE_COLNAME => array(SearchUserTableMap::COL_USER_ID => 0, SearchUserTableMap::COL_QUERY => 1,),
+        self::TYPE_FIELDNAME => array('user_id' => 0, 'query' => 1,),
+        self::TYPE_NUM => array(0, 1,)
     );
 
     /**
@@ -121,8 +120,7 @@ class SearchUserTableMap extends TableMap
      * @return void
      * @throws PropelException
      */
-    public function initialize()
-    {
+    public function initialize() {
         // attributes
         $this->setName('search_user');
         $this->setPhpName('SearchUser');
@@ -131,22 +129,21 @@ class SearchUserTableMap extends TableMap
         $this->setPackage('');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'user', 'id', true, null, null);
+        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER', 'user', 'id', true, null, null);
         $this->addColumn('query', 'Query', 'VARCHAR', true, 255, null);
     } // initialize()
 
     /**
      * Build the RelationMap objects for this table relationships
      */
-    public function buildRelations()
-    {
-        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':user_id',
-    1 => ':id',
-  ),
-), 'CASCADE', null, null, false);
+    public function buildRelations() {
+        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array(
+            0 =>
+                array(
+                    0 => ':user_id',
+                    1 => ':id',
+                ),
+        ), 'CASCADE', null, null, false);
     } // buildRelations()
 
     /**
@@ -155,21 +152,20 @@ class SearchUserTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
      */
-    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
+    public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
         // If the PK cannot be derived from the row, return NULL.
         if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -177,20 +173,17 @@ class SearchUserTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, an array of the primary key columns will be returned.
      *
-     * @param array  $row       resultset row.
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
-    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
-        return (int) $row[
-            $indexType == TableMap::TYPE_NUM
-                ? 0 + $offset
-                : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)
-        ];
+    public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
+        return (int)$row[$indexType == TableMap::TYPE_NUM
+            ? 0 + $offset
+            : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -204,26 +197,24 @@ class SearchUserTableMap extends TableMap
      * @param boolean $withPrefix Whether or not to return the path with the class name
      * @return string path.to.ClassName
      */
-    public static function getOMClass($withPrefix = true)
-    {
+    public static function getOMClass($withPrefix = true) {
         return $withPrefix ? SearchUserTableMap::CLASS_DEFAULT : SearchUserTableMap::OM_CLASS;
     }
 
     /**
      * Populates an object of the default type or an object that inherit from the default.
      *
-     * @param array  $row       row returned by DataFetcher->fetch().
-     * @param int    $offset    The 0-based offset for reading from the resultset row.
+     * @param array $row row returned by DataFetcher->fetch().
+     * @param int $offset The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return array           (SearchUser object, last column rank)
      */
-    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
-    {
+    public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM) {
         $key = SearchUserTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
         if (null !== ($obj = SearchUserTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
@@ -250,8 +241,7 @@ class SearchUserTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function populateObjects(DataFetcherInterface $dataFetcher)
-    {
+    public static function populateObjects(DataFetcherInterface $dataFetcher) {
         $results = array();
 
         // set the class once to avoid overhead in the loop
@@ -275,6 +265,7 @@ class SearchUserTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -283,12 +274,11 @@ class SearchUserTableMap extends TableMap
      * on demand.
      *
      * @param Criteria $criteria object containing the columns to add.
-     * @param string   $alias    optional table alias
+     * @param string $alias optional table alias
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function addSelectColumns(Criteria $criteria, $alias = null)
-    {
+    public static function addSelectColumns(Criteria $criteria, $alias = null) {
         if (null === $alias) {
             $criteria->addSelectColumn(SearchUserTableMap::COL_USER_ID);
             $criteria->addSelectColumn(SearchUserTableMap::COL_QUERY);
@@ -305,16 +295,14 @@ class SearchUserTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function getTableMap()
-    {
+    public static function getTableMap() {
         return Propel::getServiceContainer()->getDatabaseMap(SearchUserTableMap::DATABASE_NAME)->getTable(SearchUserTableMap::TABLE_NAME);
     }
 
     /**
      * Add a TableMap instance to the database for this tableMap class.
      */
-    public static function buildTableMap()
-    {
+    public static function buildTableMap() {
         $dbMap = Propel::getServiceContainer()->getDatabaseMap(SearchUserTableMap::DATABASE_NAME);
         if (!$dbMap->hasTable(SearchUserTableMap::TABLE_NAME)) {
             $dbMap->addTableObject(new SearchUserTableMap());
@@ -324,7 +312,7 @@ class SearchUserTableMap extends TableMap
     /**
      * Performs a DELETE on the database, given a SearchUser or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or SearchUser object or primary key or array of primary keys
+     * @param mixed $values Criteria or SearchUser object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -332,8 +320,7 @@ class SearchUserTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, ConnectionInterface $con = null)
-     {
+    public static function doDelete($values, ConnectionInterface $con = null) {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(SearchUserTableMap::DATABASE_NAME);
         }
@@ -346,7 +333,7 @@ class SearchUserTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(SearchUserTableMap::DATABASE_NAME);
-            $criteria->add(SearchUserTableMap::COL_USER_ID, (array) $values, Criteria::IN);
+            $criteria->add(SearchUserTableMap::COL_USER_ID, (array)$values, Criteria::IN);
         }
 
         $query = SearchUserQuery::create()->mergeWith($criteria);
@@ -354,7 +341,7 @@ class SearchUserTableMap extends TableMap
         if ($values instanceof Criteria) {
             SearchUserTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) {
+            foreach ((array)$values as $singleval) {
                 SearchUserTableMap::removeInstanceFromPool($singleval);
             }
         }
@@ -368,22 +355,20 @@ class SearchUserTableMap extends TableMap
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
-    public static function doDeleteAll(ConnectionInterface $con = null)
-    {
+    public static function doDeleteAll(ConnectionInterface $con = null) {
         return SearchUserQuery::create()->doDeleteAll($con);
     }
 
     /**
      * Performs an INSERT on the database, given a SearchUser or Criteria object.
      *
-     * @param mixed               $criteria Criteria or SearchUser object containing data that is used to create the INSERT statement.
+     * @param mixed $criteria Criteria or SearchUser object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function doInsert($criteria, ConnectionInterface $con = null)
-    {
+    public static function doInsert($criteria, ConnectionInterface $con = null) {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(SearchUserTableMap::DATABASE_NAME);
         }

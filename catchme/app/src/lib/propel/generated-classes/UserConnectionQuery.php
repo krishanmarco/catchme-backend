@@ -3,12 +3,11 @@
 use Base\UserConnectionQuery as BaseUserConnectionQuery;
 use Map\UserConnectionTableMap;
 use Propel\Runtime\Propel;
-use EConnectionState;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'user_connection' table.
  *
- * 
+ *
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -29,7 +28,8 @@ class UserConnectionQuery extends BaseUserConnectionQuery {
      * GROUP BY id
      * ORDER BY COUNT(*) DESC
      * ----
-     * @return int[] */
+     * @return int[]
+     */
     public static function getUsersFriendIds(array $uids) {
         if (sizeof($uids) <= 0)
             return [];
@@ -37,7 +37,7 @@ class UserConnectionQuery extends BaseUserConnectionQuery {
         $connection = Propel::getReadConnection(UserConnectionTableMap::DATABASE_NAME);
         $statement = $connection->prepare(strtr(
             "SELECT {col_res} FROM (" .
-            "SELECT IF({col_user_id} IN ({val_user_id}), {col_connection_id}, {col_user_id}) as {col_res}, COUNT(*) " .
+            "SELECT IF({col_user_id} IN ({val_user_id}), {col_connection_id}, {col_user_id}) AS {col_res}, COUNT(*) " .
             "FROM {tbl_name} " .
             "WHERE ({col_user_id} IN ({val_user_id}) OR {col_connection_id} IN ({val_user_id}) AND {col_state} = {val_state}) " .
             "GROUP BY  {col_res} " .
@@ -56,10 +56,11 @@ class UserConnectionQuery extends BaseUserConnectionQuery {
         $statement->execute();
 
         return array_map(
-            function($row) { return intval($row['id']); },
+            function ($row) { return intval($row['id']); },
             $statement->fetchAll(\PDO::FETCH_ASSOC)
         );
     }
+
     /**
      * This query is too complicated for the propel API
      * This method returns the friends of all the ids in the {$userIds} field
@@ -75,7 +76,8 @@ class UserConnectionQuery extends BaseUserConnectionQuery {
      * WHERE (user_id IN (2, 3, 4) OR connection_id IN (2, 3, 4))
      * ORDER BY id1 ASC, id2 ASC
      * ----
-     * @return array(friendId => [friendsFriendId, friendsFriendsId, ...]) */
+     * @return array(friendId => [friendsFriendId, friendsFriendsId, ...])
+     */
     public static function getUsersFriendsIdsGroupedByUserIdUnique(array $uids) {
         if (sizeof($uids) <= 0)
             return [];

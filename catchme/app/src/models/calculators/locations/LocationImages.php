@@ -2,12 +2,10 @@
 
 namespace Models\Calculators\Locations;
 
-use Propel\Runtime\ActiveQuery\Criteria;
-use LocationImage;
-use LocationImageQuery;
 use Location as DbLocation;
-use Models\LocationImagesResult;
-use EMediaType;
+use LocationImage as DbLocationImage;
+use LocationImageQuery;
+use Propel\Runtime\ActiveQuery\Criteria;
 
 class LocationImages {
 
@@ -25,39 +23,20 @@ class LocationImages {
     /** @var int */
     private $imageTTLSeconds = LOCATION_MEDIA_TTL;
 
-    /** @var LocationImagesResult[] */
-    private $result;
+    /** @var DbLocationImage[] */
+    private $locationImages = [];
 
-    /** @return LocationImagesResult[] */
-    public function getResult() {
-        return $this->result;
-    }
-
-    private function calculateLocationImages() {
-        // Get LocationImages from the database
-        $locationImages = $this->getDbLocationImages();
-
-        $locationImagesResult = [];
-        foreach ($locationImages as $li) {
-            array_push($locationImagesResult, new LocationImagesResult(
-                $li->getId(),
-                $li->getLocationId(),
-                EMediaType::LOCATION_IMAGE,
-                $li->getUrl()
-            ));
-        }
-
-        $this->result = $locationImagesResult;
+    /** @return DbLocationImage[] */
+    public function getLocationImages() {
+        return $this->locationImages;
     }
 
     /**
      * Get the location images, where the inserted timestamp is
      * smaller than $this->imageValidityHours (int) hours ago
      * and the approved state is $this->approvedImages (bool)
-     *
-     * @return LocationImage[]
      */
-    private function getDbLocationImages() {
+    private function calculateLocationImages() {
 
         $locationImageQuery = LocationImageQuery::create()
             ->filterByLocationId($this->location->getId())
@@ -70,7 +49,7 @@ class LocationImages {
             );
         }
 
-        return $locationImageQuery
+        $this->locationImages = $locationImageQuery
             ->orderByInsertedTs(Criteria::DESC)
             ->find()
             ->getData();

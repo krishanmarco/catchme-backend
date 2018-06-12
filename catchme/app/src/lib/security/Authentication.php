@@ -1,10 +1,11 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Mobile\Auth;
-use Security\DataEncrypter;
-use User;
-use UserQuery;
+
 use EAccessLevel;
+use Security\DataEncrypter;
+use User as DbUser;
+use UserQuery;
 
 
 class Authentication {
@@ -52,9 +53,6 @@ class Authentication {
 }
 
 
-
-
-
 class MobileUserAuth {
 
     // Rounds the current time to the closest
@@ -93,7 +91,7 @@ class MobileUserAuth {
     /** @var int<EAccessLevel> $accessLevel */
     private $accessLevel;
 
-    /** @var User $verifiedUser */
+    /** @var DbUser $verifiedUser */
     private $verifiedUser;
 
     public function getVerifiedUser() {
@@ -144,13 +142,6 @@ class MobileUserAuth {
     }
 
 }
-
-
-
-
-
-
-
 
 
 class UserAuthentication {

@@ -2,9 +2,9 @@
 
 namespace Models\Calculators\Locations;
 
-use UserLocationFavoriteQuery;
-use UserLocationFavorite;
 use Location as DbLocation;
+use UserLocationFavorite as DbUserLocationFavorite;
+use UserLocationFavoriteQuery;
 
 class LocationFollowers {
 
@@ -16,19 +16,12 @@ class LocationFollowers {
     /** @var DbLocation $LocationModel */
     private $location;
 
-    /** @var UserLocationFavorite[] */
+    /** @var DbUserLocationFavorite[] */
     private $locationFollowers;
 
-    /** @return UserLocationFavorite[] */
+    /** @return DbUserLocationFavorite[] */
     public function getLocationFollowers() {
         return $this->locationFollowers;
-    }
-
-    /** @return int[] */
-    public function getResultIds() {
-        return array_map(function(UserLocationFavorite $ulf) {
-            return $ulf->getUserId();
-        }, $this->locationFollowers);
     }
 
     private function calculateLocationFollowers() {

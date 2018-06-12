@@ -1,9 +1,10 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Models\Location\Search;
-use SearchLocationQuery;
-use SearchLocation;
+
 use Location as DbLocation;
+use SearchLocation as DbSearchLocation;
+use SearchLocationQuery;
 
 class LocationSearch {
 
@@ -21,7 +22,7 @@ class LocationSearch {
     public function getResults() {
         return $this->locationResults;
     }
-    
+
     public function search() {
         $this->locationResults = $this->searchOne(implode(' ', $this->searchQueries));
     }
@@ -29,7 +30,7 @@ class LocationSearch {
     private function searchOne($searchString) {
         // Use a FullTextSearch to match the search query
         // to the query column on the SearchLocation table
-        /** @var SearchLocation[] $indexedLocations */
+        /** @var DbSearchLocation[] $indexedLocations */
         $indexLocations = SearchLocationQuery::create()
             ->fullTextSearch($searchString)
             ->joinWithLocation()
@@ -37,7 +38,7 @@ class LocationSearch {
             ->getData();
 
         // Select all found ids into the result holder
-        return array_map(function(SearchLocation $searchLocation) {
+        return array_map(function (DbSearchLocation $searchLocation) {
             return $searchLocation->getLocation();
         }, $indexLocations);
     }

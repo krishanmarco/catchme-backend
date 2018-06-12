@@ -1,16 +1,17 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] */
 
 namespace Models\User\Accounts;
-use Propel\Runtime\Exception\PropelException;
-use Slim\Exception\Api400;
-use User as DbUser;
-use R;
-use FacebookToken;
-use GoogleToken;
+
 use Api\FormUserRegister as ApiFormUserRegister;
+use FacebookToken;
 use FacebookTokenValidator;
+use GoogleToken;
 use GoogleTokenValidator;
 use I18n\L;
+use Propel\Runtime\Exception\PropelException;
+use R;
+use Slim\Exception\Api400;
+use User as DbUser;
 
 class UserRegistration {
 
@@ -36,8 +37,6 @@ class UserRegistration {
     }
 
 
-
-
     private function __construct() {
         $this->user = new DbUser();
     }
@@ -51,12 +50,9 @@ class UserRegistration {
     }
 
 
-
-
     public function catchmeRegister(ApiFormUserRegister $form) {
         $this->userRegister($form->name, $form->email, $form->password);
     }
-
 
 
     public function googleRegister(GoogleToken $googleToken) {
@@ -70,7 +66,6 @@ class UserRegistration {
             getRandomString(15, 15)
         );
     }
-
 
 
     public function facebookRegister(FacebookToken $facebookToken) {
@@ -101,7 +96,8 @@ class UserRegistration {
         } catch (PropelException $exception) {
             switch ($exception->getCode()) {
                 // duplicate entry, email already exists
-                default: throw new Api400(R::return_error_email_taken);
+                default:
+                    throw new Api400(R::return_error_email_taken);
             }
         }
     }

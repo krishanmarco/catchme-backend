@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 26/08/2017 */
 
 namespace Security;
+
 use Api\ApiRules;
 use R;
 

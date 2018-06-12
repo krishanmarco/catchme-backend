@@ -2,18 +2,18 @@
 
 namespace Firebase\FeedItems;
 
-use User;
-use I18n\L;
 use Api\ServerTextBuilder;
+use I18n\L;
+use User as DbUser;
 
 final class FeedItemFriendshipRequest extends FeedItemBuilder {
 
-    public function __construct(User $authUser) {
+    public function __construct(DbUser $authUser) {
         parent::__construct();
         $this->authUser = $authUser;
     }
 
-    /** @var User $requestingUser */
+    /** @var DbUser $requestingUser */
     private $authUser;
 
 

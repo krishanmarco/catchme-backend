@@ -2,9 +2,9 @@
 
 namespace cache;
 
+use Closure;
 use Map\UserConnectionTableMap;
 use Propel\Runtime\Propel;
-use Closure;
 
 abstract class Cacheable {
 

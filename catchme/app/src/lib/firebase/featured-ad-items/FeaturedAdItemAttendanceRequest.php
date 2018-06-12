@@ -1,6 +1,7 @@
 <?php /** Created by Krishan Marco Madan [krishanmarco@outlook.com] on 07/10/2017 */
 
 namespace Firebase\FeaturedAdItems;
+
 use Api\FormFeaturedAdAdd;
 
 final class FeaturedAdItemAttendanceRequest extends FeaturedAdItemBuilder {

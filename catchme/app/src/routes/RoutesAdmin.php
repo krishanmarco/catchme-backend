@@ -2,9 +2,9 @@
 
 namespace Routes;
 
-use \Psr\Container\ContainerInterface;
-use \Psr\Http\Message\ServerRequestInterface;
-use \Psr\Http\Message\ResponseInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Routes\Accessors\ControllerAccessorAuth;
 use Routes\Accessors\ControllerAccessorAuthAdmin;
 use Slim\SlimAttrGet;
@@ -23,8 +23,6 @@ class RoutesAdmin {
 
     /** @var ControllerAccessorAuthAdmin $adminController */
     private $adminController;
-
-
 
 
     const sendFeaturedAdAttendanceRequest = RoutesAdmin::class . ':sendFeaturedAdAttendanceRequest';

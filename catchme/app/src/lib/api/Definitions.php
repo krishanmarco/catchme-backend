@@ -54,7 +54,7 @@ class SearchStrings {
     public $queries = [Rule::ruleIsset => []];
 }
 
-class Location {
+class Location {// todo normalize $people, $connections
     public $id = [Rule::ruleId => []];
     public $adminId = [Rule::ruleId => []];
     public $signupTs = [Rule::ruleTimestamp => []];
@@ -93,7 +93,7 @@ class LocationConnections {
     public $future = [Rule::ruleIsset => [], Rule::ruleArrayOf => [User::class]];
 }
 
-class User {
+class User {// todo normalize $adminLocations, $locations, $connections
     public $id = [Rule::ruleId => []];
     public $name = [Rule::ruleMediumString => []];
     public $email = [Rule::ruleEmail => []];

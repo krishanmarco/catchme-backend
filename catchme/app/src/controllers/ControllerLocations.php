@@ -37,11 +37,11 @@ class ControllerLocations {
         );
 
         return ModelToApiLocations::single($joinedLocationUserModel->getLocation())
-            ->applyPrivacyPolicy($this->authUser)
             ->withAddress()
             ->withImages($locationModel->getLocationImages())
             ->withPeople($locationModel->getLocationCount())
             ->withConnections($joinedLocationUserModel->getLocationFriends())
+            ->applyPrivacyPolicy($this->authUser)
             ->get();
     }
 

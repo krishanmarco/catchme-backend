@@ -16,18 +16,30 @@ class UserAdminLocations {
     /** @var DbUser $user */
     private $user;
 
-    /** @var DbLocation[] */
-    private $locations;
+    /** @var DbLocation[] (int => DbLocation) */
+    private $accDbLocations = [];
 
-    /** @return DbLocation[] */
-    public function getLocations() {
-        return $this->locations;
+    /** @var int[] */
+    private $locationIds = [];
+
+    /** @return int[] */
+    public function getLocationIds() {
+        return $this->locationIds;
+    }
+
+    /** @return DbLocation[] (int => DbLocation) */
+    public function getAccDbLocations() {
+        return $this->accDbLocations;
     }
 
     private function calculateUserAdminLocations() {
-        $this->locations = LocationQuery::create()
-            ->findByAdminId($this->user->getId())
-            ->getData();
+        $locations = LocationQuery::create()
+            ->findByAdminId($this->user->getId());
+
+        foreach ($locations as $l) {
+            $this->locationIds[] = $l->getId();
+            $this->accDbLocations[$l->getId()] = $l;
+        }
     }
 
 }

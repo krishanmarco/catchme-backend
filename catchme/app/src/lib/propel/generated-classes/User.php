@@ -43,7 +43,7 @@ class User extends BaseUser {
         if (is_null($this->friendIds)) {
 
             $friends = UserModel::fromUser($this)
-                ->getUserConnections()->getUserFriends();
+                ->getUserConnections()->getUserFriendIds();
 
             $this->friendIds = User::mapToIds($friends);
         }

@@ -15,6 +15,14 @@ use Controllers\ControllerMediaGet;
  */
 class LocationImage extends BaseLocationImage {
 
+    /**
+     * @param LocationImage[] $liList
+     * @return string[]
+     */
+    public static function mapToUrls(array $liList) {
+        return array_map(function (LocationImage $li) { return $li->asUrl(); }, $liList);
+    }
+
     /** @return String */
     public function asUrl() {
         return strtr(ControllerMediaGet::URL_TPL, [

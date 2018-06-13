@@ -138,7 +138,7 @@ class ControllerUser {
             ->getUserLocations();
 
         return ModelToApiUserLocations::multiple()
-            ->userLocationStatuses($userLocationStatusList);
+            ->userLocations($userLocationStatusList);
     }
 
     /**

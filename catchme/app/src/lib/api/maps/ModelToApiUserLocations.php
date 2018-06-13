@@ -20,7 +20,7 @@ class ModelToApiUserLocations {
 
 
     /** @return ApiUserLocationStatus[] */
-    public function userLocationStatuses(array $userLocationStatuses) {
+    public function userLocations(array $userLocationStatuses) {
         return array_map([$this, 'userLocationStatus'], $userLocationStatuses);
     }
 

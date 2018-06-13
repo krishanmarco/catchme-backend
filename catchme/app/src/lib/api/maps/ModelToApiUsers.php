@@ -43,9 +43,8 @@ class ModelToApiUsers {
         $modelToApiUser->withEmail();
         $modelToApiUser->withPhone();
 
-        if (!is_null($this->requestingUser)) {
+        if (!is_null($this->requestingUser))
             $modelToApiUser->applyPrivacyPolicy($this->requestingUser);
-        }
 
         return $modelToApiUser->get();
     }

@@ -2,9 +2,9 @@
 
 namespace Api\Map;
 
+use Api\ApiMetadata;
+use Api\ApiResponseWithMetadata;
 use Api\Location as ApiLocation;
-use Api\LocationConnections;
-use Api\LocationPeople;
 use Location as DbLocation;
 use LocationImage as DbLocationImage;
 use Models\Calculators\JoinedLocationUser\LocationFriends;
@@ -12,12 +12,13 @@ use Models\Calculators\Locations\LocationCount;
 use Models\Calculators\Locations\LocationImages;
 use User as DbUser;
 
-
-class ModelToApiLocation {
+class ModelToApiLocation extends ApiResponseWithMetadata {
 
     public function __construct(DbLocation $dbLocation) {
+        parent::__construct();
         $this->dbLocation = $dbLocation;
         $this->apiLocation = clearObject(new ApiLocation());
+        $this->apiLocation->metadata = new ApiMetadata();
         $this->modelToApiUsers = ModelToApiUsers::multiple();
         $this->withBasicParameters();
     }
@@ -33,6 +34,7 @@ class ModelToApiLocation {
 
     /** @return ApiLocation */
     public function get() {
+        $this->apiLocation = $this->setMetadataAndGet($this->apiLocation);
         return $this->apiLocation;
     }
 
@@ -83,9 +85,7 @@ class ModelToApiLocation {
      * @return ModelToApiLocation
      */
     public function withImages(LocationImages $locationImages) {
-        $this->apiLocation = array_map(function (DbLocationImage $dli) {
-            return $dli->asUrl();
-        }, $locationImages->getLocationImages());
+        $this->apiLocation->imageUrls = DbLocationImage::mapToUrls($locationImages->getLocationImages());
         return $this;
     }
 
@@ -94,11 +94,9 @@ class ModelToApiLocation {
      * @return ModelToApiLocation
      */
     public function withPeople(LocationCount $locationCount) {
-        $apiLocationPeople = new LocationPeople();
-        $apiLocationPeople->men = $locationCount->getMenCount();
-        $apiLocationPeople->women = $locationCount->getWomenCount();
-        $apiLocationPeople->total = $locationCount->getTotalCount();
-        $this->apiLocation->people = $apiLocationPeople;
+        $this->apiLocation->peopleMenCount = $locationCount->getMenCount();
+        $this->apiLocation->peopleWomenCount = $locationCount->getWomenCount();
+        $this->apiLocation->peopleTotalCount = $locationCount->getTotalCount();
         return $this;
     }
 
@@ -107,17 +105,10 @@ class ModelToApiLocation {
      * @return ModelToApiLocation
      */
     public function withConnections(LocationFriends $locationFriends) {
-        $apiLocationConnections = new LocationConnections();
-
-        $apiLocationConnections->past = [];
-
-        $apiLocationConnections->future = $this->modelToApiUsers
-            ->users($locationFriends->getFriendsNow());
-
-        $apiLocationConnections->now = $this->modelToApiUsers
-            ->users($locationFriends->getFriendsLater());
-
-        $this->apiLocation->connections = $apiLocationConnections;
+        $this->apiLocation->connectionsPastIds = [];
+        $this->apiLocation->connectionsNowIds = $locationFriends->getFriendsNowIds();
+        $this->apiLocation->connectionsFutureIds = $locationFriends->getFriendsLaterIds();
+        $this->metadataAddUsers($locationFriends->getAccDbUsers());
         return $this;
     }
 

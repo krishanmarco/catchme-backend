@@ -54,7 +54,26 @@ class SearchStrings {
     public $queries = [Rule::ruleIsset => []];
 }
 
-class Location {// todo normalize $people, $connections
+class ApiMetadata {
+
+    /** @var Location[] */
+    public $locations = [];
+
+    /** @var User[] */
+    public $users = [];
+
+    /** @var UserLocationStatus[] */
+    public $userLocations = [];
+}
+
+class UserLocationStatus {
+    public $id = [Rule::ruleId => []];
+    public $locationId = [Rule::ruleIsset => [], Rule::ruleId => []];
+    public $fromTs = [Rule::ruleIsset => [], Rule::ruleTimestamp => []];
+    public $untilTs = [Rule::ruleIsset => [], Rule::ruleTimestamp => []];
+}
+
+class Location {
     public $id = [Rule::ruleId => []];
     public $adminId = [Rule::ruleId => []];
     public $signupTs = [Rule::ruleTimestamp => []];
@@ -77,23 +96,19 @@ class Location {// todo normalize $people, $connections
     public $latLng = [Rule::ruleLatLng => []];
     public $googlePlaceId = [Rule::ruleGooglePlaceId => []];
 
-    public $people = [Rule::ruleOf => [LocationPeople::class]];
-    public $connections = [Rule::ruleOf => [LocationConnections::class]];
+    public $peopleMenCount = [Rule::ruleInt => []];
+    public $peopleWomenCount = [Rule::ruleInt => []];
+    public $peopleTotalCount = [Rule::ruleInt => []];
+
+    public $connectionsPastIds = [];
+    public $connectionsNowIds = [];
+    public $connectionsFutureIds = [];
+
+    /** @var ApiMetadata */
+    public $metadata = [];
 }
 
-class LocationPeople {
-    public $men = [Rule::ruleIsset => [], Rule::ruleInt => []];
-    public $women = [Rule::ruleIsset => [], Rule::ruleInt => []];
-    public $total = [Rule::ruleIsset => [], Rule::ruleInt => []];
-}
-
-class LocationConnections {
-    public $past = [Rule::ruleIsset => [], Rule::ruleArrayOf => [User::class]];
-    public $now = [Rule::ruleIsset => [], Rule::ruleArrayOf => [User::class]];
-    public $future = [Rule::ruleIsset => [], Rule::ruleArrayOf => [User::class]];
-}
-
-class User {// todo normalize $adminLocations, $locations, $connections
+class User {
     public $id = [Rule::ruleId => []];
     public $name = [Rule::ruleMediumString => []];
     public $email = [Rule::ruleEmail => []];
@@ -107,30 +122,19 @@ class User {// todo normalize $adminLocations, $locations, $connections
     public $phone = [Rule::rulePhone => []];
     public $publicMessage = [Rule::ruleLongString => []];
     public $pictureUrl = [Rule::ruleUrl => []];
-    public $adminLocations = [Rule::ruleArrayOf => [Location::class]];
-    public $locations = [Rule::ruleOf => [UserLocations::class]];
-    public $connections = [Rule::ruleOf => [UserConnections::class]];
-}
 
-class UserLocations {
-    public $favorites = [Rule::ruleIsset => [], Rule::ruleArrayOf => [Location::class]];
-    public $top = [Rule::ruleIsset => [], Rule::ruleArrayOf => [Location::class]];
-    public $locations = [Rule::ruleIsset => [], Rule::ruleArrayOf => [Location::class]];
-    public $userLocationStatuses = [Rule::ruleIsset => [], Rule::ruleArrayOf => [UserLocationStatus::class]];
-}
+    public $locationsAdminIds = [];
+    public $locationsFavoriteIds = [];
+    public $locationsTopIds = [];
+    public $locationsUserLocationIds = [];
 
-class UserConnections {
-    public $friends = [Rule::ruleIsset => [], Rule::ruleArrayOf => [User::class]];
-    public $pending = [Rule::ruleIsset => [], Rule::ruleArrayOf => [User::class]];
-    public $requests = [Rule::ruleIsset => [], Rule::ruleArrayOf => [User::class]];
-    public $blocked = [Rule::ruleIsset => [], Rule::ruleArrayOf => [User::class]];
-}
+    public $connectionsFriendIds = [];
+    public $connectionsPendingIds = [];
+    public $connectionsRequestIds = [];
+    public $connectionsBlockedIds = [];
 
-class UserLocationStatus {
-    public $id = [Rule::ruleId => []];
-    public $locationId = [Rule::ruleIsset => [], Rule::ruleId => []];
-    public $fromTs = [Rule::ruleIsset => [], Rule::ruleTimestamp => []];
-    public $untilTs = [Rule::ruleIsset => [], Rule::ruleTimestamp => []];
+    /** @var ApiMetadata */
+    public $metadata = [];
 }
 
 class ExceptionResponse {

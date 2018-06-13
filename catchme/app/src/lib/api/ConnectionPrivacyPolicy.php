@@ -3,7 +3,6 @@
 namespace Api\Sec;
 
 use Api\User as ApiUser;
-use Api\UserLocations as ApiUserLocations;
 use Api\UserLocationStatus as ApiUserLocationStatus;
 use ERelationship;
 use User as DbUser;
@@ -39,12 +38,12 @@ class ConnectionPrivacyPolicy {
         if (!$this->allowEmail())
             unset($apiDbUser->email);
 
-        if ($apiDbUser->locations instanceof ApiUserLocations) {
+        if (is_array($apiDbUser->locationsUserLocationIds)) {
             $newUls = [];
 
             // Calculate the [past, now, future] locations
             /** @var  $uls ApiUserLocationStatus */
-            foreach ($apiDbUser->locations->userLocationStatuses as $uls) {
+            foreach ($apiDbUser->locationsUserLocationIds as $uls) {
                 $nowTs = time();
 
                 if ($uls->fromTs > $nowTs && !$this->allowNextLocation())
@@ -59,7 +58,7 @@ class ConnectionPrivacyPolicy {
                 array_push($newUls, $uls);
             }
 
-            $apiDbUser->locations->userLocationStatuses = $newUls;
+            $apiDbUser->locationsUserLocationIds = $newUls;
         }
 
         return $apiDbUser;

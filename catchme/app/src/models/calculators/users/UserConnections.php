@@ -13,61 +13,74 @@ class UserConnections {
         $this->calculateUserConnections();
     }
 
-    /** @var DbUser $user */
+    /** @var DbUser */
     private $user;
 
-    /** @var DbUser[] */
-    private $userFriends = [];
+    /** @var DbUser[] (int => DbUser) */
+    private $accUsers = [];
 
-    /** @var DbUser[] */
-    private $userPending = [];
+    /** @var int[] */
+    private $userFriendIds = [];
 
-    /** @var DbUser[] */
-    private $userRequests = [];
+    /** @var int[] */
+    private $userPendingIds = [];
 
-    /** @var DbUser[] */
-    private $userBlocked = [];
+    /** @var int[] */
+    private $userRequestIds = [];
 
-    /** @return DbUser[] */
-    public function getUserFriends() {
-        return $this->userFriends;
+    /** @var int[] */
+    private $userBlockedIds = [];
+
+    /** @return DbUser[] (int => DbUser) */
+    public function getAccDbUsers() {
+        return $this->accUsers;
     }
 
-    /** @return DbUser[] */
-    public function getUserPending() {
-        return $this->userPending;
+    /** @return int[] */
+    public function getUserFriendIds() {
+        return $this->userFriendIds;
     }
 
-    /** @return DbUser[] */
-    public function getUserRequests() {
-        return $this->userRequests;
+    /** @return int[] */
+    public function getUserPendingIds() {
+        return $this->userPendingIds;
     }
 
-    /** @return DbUser[] */
-    public function getUserBlocked() {
-        return $this->userBlocked;
+    /** @return int[] */
+    public function getUserRequestIds() {
+        return $this->userRequestIds;
+    }
+
+    /** @return int[] */
+    public function getUserBlockedIds() {
+        return $this->userBlockedIds;
     }
 
     private function calculateUserConnections() {
-
         $leftAssoc = UserConnectionQuery::create()
             ->filterByUserId($this->user->getId())
             ->joinWithConnectionTo()
             ->find();
 
         foreach ($leftAssoc as $uf) {
+            $connectionId = $uf->getConnectionId();
+            $connectionTo = $uf->getConnectionTo();
+
             switch ($uf->getState()) {
 
                 case EConnectionState::CONFIRMED:
-                    array_push($this->userFriends, $uf->getConnectionTo());
+                    $this->userFriendIds[] = $connectionId;
+                    $this->accUsers[$connectionId] = $connectionTo;
                     break;
 
                 case EConnectionState::BLOCKED:
-                    array_push($this->userBlocked, $uf->getConnectionTo());
+                    $this->userBlockedIds[] = $connectionId;
+                    $this->accUsers[$connectionId] = $connectionTo;
                     break;
 
                 case EConnectionState::PENDING:
-                    array_push($this->userPending, $uf->getConnectionTo());
+                    $this->userPendingIds[] = $connectionId;
+                    $this->accUsers[$connectionId] = $connectionTo;
                     break;
             }
         }
@@ -78,14 +91,19 @@ class UserConnections {
             ->find();
 
         foreach ($rightAssoc as $uf) {
+            $connectionId = $uf->getUserId();
+            $connectionTo = $uf->getUser();
+
             switch ($uf->getState()) {
 
                 case EConnectionState::CONFIRMED:
-                    array_push($this->userFriends, $uf->getUser());
+                    $this->userFriendIds[] = $connectionId;
+                    $this->accUsers[$connectionId] = $connectionTo;
                     break;
 
                 case EConnectionState::PENDING:
-                    array_push($this->userRequests, $uf->getUser());
+                    $this->userRequestIds[] = $connectionId;
+                    $this->accUsers[$connectionId] = $connectionTo;
                     break;
 
                 case EConnectionState::BLOCKED:

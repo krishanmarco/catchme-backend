@@ -4,10 +4,7 @@ namespace Models\Calculators\Locations;
 
 use EGender;
 use Location as DbLocation;
-use Map\UserTableMap as UserTableMap;
 use Models\Calculators\LocationModel;
-use UserLocation as DbUserLocation;
-use UserQuery;
 
 class LocationCount {
 
@@ -45,6 +42,7 @@ class LocationCount {
 
     private function calculateLocationCount() {
 
+        // Array of genders [1, 0, 2, 1, 1, 1, 1, 0, ...]
         $genderVector = $this->calcGenderVector();
         foreach ($genderVector as $genderInt) {
 
@@ -66,19 +64,23 @@ class LocationCount {
     /** @return int[] */
     private function calcGenderVector() {
 
+        // Get the LocationUsers calculator
+        $locationUsers = LocationModel::fromLocation($this->location)
+            ->getLocationUsers();
+
         // Get all Ids from $calcResultLocationUsers->getUserId();
-        $usersNow = LocationModel::fromLocation($this->location)
-            ->getLocationUsers()
-            ->getUsersNow();
+        $usersNowIds = $locationUsers->getUsersNowIds();
 
-        // Map UserLocation[] to user id int[]
-        $idsNow = DbUserLocation::mapToUserIds($usersNow);
+        // Get all the users associated with $userNowIds
+        $accUsers = $locationUsers->getAccDbUsers();
 
-        // For each id as key, select its gender
-        return UserQuery::create()
-            ->select([UserTableMap::COL_GENDER])
-            ->findPks($idsNow)
-            ->getData();
+        // Create the gender array
+        $genderArray = [];
+
+        foreach ($usersNowIds as $usersNowId)
+            $genderArray[] = intval($accUsers[$usersNowId]->getGender());
+
+        return $genderArray;
     }
 
 

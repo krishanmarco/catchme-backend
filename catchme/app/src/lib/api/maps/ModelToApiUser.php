@@ -2,23 +2,25 @@
 
 namespace Api\Map;
 
+use Api\ApiMetadata;
+use Api\ApiResponseWithMetadata;
 use Api\Sec\ConnectionPrivacyPolicy;
 use Api\User as ApiUser;
-use Api\UserConnections as ApiUserConnections;
-use Api\UserLocations as ApiUserLocations;
 use Models\Calculators\Users\UserAdminLocations;
 use Models\Calculators\Users\UserConnections;
 use Models\Calculators\Users\UserLocations;
 use User as DbUser;
 
-class ModelToApiUser {
+class ModelToApiUser extends ApiResponseWithMetadata {
 
     public function __construct(DbUser $dbUser) {
+        parent::__construct();
         $this->requestedUser = $dbUser;
         $this->apiUser = clearObject(new ApiUser());
+        $this->apiUser->metadata = new ApiMetadata();
         $this->modelToApiLocations = ModelToApiLocations::multiple();
         $this->modelToApiUsers = ModelToApiUsers::multiple();
-        $this->modelToApiUserLocationStatuses = ModelToApiUserLocations::multiple();
+        $this->modelToApiUserLocations = ModelToApiUserLocations::multiple();
         $this->withBasicParameters();
     }
 
@@ -32,12 +34,13 @@ class ModelToApiUser {
     private $modelToApiUsers;
 
     /** @var ModelToApiUserLocations */
-    private $modelToApiUserLocationStatuses;
+    private $modelToApiUserLocations;
 
     /** @var ApiUser */
     private $apiUser;
 
     public function get() {
+        $this->apiUser = $this->setMetadataAndGet($this->apiUser);
         return $this->apiUser;
     }
 
@@ -86,10 +89,8 @@ class ModelToApiUser {
      * @return ModelToApiUser
      */
     public function withAdminLocations(UserAdminLocations $userAdminLocations) {
-
-        $this->apiUser->adminLocations = $this->modelToApiLocations
-            ->locations($userAdminLocations->getLocations());
-
+        $this->apiUser->locationsAdminIds = $userAdminLocations->getLocationIds();
+        $this->metadataAddLocations($userAdminLocations->getAccDbLocations());
         return $this;
     }
 
@@ -98,21 +99,11 @@ class ModelToApiUser {
      * @return ModelToApiUser
      */
     public function withConnections(UserConnections $userConnections) {
-        $apiUserConnections = new ApiUserConnections();
-
-        $apiUserConnections->friends = $this->modelToApiUsers
-            ->users($userConnections->getUserFriends());
-
-        $apiUserConnections->pending = $this->modelToApiUsers
-            ->users($userConnections->getUserPending());
-
-        $apiUserConnections->requests = $this->modelToApiUsers
-            ->users($userConnections->getUserRequests());
-
-        $apiUserConnections->blocked = $this->modelToApiUsers
-            ->users($userConnections->getUserBlocked());
-
-        $this->apiUser->connections = $apiUserConnections;
+        $this->apiUser->connectionsFriendIds = $userConnections->getUserFriendIds();
+        $this->apiUser->connectionsPendingIds = $userConnections->getUserPendingIds();
+        $this->apiUser->connectionsRequestIds = $userConnections->getUserRequestIds();
+        $this->apiUser->connectionsBlockedIds = $userConnections->getUserBlockedIds();
+        $this->metadataAddUsers($userConnections->getAccDbUsers());
         return $this;
     }
 
@@ -121,19 +112,11 @@ class ModelToApiUser {
      * @return ModelToApiUser
      */
     public function withLocations(UserLocations $userLocations) {
-        $apiUserLocations = new ApiUserLocations();
-
-        $apiUserLocations->favorites = $userLocations->getFavorites();
-        $apiUserLocations->top = $userLocations->getTop();
-
-        $apiUserLocations->userLocationStatuses = $this->modelToApiUserLocationStatuses
-            ->userLocationStatuses($userLocations->getUserLocations());
-
-        $apiUserLocations->locations = $this->modelToApiLocations
-            ->locations($userLocations->getLocations());
-
-        $this->apiUser->locations = $apiUserLocations;
-
+        $this->apiUser->locationsFavoriteIds = $userLocations->getFavoriteIds();
+        $this->apiUser->locationsTopIds = $userLocations->getTopIds();
+        $this->apiUser->locationsUserLocationIds = $userLocations->getUserLocationIds();
+        $this->metadataAddLocations($userLocations->getAccDbLocations());
+        $this->metadataAddUserLocations($userLocations->getAccDbUserLocations());
         return $this;
     }
 

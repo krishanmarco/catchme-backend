@@ -3,6 +3,7 @@
 namespace Models\Calculators\Locations;
 
 use Location as DbLocation;
+use User as DbUser;
 use UserLocation as DbUserLocation;
 use UserLocationQuery;
 
@@ -16,20 +17,28 @@ class LocationUsers {
     /** @var DbLocation */
     private $location;
 
-    /** @var DbUserLocation[] */
-    private $usersNow;
+    /** @var DbUser[] (int => DbUser) */
+    private $accUsers;
 
-    /** @var DbUserLocation[] */
-    private $usersLater;
+    /** @var int[] */
+    private $usersNowIds;
 
-    /** @return DbUserLocation[] */
-    public function getUsersNow() {
-        return $this->usersNow;
+    /** @var int[] */
+    private $userLaterIds;
+
+    /** @var DbUser[] (int => DbUser) */
+    public function getAccDbUsers() {
+        return $this->accUsers;
     }
 
-    /** @return DbUserLocation[] */
-    public function getUsersLater() {
-        return $this->usersLater;
+    /** @return int[] */
+    public function getUsersNowIds() {
+        return $this->usersNowIds;
+    }
+
+    /** @return int[] */
+    public function getUserLaterIds() {
+        return $this->userLaterIds;
     }
 
     private function calculateLocationUsers() {
@@ -42,11 +51,14 @@ class LocationUsers {
             // Check if $ul user is at this
             // location now or in the future
 
-            if ($ul->getFromTs() <= time() && $ul->getUntilTs() >= time())
-                array_push($this->usersNow, $ul);
+            if ($ul->getFromTs() <= time() && $ul->getUntilTs() >= time()) {
+                $this->usersNowIds[] = $ul->getUserId();
+                $this->accUsers[$ul->getUserId()] = $ul->getUser();
 
-            else if ($ul->getFromTs() >= time())
-                array_push($this->usersLater, $ul);
+            } else if ($ul->getFromTs() >= time()) {
+                $this->userLaterIds[] = $ul->getUserId();
+                $this->accUsers[$ul->getUserId()] = $ul->getUser();
+            }
         }
     }
 

@@ -17,6 +17,24 @@ class UserManagerStatus {
     private $user;
 
     /** @return DbUserLocation */
+    public function addOrEdit(ApiUserLocationStatus $apiUserLocationStatus) {
+        if ($apiUserLocationStatus->id == -1)
+            return $this->add($apiUserLocationStatus);
+
+        $userLocation = UserLocationQuery::create()
+            ->findOneById($apiUserLocationStatus->id);
+
+        if (is_null($userLocation))
+            return $this->add($apiUserLocationStatus);
+
+        // Found an old UserLocation, edit
+        $userLocation->setFromTs($apiUserLocationStatus->fromTs);
+        $userLocation->setUntilTs($apiUserLocationStatus->untilTs);
+        $userLocation->save();
+        return $userLocation;
+    }
+
+    /** @return DbUserLocation */
     public function add(ApiUserLocationStatus $apiUserLocationStatus) {
         $userLocation = new DbUserLocation();
         $userLocation->setUserId($this->user->getId());

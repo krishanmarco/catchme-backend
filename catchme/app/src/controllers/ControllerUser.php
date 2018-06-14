@@ -148,7 +148,7 @@ class ControllerUser {
     public function statusAdd(ApiUserLocationStatus $apiUserLocationStatus) {
         $manager = new UserManagerStatus($this->authUser);
 
-        $userLocationStatus = $manager->add($apiUserLocationStatus);
+        $userLocationStatus = $manager->addOrEdit($apiUserLocationStatus);
 
         // Add the notification item to firebase
         FeedManager::build($this->authUser)

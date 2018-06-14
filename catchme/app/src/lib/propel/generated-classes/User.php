@@ -25,9 +25,6 @@ class User extends BaseUser {
         return array_map(function (User $user) { return $user->getId(); }, $uList);
     }
 
-    /** @var int[] friendIds */
-    private $friendIds;
-
 
     /**
      * When a user is saved/updated we need to automatically
@@ -36,19 +33,6 @@ class User extends BaseUser {
     public function postSave(ConnectionInterface $con = null) {
         parent::postSave($con);
         SearchUser::refresh($this, $con);
-    }
-
-    /** @return int[] */
-    public function getFriendIds() {
-        if (is_null($this->friendIds)) {
-
-            $friends = UserModel::fromUser($this)
-                ->getUserConnections()->getUserFriendIds();
-
-            $this->friendIds = User::mapToIds($friends);
-        }
-
-        return $this->friendIds;
     }
 
     public function trySetAvatarFromFile(UploadedFile $uploadedFile) {

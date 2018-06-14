@@ -5,6 +5,7 @@ namespace Api\Sec;
 use Api\User as ApiUser;
 use Api\UserLocationStatus as ApiUserLocationStatus;
 use ERelationship;
+use Models\Calculators\UserModel;
 use User as DbUser;
 
 class ConnectionPrivacyPolicy {
@@ -102,7 +103,11 @@ class ConnectionPrivacyPolicy {
         if ($requestedId == $requestingId)
             return ERelationship::CONNECTED;
 
-        if (in_array($requestedId, $this->requestingUser->getFriendIds()))
+        $friendIds = UserModel::fromUser($this->requestingUser)
+            ->getUserConnections()
+            ->getUserFriendIds();
+
+        if (in_array($requestedId, $friendIds))
             return ERelationship::CONNECTED;
 
         return ERelationship::NOT_CONNECTED;
